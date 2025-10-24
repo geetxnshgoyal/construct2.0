@@ -7,7 +7,15 @@ const MIN_TEAM_SIZE = 3;
 const MAX_TEAM_SIZE = 5;
 const MAX_MEMBERS = MAX_TEAM_SIZE - 1;
 
-const sanitizeString = (value) => (typeof value === 'string' ? value.trim() : '');
+const sanitizeString = (value) => {
+  if (typeof value === 'string') {
+    return value.trim();
+  }
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return String(value);
+  }
+  return '';
+};
 
 const validateTeamPayload = (payload) => {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
