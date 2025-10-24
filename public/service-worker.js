@@ -1,5 +1,5 @@
 // Bump the CACHE_NAME when changing assets to force clients to update.
-const CACHE_NAME = 'construct-v9';
+const CACHE_NAME = 'construct-v10';
 const ASSETS = [
   '/',
   '/index.html',
@@ -12,6 +12,7 @@ const ASSETS = [
   '/assets/js/register.js',
   '/assets/js/sw-register.js',
   '/assets/js/analytics.js',
+  '/favicon.svg',
   '/assets/logos/nst-logo.png',
   '/assets/logos/tpf-logo.png',
   '/assets/logos/emergent-logo-new-black.svg'
