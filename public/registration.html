@@ -448,10 +448,22 @@
           link.addEventListener("click", () => setNavState(false));
         });
 
+        navLinks.addEventListener("click", (event) => {
+          if (event.target === navLinks) {
+            setNavState(false);
+          }
+        });
+
         window.addEventListener("keydown", (event) => {
           if (event.key === "Escape" && navLinks.classList.contains("is-open")) {
             setNavState(false);
             navToggle.focus();
+          }
+        });
+
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 820 && navLinks.classList.contains("is-open")) {
+            setNavState(false);
           }
         });
       }

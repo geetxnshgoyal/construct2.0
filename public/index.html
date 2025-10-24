@@ -96,17 +96,17 @@
 
             <aside class="hero-card">
               <div class="stacked-logos">
-                <picture>
+                <picture class="logo-partner partner-emergent">
+                  <source srcset="assets/logos/emergent-logo-new-black.svg" type="image/svg+xml" />
+                  <img src="assets/logos/emergent-logo-new-black.svg" alt="Emergent logo" class="logo-emergent" />
+                </picture>
+                <picture class="logo-partner partner-nst">
                   <source srcset="assets/logos/nst-logo.png" type="image/png" />
                   <img src="assets/logos/nst-logo.png" alt="Newton School of Technology logo" />
                 </picture>
-                <picture>
+                <picture class="logo-partner partner-tpf">
                   <source srcset="assets/logos/tpf-logo.png" type="image/png" />
                   <img src="assets/logos/tpf-logo.png" alt="The Product Folks logo" />
-                </picture>
-                <picture>
-                  <source srcset="assets/logos/emergent-logo-new-black.svg" type="image/svg+xml" />
-                  <img src="assets/logos/emergent-logo-new-black.svg" alt="Emergent logo" class="logo-emergent" />
                 </picture>
               </div>
               <h3>Hosted Harmonics</h3>
@@ -413,10 +413,22 @@
           link.addEventListener("click", () => setNavState(false));
         });
 
+        navLinks.addEventListener("click", (event) => {
+          if (event.target === navLinks) {
+            setNavState(false);
+          }
+        });
+
         window.addEventListener("keydown", (event) => {
           if (event.key === "Escape" && navLinks.classList.contains("is-open")) {
             setNavState(false);
             navToggle.focus();
+          }
+        });
+
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 820 && navLinks.classList.contains("is-open")) {
+            setNavState(false);
           }
         });
       }
