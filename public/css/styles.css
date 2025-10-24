@@ -579,19 +579,19 @@ header.site-header {
   font-family: "DM Sans", "Inter", sans-serif;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  background: linear-gradient(90deg, #0673F9 0%, #004599 100%);
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, #1a75ff 0%, #003a91 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .brand .nst-highlight {
-  letter-spacing: 0.1em;
+  letter-spacing: 0.07em;
 }
 
 .hero-copy h1 .nst-highlight {
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
 }
 
 .hero-copy h1 {

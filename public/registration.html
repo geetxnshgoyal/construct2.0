@@ -39,7 +39,7 @@
     <header class="site-header">
       <div class="container navigation">
         <a class="brand" href="index.html">
-          <span>CoNSTruct 2025</span>
+          <span>Co<span class="nst-highlight">NST</span>ruct 2025</span>
         </a>
         <nav>
           <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="primary-navigation" aria-expanded="false">
@@ -60,7 +60,7 @@
     <main>
       <section class="page-hero">
         <div class="container">
-          <h1>Register for CoNSTruct 2025</h1>
+          <h1>Register for Co<span class="nst-highlight">NST</span>ruct 2025</h1>
           <p>
             Share your team roster and focus so we can set up Emergent workspaces, collaboration pods, and checkpoints ahead of the
             Build for Impact Product × AI Hackathon.
@@ -360,7 +360,7 @@
               </div>
 
               <p class="muted">
-                Submissions must include at least two teammates besides the team leader and at least one female member.
+                Submissions may include up to four additional teammates besides the team leader. Build the crew that works best for you.
               </p>
 
               <button type="submit" class="btn primary">Submit Your Team Roster</button>
@@ -398,7 +398,7 @@
                 <source srcset="assets/logos/nst-logo.png" type="image/png" />
                 <img src="assets/logos/nst-logo.png" alt="Newton School of Technology logo" />
               </picture>
-              <span>CoNSTruct 2025</span>
+              <span>Co<span class="nst-highlight">NST</span>ruct 2025</span>
             </a>
             <p>
               Let’s co-create products that matter — powered by Newton School of Technology × The Product Folks × Emergent.
@@ -644,22 +644,9 @@
       };
 
       const ensureFemaleMember = () => {
-        const activeGroups = memberGroups.slice(0, activeMemberCount);
         clearError(leadGenderField);
-        activeGroups.forEach((group) => clearError(group.gender));
-
-        const leadGenderValue = getFieldValue(leadGenderField).toLowerCase();
-        if (leadGenderValue === 'female') {
-          return true;
-        }
-
-        const femaleMember = activeGroups.find((group) => getFieldValue(group.gender).toLowerCase() === 'female');
-        if (femaleMember) {
-          return true;
-        }
-
-        setError(leadGenderField, 'At least one teammate must identify as female.');
-        return false;
+        memberGroups.forEach((group) => clearError(group.gender));
+        return true;
       };
 
       const buildTeamPayload = () => {
