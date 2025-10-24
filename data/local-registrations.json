@@ -1,0 +1,26 @@
+[
+  {
+    "teamName": "Test Team",
+    "teamSize": 3,
+    "lead": {
+      "name": "Lead",
+      "email": "lead@example.edu",
+      "gender": "female"
+    },
+    "members": [
+      {
+        "name": "Member One",
+        "email": "member1@example.edu",
+        "gender": "male"
+      },
+      {
+        "name": "Member Two",
+        "email": "member2@example.edu",
+        "gender": "male"
+      }
+    ],
+    "submittedAt": "2025-10-24T05:43:48.081Z",
+    "_localSavedAt": "2025-10-24T05:43:48.081Z",
+    "_id": "local-1761284628085-aknb5s"
+  }
+]

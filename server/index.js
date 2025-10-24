@@ -46,6 +46,10 @@ app.get(['/admin', '/admin/', '/admin.html'], (req, res) => {
   res.sendFile(path.join(publicDir, 'admin.html'));
 });
 
+app.get(['/register', '/register/', '/registration', '/registration.html'], (req, res) => {
+  res.sendFile(path.join(publicDir, 'registration.html'));
+});
+
 app.use(express.static(publicDir));
 
 app.use('/api', registrationsRouter);
@@ -80,7 +84,9 @@ const startServer = (portToUse, { attemptedFallback = false } = {}) => {
     server = app.listen(portToUse, host, () => {
       const address = server.address();
       const actualPort = address && typeof address === 'object' ? address.port : portToUse;
-      console.log(`Server listening on http://${host}:${actualPort}`);
+      // If binding to 0.0.0.0, display localhost for developer-friendly logs.
+      const displayHost = host === '0.0.0.0' ? 'localhost' : host;
+      console.log(`Server listening on http://${displayHost}:${actualPort}`);
       if (attemptedFallback && portToUse === 0) {
         console.warn(`Using fallback port ${actualPort}. Update the PORT environment variable if you want a fixed port.`);
       }

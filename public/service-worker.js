@@ -1,4 +1,4 @@
-const CACHE_NAME = 'construct-v7';
+const CACHE_NAME = 'construct-v8';
 const ASSETS = [
   '/',
   '/index.html',
@@ -7,7 +7,9 @@ const ASSETS = [
   '/css/styles.css',
   '/css/ui-enhancements.css',
   '/assets/js/animations.js',
+  '/assets/js/admin-dashboard.js',
   '/assets/js/register.js',
+  '/assets/js/sw-register.js',
   '/assets/js/analytics.js',
   '/assets/logos/nst-logo.png',
   '/assets/logos/tpf-logo.png',

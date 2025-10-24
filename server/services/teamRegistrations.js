@@ -1,4 +1,6 @@
-const { getDb, serverTimestamp } = require('../firebaseAdmin');
+const fs = require('fs');
+const path = require('path');
+const { getDb, serverTimestamp, adminAvailable } = require('../firebaseAdmin');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
 const MIN_TEAM_SIZE = 3;
@@ -120,11 +122,59 @@ const validateTeamPayload = (payload) => {
 };
 
 const saveTeamRegistration = async (teamPayload) => {
-  const db = getDb();
-  await db.collection('teamRegistrations').add(teamPayload);
+  if (adminAvailable()) {
+    const db = getDb();
+    await db.collection('teamRegistrations').add(teamPayload);
+    return;
+  }
+
+  // Fallback: persist to a local JSON file for testing when Firestore is not available.
+  const dataDir = path.join(process.cwd(), 'data');
+  try {
+    fs.mkdirSync(dataDir, { recursive: true });
+  } catch (e) {
+    // ignore mkdir errors
+  }
+
+  const filePath = path.join(dataDir, 'local-registrations.json');
+  const nowIso = new Date().toISOString();
+
+  // Ensure submittedAt is a stable ISO string for the local fallback
+  const entry = Object.assign({}, teamPayload, {
+    submittedAt: nowIso,
+    _localSavedAt: nowIso,
+    _id: `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+  });
+
+  let list = [];
+  try {
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, 'utf8') || '[]';
+      list = JSON.parse(raw);
+    }
+  } catch (e) {
+    // ignore parse errors and overwrite
+    list = [];
+  }
+
+  list.unshift(entry);
+  fs.writeFileSync(filePath, JSON.stringify(list, null, 2), 'utf8');
 };
 
 const listTeamRegistrations = async ({ limit = 100 } = {}) => {
+  if (!adminAvailable()) {
+    // Read from local fallback file if Firestore isn't configured.
+    const filePath = path.join(process.cwd(), 'data', 'local-registrations.json');
+    try {
+      if (!fs.existsSync(filePath)) return [];
+      const raw = fs.readFileSync(filePath, 'utf8') || '[]';
+      const list = JSON.parse(raw);
+      return list.slice(0, Math.min(list.length, Number.parseInt(limit, 10) || 100));
+    } catch (e) {
+      return [];
+    }
+  }
+
   const db = getDb();
   let query = db.collection('teamRegistrations').orderBy('submittedAt', 'desc');
 

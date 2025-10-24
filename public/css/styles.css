@@ -1070,8 +1070,6 @@ form {
   min-height: 18px;
 }
 
-/* Mentor signup UI removed */
-
 .status-message {
   margin-top: 20px;
   padding: 14px 20px;
@@ -1232,8 +1230,6 @@ form {
   .form-card {
     padding: 28px;
   }
-
-  /* Mentor signup removed */
 
   footer.site-footer {
     padding: 60px 0 40px;
