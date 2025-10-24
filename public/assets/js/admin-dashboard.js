@@ -11,6 +11,10 @@ const refreshBtn = document.getElementById('refresh-registrations');
 const downloadBtn = document.getElementById('download-registrations');
 const logoutBtn = document.getElementById('admin-logout');
 
+if (!loginView || !dashboardView || !loginForm) {
+  console.error('Admin dashboard script: required elements not found in DOM.');
+}
+
 let authHeader = null;
 let cachedItems = [];
 
@@ -220,12 +224,22 @@ const logout = () => {
   loginError.textContent = '';
   setView('login');
   tokenInput.focus();
+  statusEl.textContent = 'You have signed out.';
 };
 
-loginForm.addEventListener('submit', handleLogin);
-refreshBtn.addEventListener('click', () => fetchRegistrations({ announce: true }));
-downloadBtn.addEventListener('click', downloadCsv);
-logoutBtn.addEventListener('click', logout);
+loginForm?.addEventListener('submit', handleLogin);
+refreshBtn?.addEventListener('click', () => {
+  console.debug('[Admin] Refresh button clicked');
+  fetchRegistrations({ announce: true });
+});
+downloadBtn?.addEventListener('click', () => {
+  console.debug('[Admin] Download button clicked');
+  downloadCsv();
+});
+logoutBtn?.addEventListener('click', () => {
+  console.debug('[Admin] Logout button clicked');
+  logout();
+});
 
 const storedCredentials = localStorage.getItem(STORAGE_KEY);
 if (storedCredentials) {

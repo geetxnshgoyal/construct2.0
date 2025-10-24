@@ -431,5 +431,40 @@
 
     <script type="module" src="/assets/js/admin-dashboard.js"></script>
     <script type="module" src="/assets/js/sw-register.js"></script>
+    <!-- Fallback handlers: ensure action buttons remain clickable if the module fails to initialize (production SW or module error) -->
+    <script>
+      (function () {
+        try {
+          const refreshBtn = document.getElementById('refresh-registrations');
+          const downloadBtn = document.getElementById('download-registrations');
+          const logoutBtn = document.getElementById('admin-logout');
+          const STORAGE_KEY = 'construct-admin-auth';
+
+          if (refreshBtn && !refreshBtn.onclick) {
+            refreshBtn.addEventListener('click', () => {
+              // Best-effort fallback: reload the page so the module re-initializes and fetches data
+              window.location.reload();
+            });
+          }
+
+          if (downloadBtn && !downloadBtn.onclick) {
+            downloadBtn.addEventListener('click', () => {
+              // Module is expected to handle CSV export; fallback shows a helpful message.
+              alert('Export is currently unavailable. Try refreshing the page or re-signing in.');
+            });
+          }
+
+          if (logoutBtn && !logoutBtn.onclick) {
+            logoutBtn.addEventListener('click', () => {
+              try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+              window.location.reload();
+            });
+          }
+        } catch (e) {
+          // swallow errors — this is only a safety net
+          console.warn('Admin fallback handlers failed to attach', e);
+        }
+      })();
+    </script>
   </body>
 </html>
