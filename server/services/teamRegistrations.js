@@ -3,7 +3,7 @@ const path = require('path');
 const { getDb, serverTimestamp, adminAvailable } = require('../firebaseAdmin');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
-const MIN_TEAM_SIZE = 3;
+const MIN_TEAM_SIZE = 1;
 const MAX_TEAM_SIZE = 5;
 const MAX_MEMBERS = MAX_TEAM_SIZE - 1;
 
@@ -98,20 +98,8 @@ const validateTeamPayload = (payload) => {
     return { status: 400, error: 'Team size selection does not match submitted member details.' };
   }
 
-  if (members.length < MIN_TEAM_SIZE - 1) {
-    return { status: 400, error: 'Provide at least two teammates in addition to the team leader.' };
-  }
-
   if (members.length > MAX_MEMBERS) {
     return { status: 400, error: 'A maximum of four teammates can be submitted alongside the leader.' };
-  }
-
-  const hasFemale =
-    leadGender.toLowerCase() === 'female' ||
-    members.some((member) => (member.gender || '').toLowerCase() === 'female');
-
-  if (!hasFemale) {
-    return { status: 400, error: 'At least one teammate must identify as female.' };
   }
 
   const record = {
