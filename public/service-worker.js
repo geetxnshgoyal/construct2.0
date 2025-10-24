@@ -1,4 +1,5 @@
-const CACHE_NAME = 'construct-v8';
+// Bump the CACHE_NAME when changing assets to force clients to update.
+const CACHE_NAME = 'construct-v9';
 const ASSETS = [
   '/',
   '/index.html',
@@ -17,14 +18,18 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
+  // Install: pre-cache assets and immediately take control of the page on next activation.
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())
   );
 });
 
 self.addEventListener('activate', (event) => {
+  // Claim clients so the new worker becomes active immediately.
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.map((k) => { if (k !== CACHE_NAME) return caches.delete(k); })))
+    caches.keys()
+      .then((keys) => Promise.all(keys.map((k) => { if (k !== CACHE_NAME) return caches.delete(k); })))
+      .then(() => self.clients.claim())
   );
 });
 

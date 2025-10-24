@@ -373,6 +373,24 @@
       </section>
     </main>
 
+    <div
+      id="submission-modal"
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-labelledby="submission-modal-title"
+      tabindex="-1"
+    >
+      <div class="modal__overlay" data-close-modal></div>
+      <div class="modal__card" role="document">
+        <span class="modal__icon" aria-hidden="true">🎉</span>
+        <h3 id="submission-modal-title">Team locked in</h3>
+        <p id="submission-modal-message" class="modal__message"></p>
+        <button type="button" class="btn modal__close" data-close-modal>Great!</button>
+      </div>
+    </div>
+
     <footer class="site-footer">
       <div class="container">
         <div class="footer-grid">
@@ -494,6 +512,9 @@
       const leadGenderField = document.getElementById("lead-gender");
       const leadNameInput = document.getElementById("lead-name");
       const leadEmailInput = document.getElementById("lead-email");
+      const submissionModal = document.getElementById('submission-modal');
+      const submissionModalMessage = document.getElementById('submission-modal-message');
+      const modalCloseElements = document.querySelectorAll('[data-close-modal]');
 
       const memberGroups = Array.from(document.querySelectorAll('[data-member]')).map((fieldset) => {
         const memberId = fieldset.dataset.member;
@@ -656,6 +677,7 @@
         if (invalidFields.length > 0) {
           const firstInvalid = invalidFields[0];
           firstInvalid.focus();
+          statusMessage.classList.remove('sr-only');
           statusMessage.classList.remove("success");
           statusMessage.classList.add("error");
           statusMessage.textContent = "Please resolve the highlighted fields before submitting.";
@@ -663,6 +685,7 @@
         }
 
         if (extraValidation && !extraValidation()) {
+          statusMessage.classList.remove('sr-only');
           statusMessage.classList.remove("success");
           statusMessage.classList.add("error");
           statusMessage.textContent = "Please review your team details to satisfy the participation requirements.";
@@ -670,6 +693,7 @@
         }
 
         toggleFormLoading(form, true);
+        statusMessage.classList.remove('sr-only');
         statusMessage.classList.remove("error", "success");
         statusMessage.textContent = "Submitting...";
 
@@ -679,6 +703,7 @@
         }
 
         if (!payload || !Array.isArray(payload.members) || payload.members.length !== (payload.teamSize - 1)) {
+          statusMessage.classList.remove('sr-only');
           statusMessage.classList.remove('success');
           statusMessage.classList.add('error');
           statusMessage.textContent = 'Team size selection does not match member details.';
@@ -698,6 +723,7 @@
           if (!resp.ok) {
             const err = await resp.json().catch(() => ({}));
             console.error('Server error', err);
+            statusMessage.classList.remove('sr-only');
             statusMessage.classList.remove('success');
             statusMessage.classList.add('error');
             statusMessage.textContent = err && err.error ? err.error : 'Server failed to save your details.';
@@ -706,6 +732,7 @@
           }
         } catch (error) {
           console.error('Network error', error);
+          statusMessage.classList.remove('sr-only');
           statusMessage.classList.remove('success');
           statusMessage.classList.add('error');
           statusMessage.textContent = 'Network error while submitting — please try again.';
@@ -713,11 +740,14 @@
           return;
         }
 
-        statusMessage.classList.remove("error");
-        statusMessage.classList.add("success");
-        statusMessage.textContent =
+        const finalSuccessMessage =
           successMessage ||
           "Thanks for registering! We’ll reach out soon with next steps and prep material.";
+        statusMessage.classList.remove("error");
+        statusMessage.classList.add("success");
+        statusMessage.textContent = finalSuccessMessage;
+        statusMessage.classList.add('sr-only');
+        showSubmissionModal(finalSuccessMessage);
         form.reset();
         if (teamSizeField) {
           teamSizeField.value = '';
@@ -757,6 +787,43 @@
             successMessage:
               "Team locked in! Expect a welcome email with onboarding resources and Emergent workspace access shortly.",
           });
+        });
+      }
+
+      const hideSubmissionModal = () => {
+        if (!submissionModal) return;
+        submissionModal.classList.remove('is-visible');
+        submissionModal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('modal-open');
+      };
+
+      const showSubmissionModal = (message) => {
+        if (!submissionModal || !submissionModalMessage) return;
+        submissionModalMessage.textContent = message;
+        submissionModal.classList.add('is-visible');
+        submissionModal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+        const focusTarget = submissionModal.querySelector('[data-close-modal]');
+        if (focusTarget) {
+          focusTarget.focus({ preventScroll: true });
+        }
+      };
+
+      modalCloseElements.forEach((element) => {
+        element.addEventListener('click', hideSubmissionModal);
+      });
+
+      if (submissionModal) {
+        submissionModal.addEventListener('click', (event) => {
+          if (event.target === submissionModal) {
+            hideSubmissionModal();
+          }
+        });
+
+        submissionModal.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') {
+            hideSubmissionModal();
+          }
         });
       }
     </script>
