@@ -962,39 +962,45 @@ section.alt-bg {
 }
 
 .stacked-logos {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, auto));
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 28px;
+  gap: clamp(20px, 4vw, 36px);
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .stacked-logos .logo-partner {
+  flex: 1 1 clamp(160px, 32%, 220px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-width: 140px;
 }
 
 .stacked-logos img {
   width: auto;
+  max-width: min(100%, 260px);
   filter: drop-shadow(0 18px 36px rgba(24, 33, 99, 0.52));
 }
 
 .stacked-logos .partner-emergent img,
 .stacked-logos .partner-tpf img {
-  height: clamp(58px, 9vw, 82px);
-  max-width: 180px;
+  height: clamp(58px, 8.5vw, 88px);
 }
 
 .stacked-logos .partner-nst img {
-  height: clamp(68px, 10vw, 94px);
+  height: clamp(72px, 10vw, 120px);
 }
 
 @media (max-width: 640px) {
   .stacked-logos {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    justify-items: center;
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .stacked-logos .logo-partner {
+    flex: 0 1 220px;
   }
 }
 
