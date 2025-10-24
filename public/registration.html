@@ -121,7 +121,8 @@
                       type="text"
                       class="input-control"
                       data-required="true"
-                      data-error="Enter the full name of the team leader."
+                      data-pattern="alpha"
+                      data-error="Enter the full name of the team leader (letters only)."
                       placeholder="Team leader name"
                     />
                     <span class="error-message" aria-live="polite"></span>
@@ -134,9 +135,9 @@
                       type="email"
                       class="input-control"
                       data-required="true"
-                      data-pattern="email"
-                      data-error="Enter a valid college email for the team leader."
-                      placeholder="name@university.edu.in"
+                      data-pattern="college-email"
+                      data-error="Enter a valid .edu.in college email for the team leader."
+                      placeholder="name@college.edu.in"
                     />
                     <span class="error-message" aria-live="polite"></span>
                   </div>
@@ -172,7 +173,8 @@
                       type="text"
                       class="input-control"
                       data-required="true"
-                      data-error="Enter this teammate's name."
+                      data-pattern="alpha"
+                      data-error="Enter this teammate's name using letters only."
                       placeholder="Teammate name"
                     />
                     <span class="error-message" aria-live="polite"></span>
@@ -185,9 +187,9 @@
                       type="email"
                       class="input-control"
                       data-required="true"
-                      data-pattern="email"
-                      data-error="Enter a valid college email."
-                      placeholder="name@university.edu.in"
+                      data-pattern="college-email"
+                      data-error="Enter a valid .edu.in college email."
+                      placeholder="name@college.edu.in"
                     />
                     <span class="error-message" aria-live="polite"></span>
                   </div>
