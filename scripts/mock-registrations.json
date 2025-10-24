@@ -1,0 +1,28 @@
+[
+  {
+    "id": "mock-1761280082854",
+    "teamName": "Automated Test Team",
+    "teamSize": 3,
+    "lead": {
+      "name": "Sam Lead",
+      "email": "sam.lead@example.edu",
+      "gender": "female"
+    },
+    "members": [
+      {
+        "slot": 1,
+        "name": "Member One",
+        "email": "m1@example.edu",
+        "gender": "male"
+      },
+      {
+        "slot": 2,
+        "name": "Member Two",
+        "email": "m2@example.edu",
+        "gender": "female"
+      }
+    ],
+    "submittedAt": {},
+    "savedAt": "2025-10-24T04:28:02.854Z"
+  }
+]

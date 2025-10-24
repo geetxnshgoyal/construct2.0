@@ -1,0 +1,23 @@
+{
+  "name": "construct-hackathon-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+  "start": "PORT=3001 node server/index.js",
+  "dev": "PORT=3001 nodemon server/index.js",
+    "vercel-dev": "vercel dev",
+    "lint": "echo \"No linter configured\"",
+    "test": "echo \"No tests configured\""
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
+    "firebase-admin": "^13.5.0",
+    "helmet": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
