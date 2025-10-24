@@ -432,9 +432,27 @@
       const navLinks = document.getElementById("primary-navigation");
 
       if (navToggle && navLinks) {
+        const setNavState = (isOpen) => {
+          navLinks.classList.toggle("is-open", isOpen);
+          navToggle.classList.toggle("is-active", isOpen);
+          document.body.classList.toggle("nav-open", isOpen);
+          navToggle.setAttribute("aria-expanded", String(isOpen));
+        };
+
         navToggle.addEventListener("click", () => {
-          const isOpen = navLinks.classList.toggle("is-open");
-          navToggle.setAttribute("aria-expanded", isOpen);
+          const isOpen = !navLinks.classList.contains("is-open");
+          setNavState(isOpen);
+        });
+
+        navLinks.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => setNavState(false));
+        });
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && navLinks.classList.contains("is-open")) {
+            setNavState(false);
+            navToggle.focus();
+          }
         });
       }
 
