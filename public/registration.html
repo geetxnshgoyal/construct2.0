@@ -225,7 +225,8 @@
                       type="text"
                       class="input-control"
                       data-required="true"
-                      data-error="Enter this teammate's name."
+                      data-pattern="alpha"
+                      data-error="Enter this teammate's name using letters only."
                       placeholder="Teammate name"
                     />
                     <span class="error-message" aria-live="polite"></span>
@@ -238,9 +239,9 @@
                       type="email"
                       class="input-control"
                       data-required="true"
-                      data-pattern="email"
-                      data-error="Enter a valid college email."
-                      placeholder="name@university.edu.in"
+                      data-pattern="college-email"
+                      data-error="Enter a valid .edu.in college email."
+                      placeholder="name@college.edu.in"
                     />
                     <span class="error-message" aria-live="polite"></span>
                   </div>
@@ -276,6 +277,8 @@
                       type="text"
                       class="input-control"
                       data-required="false"
+                      data-pattern="alpha"
+                      data-error="Enter this teammate's name using letters only."
                       placeholder="Teammate name"
                     />
                     <span class="error-message" aria-live="polite"></span>
@@ -288,8 +291,9 @@
                       type="email"
                       class="input-control"
                       data-required="false"
-                      data-pattern="email-optional"
-                      placeholder="name@university.edu.in"
+                      data-pattern="college-email-optional"
+                      data-error="Enter a valid .edu.in college email."
+                      placeholder="name@college.edu.in"
                     />
                     <span class="error-message" aria-live="polite"></span>
                   </div>
@@ -324,6 +328,8 @@
                       type="text"
                       class="input-control"
                       data-required="false"
+                      data-pattern="alpha"
+                      data-error="Enter this teammate's name using letters only."
                       placeholder="Teammate name"
                     />
                     <span class="error-message" aria-live="polite"></span>
@@ -336,8 +342,9 @@
                       type="email"
                       class="input-control"
                       data-required="false"
-                      data-pattern="email-optional"
-                      placeholder="name@university.edu.in"
+                      data-pattern="college-email-optional"
+                      data-error="Enter a valid .edu.in college email."
+                      placeholder="name@college.edu.in"
                     />
                     <span class="error-message" aria-live="polite"></span>
                   </div>
@@ -841,7 +848,6 @@
       }
     </script>
     <script type="module" src="/assets/js/animations.js"></script>
-    <script type="module" src="/assets/js/analytics.js"></script>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {

@@ -11,7 +11,6 @@ const ASSETS = [
   '/assets/js/admin-dashboard.js',
   '/assets/js/register.js',
   '/assets/js/sw-register.js',
-  '/assets/js/analytics.js',
   '/favicon.svg',
   '/assets/logos/nst-logo.png',
   '/assets/logos/tpf-logo.png',
