@@ -1124,28 +1124,12 @@ section.alt-bg {
     justify-items: center;
   }
   .hero-card .stacked-logos {
+    flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
   }
   .hero-card .stacked-logos .logo-partner {
     flex: 0 1 160px;
-  }
-}
-img.logo-emergent
-
-.stacked-logos .partner-nst img {
-  height: clamp(68px, 10vw, 94px);
-}
-
-@media (max-width: 640px) {
-  .stacked-logos {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    justify-items: center;
-  }
-
-  .hero-card .stacked-logos {
-    justify-content: center;
   }
 }
 
