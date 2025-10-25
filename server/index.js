@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
@@ -40,17 +41,30 @@ const apiLimiter = rateLimit({
 });
 app.use('/api/', apiLimiter);
 
-const publicDir = path.join(__dirname, '..', 'public');
+const reactDistDir = path.join(__dirname, '..', 'client', 'dist');
+const legacyPublicDir = path.join(__dirname, '..', 'public');
 
-app.get(['/admin', '/admin/', '/admin.html'], (req, res) => {
-  res.sendFile(path.join(publicDir, 'admin.html'));
-});
+const selectStaticDir = () => {
+  if (fs.existsSync(path.join(reactDistDir, 'index.html'))) {
+    return reactDistDir;
+  }
 
-app.get(['/register', '/register/', '/registration', '/registration.html'], (req, res) => {
-  res.sendFile(path.join(publicDir, 'registration.html'));
-});
+  if (fs.existsSync(path.join(legacyPublicDir, 'index.html'))) {
+    return legacyPublicDir;
+  }
 
-app.use(express.static(publicDir));
+  return null;
+};
+
+const staticDir = selectStaticDir();
+
+if (staticDir) {
+  app.use(express.static(staticDir));
+} else {
+  console.warn(
+    'No static frontend bundle found. Build the React app with "npm run client:build" or run the client dev server with "npm run client:dev".'
+  );
+}
 
 app.use('/api', registrationsRouter);
 
@@ -71,9 +85,30 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: message });
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(publicDir, 'index.html'));
-});
+const sendMissingFrontend = (_req, res) => {
+  res
+    .status(503)
+    .send(
+      [
+        'Frontend bundle not found.',
+        'Run "npm run client:build" to generate client/dist for production serving,',
+        'or use "npm run client:dev" and open http://localhost:5173 for local development.',
+      ].join(' ')
+    );
+};
+
+if (staticDir) {
+  app.get('*', (req, res, next) => {
+    const indexFile = path.join(staticDir, 'index.html');
+    if (!fs.existsSync(indexFile)) {
+      next();
+      return;
+    }
+    res.sendFile(indexFile);
+  });
+} else {
+  app.get('*', sendMissingFrontend);
+}
 
 const host = process.env.HOST || '0.0.0.0';
 const preferredPort = Number.parseInt(process.env.PORT || '3001', 10);

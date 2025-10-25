@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Shadows+Into+Light&family=Work+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  min-height: 100vh;
+  font-family: 'Work Sans', system-ui, sans-serif;
+  color: #1d1a16;
+  background-color: #f8f5ec;
+  background-image:
+    linear-gradient(transparent 95%, rgba(0, 0, 0, 0.05) 96%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.03) 0, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 140px);
+  background-size: 100% 32px, 160px 160px;
+  background-attachment: fixed;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(17, 19, 21, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(17, 19, 21, 0.3);
+  border-radius: 999px;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}

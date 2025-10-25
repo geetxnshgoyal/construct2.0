@@ -1,0 +1,27 @@
+import { lazy, Suspense } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import Layout from './components/Layout';
+import LoadingOverlay from './components/LoadingOverlay';
+import ScrollRestoration from './components/ScrollRestoration';
+import { useAnalytics } from './hooks/useAnalytics';
+
+const HomePage = lazy(() => import('./pages/Home'));
+const RegistrationPage = lazy(() => import('./pages/Registration'));
+const AdminPage = lazy(() => import('./pages/Admin'));
+
+export default function App() {
+  useAnalytics();
+
+  return (
+    <Layout>
+      <Suspense fallback={<LoadingOverlay message="Charging the cosmos…" />}>
+        <ScrollRestoration />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+        </Routes>
+      </Suspense>
+    </Layout>
+  );
+}

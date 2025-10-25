@@ -1,5 +1,7 @@
 # Node.js dependencies
 node_modules/
+client/dist/
+client/node_modules/
 
 # Environment files
 .env
