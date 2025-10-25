@@ -36,11 +36,11 @@ export default function Home() {
         <motion.div
           className="pointer-events-none absolute inset-0 -z-10"
           initial={{ opacity: 0, scaleY: 0.8 }}
-          whileInView={{ opacity: 0.35, scaleY: 1 }}
+          whileInView={{ opacity: 0.25, scaleY: 1 }}
           viewport={{ once: true, margin: '-120px' }}
           transition={{ duration: 1 }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-plasma/10 via-transparent to-magenta/10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-accentAlt/30 via-transparent to-transparent" />
         </motion.div>
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid gap-12 lg:grid-cols-2">
@@ -50,16 +50,16 @@ export default function Home() {
               viewport={{ once: true, margin: '-120px' }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
             >
-              <h2 className="font-display text-3xl text-white sm:text-4xl">
+              <h2 className="font-display text-3xl text-ink sm:text-4xl">
                 Overview
               </h2>
-              <p className="mt-6 text-base text-white/70">
-                The Build for Impact Hackathon is a month-long product + AI journey designed to move you from idea to MVP, with continuous guidance,
+              <p className="mt-6 text-base text-ink/75">
+                The Build for Impact Hackathon is a month-long product + community journey designed to move you from idea to MVP, with continuous guidance,
                 masterclasses, and checkpoints.
               </p>
-              <p className="mt-4 text-base text-white/70">
-                Your squad will co-create with mentors, ship faster with AI tools, and vibe with nightly sessions that keep the energy high.
-                Expect launch rehearsals, Product Hunt superfans, and a launch runway for every team.
+              <p className="mt-4 text-base text-ink/75">
+                Your squad will co-create with mentors, ship scrappy demos, print out user flows, and vibe with nightly critique jams.
+                Expect launch rehearsals, community spotlights, and a runway for every ambitious team.
               </p>
             </motion.div>
             <motion.div
@@ -67,22 +67,22 @@ export default function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-120px' }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="grid gap-6 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-holo backdrop-blur-xl"
+              className="grid gap-6 rounded-3xl border border-ink/10 bg-white/85 p-8 shadow-card"
             >
-              <motion.div whileHover={{ y: -6 }} className="rounded-2xl border border-white/10 bg-black/40 p-6 transition">
-                <h3 className="text-sm uppercase tracking-[0.4em] text-white/60">Hosted Harmonics</h3>
-                <ul className="mt-4 space-y-3 text-sm text-white/70">
+              <motion.div whileHover={{ y: -6 }} className="rounded-2xl border border-ink/15 bg-paper p-6 shadow-insetNote transition">
+                <h3 className="text-sm uppercase tracking-[0.4em] text-ink/70">Hosted Sessions</h3>
+                <ul className="mt-4 space-y-3 text-sm text-ink/75">
                   <motion.li whileHover={{ x: 6 }}>Immersive masterclasses, nightly jams, critiques inside a neon studio.</motion.li>
-                  <motion.li whileHover={{ x: 6 }}>Dedicated expert feedback sessions and 50 Emergent credits to co-build smarter solutions.</motion.li>
+                  <motion.li whileHover={{ x: 6 }}>Dedicated mentor feedback circles and 50 credits to power up your tech stack.</motion.li>
                   <motion.li whileHover={{ x: 6 }}>Soft-launch bar, Product Hunt rehearsals, and spotlight features for standout teams.</motion.li>
                 </ul>
               </motion.div>
-              <motion.div whileHover={{ y: -6 }} className="rounded-2xl border border-white/10 bg-black/40 p-6 transition">
-                <h3 className="text-sm uppercase tracking-[0.4em] text-white/60">What you&apos;ll leave with</h3>
-                <ul className="mt-4 space-y-3 text-sm text-white/70">
+              <motion.div whileHover={{ y: -6 }} className="rounded-2xl border border-ink/15 bg-paper p-6 shadow-insetNote transition">
+                <h3 className="text-sm uppercase tracking-[0.4em] text-ink/70">What you&apos;ll leave with</h3>
+                <ul className="mt-4 space-y-3 text-sm text-ink/75">
                   <motion.li whileHover={{ x: 6 }}>Launch-ready MVP crafted with real user insight.</motion.li>
-                  <motion.li whileHover={{ x: 6 }}>Product & AI frameworks embedded into your crew&apos;s muscle memory.</motion.li>
-                  <motion.li whileHover={{ x: 6 }}>A hype reel of stories, design artefacts, and traction to show the world.</motion.li>
+                  <motion.li whileHover={{ x: 6 }}>Product frameworks embedded into your crew&apos;s muscle memory.</motion.li>
+                  <motion.li whileHover={{ x: 6 }}>A reel of stories, artefacts, and traction proof to show the world.</motion.li>
                 </ul>
               </motion.div>
             </motion.div>

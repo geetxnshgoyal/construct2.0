@@ -20,24 +20,24 @@ export default function Navbar() {
   }, [location.pathname, location.hash]);
 
   return (
-    <header className="fixed top-0 z-20 w-full backdrop-blur-lg">
+    <header className="fixed top-0 z-20 w-full border-b border-ink/10 bg-paper/90 backdrop-blur-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <motion.div whileHover={{ scale: 1.04 }}>
           <Link
             to="/"
-            className="group relative flex items-center gap-3 text-lg font-bold tracking-wide text-white transition-all hover:text-neon"
+            className="group relative flex items-center gap-3 text-lg font-bold tracking-wide text-ink transition-all hover:text-accent"
           >
             <span className="flex items-center gap-2">
               <img
                 src="/assets/logos/construct-logo.svg"
                 alt="CoNSTruct logo"
-                className="h-9 w-auto drop-shadow-[0_0_12px_rgba(0,245,255,0.35)]"
+                className="h-9 w-auto"
               />
-              <span className="hidden font-display text-xl uppercase tracking-[0.4em] text-white/80 sm:block">
-                Build for impact
+              <span className="hidden font-display text-xl uppercase tracking-[0.4em] text-ink/80 sm:block">
+                Hack, test, repeat
               </span>
             </span>
-            <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-[0.3em] text-white/70 transition-all group-hover:border-neon/60 group-hover:text-neon/90">
+            <span className="inline-flex items-center rounded-full border border-ink/10 bg-white px-3 py-1 text-xs font-medium uppercase tracking-[0.3em] text-ink/70 transition-all group-hover:border-accent group-hover:text-accent">
               2025
             </span>
           </Link>
@@ -47,14 +47,14 @@ export default function Navbar() {
             <NavLink
               key={link.href}
               to={link.href}
-              className="text-sm font-medium uppercase tracking-[0.3em] text-white/70 transition hover:text-neon"
+              className="text-sm font-medium uppercase tracking-[0.3em] text-ink/60 transition hover:text-ink"
             >
               {link.label}
             </NavLink>
           ))}
           <Link
             to="/register"
-            className="rounded-full border border-neon/40 bg-neon/10 px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-neon shadow-neon transition hover:-translate-y-0.5 hover:border-neon hover:bg-neon/20 hover:text-white"
+            className="rounded-full border border-ink bg-accent px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-white shadow-card transition hover:-translate-y-0.5"
           >
             Register
           </Link>
@@ -63,7 +63,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          className="relative flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white md:hidden"
+          className="relative flex h-12 w-12 items-center justify-center rounded-full border border-ink/15 bg-white text-ink md:hidden"
           aria-label="Toggle navigation"
           aria-expanded={isOpen}
         >
@@ -77,9 +77,9 @@ export default function Navbar() {
       <div
         className={`md:hidden ${isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'} transition`}
       >
-        <div className="mx-4 mb-4 rounded-3xl border border-white/10 bg-black/70 p-6 shadow-holo backdrop-blur-xl">
+        <div className="mx-4 mb-4 rounded-3xl border border-ink/10 bg-white/95 p-6 shadow-card">
           <div className="mb-6 flex items-center justify-between">
-            <span className="text-xs uppercase tracking-[0.5em] text-white/50">Navigate</span>
+            <span className="text-xs uppercase tracking-[0.5em] text-ink/50">Navigate</span>
             <ThemeSwitch />
           </div>
           <div className="flex flex-col gap-4">
@@ -87,14 +87,14 @@ export default function Navbar() {
               <NavLink
                 key={link.href}
                 to={link.href}
-                className="text-lg font-semibold text-white/80 transition hover:text-neon"
+                className="text-lg font-semibold text-ink/80 transition hover:text-accent"
               >
                 {link.label}
               </NavLink>
             ))}
             <Link
               to="/register"
-              className="mt-2 inline-flex items-center justify-center rounded-full border border-neon bg-neon/10 px-4 py-2 text-base font-semibold text-neon shadow-neon transition hover:bg-neon/25 hover:text-white"
+              className="mt-2 inline-flex items-center justify-center rounded-full border border-ink bg-accent px-4 py-2 text-base font-semibold text-white shadow-card transition hover:shadow-[4px_4px_0_rgba(0,0,0,0.2)]"
             >
               Reserve Your Crew
             </Link>

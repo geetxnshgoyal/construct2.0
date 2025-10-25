@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 
 const experiences = [
-  'Cosmic Demo Nights',
-  'Product Hunt Showdown',
-  'AI Augmented Sprint Rooms',
-  'Neon Retrospectives',
-  'Launch Strategy Labs',
+  'Late Night Demo Circles',
+  'Product Hunt Prep Jam',
+  'Sketchbook Sprint Rooms',
+  'Honest Retro Sessions',
+  'Launch Strategy Lab',
   'Deep Work Soundscapes'
 ];
 

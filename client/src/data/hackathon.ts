@@ -1,6 +1,6 @@
 export const eventMeta = {
   title: 'CoNSTruct 2025',
-  tagline: 'Build for Impact · Product × AI Hackathon',
+  tagline: 'Hands-on build for impact hackathon',
   timeframe: 'Nov 5 – Dec 5, 2025',
   duration: '4-week hybrid sprint',
   location: 'Hybrid · Newton School of Technology x Emergent Studios',
@@ -13,8 +13,8 @@ export const highlights = [
     description: 'Frame high-signal problems, map user tensions, ship with empathy.'
   },
   {
-    title: 'AI innovation',
-    description: 'Amplify execution with AI copilots, Emergent credits, and automation moments.'
+    title: 'Hands-on craft',
+    description: 'Put ideas on whiteboards, test with people, and iterate with pen, paper, and working builds.'
   },
   {
     title: 'Expert superteam',
@@ -48,11 +48,11 @@ export const timeline = [
       },
       {
         label: 'Guided Sessions',
-        items: ['Product leaders + AI builders shaping ideation and MVP flow']
+        items: ['Product leaders and builders shaping ideation, prototyping, and testing rituals']
       },
       {
         label: 'Credits',
-        items: ['50 Emergent credits for every registered teammate']
+        items: ['Workbench access, toolkits, and community perks for every teammate']
       },
       {
         label: 'Checkpoint Submission',
@@ -84,7 +84,7 @@ export const timeline = [
         items: [
           'Launch strategy & community ignition',
           'Marketing collateral & positioning',
-          'Tracking Product Hunt KPIs: upvotes, engagement, comments, feedback, traction'
+          'Tracking traction metrics: signups, feedback loops, community love'
         ]
       },
       {
@@ -120,9 +120,9 @@ export const guidelinePanels = [
     badge: 'Tools & Platforms',
     title: 'Ship with the Right Stack',
     items: [
-      'AI copilots: Emergent + any IDE you love',
-      'Product frameworks: Lean Canvas, JTBD, user journeys',
-      'Collab stack: Emergent tracking + Slack/Discord rituals'
+      'Hardware & software kit: your trusted IDEs, prototyping boards, sticky notes',
+      'Collaborative design tools, whiteboards, and user journey templates',
+      'Collab stack: project trackers + Slack/Discord rituals'
     ]
   },
   {
@@ -140,7 +140,7 @@ export const guidelinePanels = [
     title: 'How Teams Win',
     items: [
       'Product clarity & user obsession',
-      'Inventive AI application',
+      'Inventive problem solving',
       'Execution quality & momentum',
       'Storytelling, launch game, traction'
     ]
@@ -164,7 +164,7 @@ export const awards = [
     badge: 'Student Takeaways',
     title: 'From Idea to Product Builder',
     items: [
-      'Hands-on product + AI lab time',
+      'Hands-on product lab time',
       'Prototype and validate like a founder',
       'Mentorship from TPF + Emergent stardust',
       'Portfolio-ready product and story',

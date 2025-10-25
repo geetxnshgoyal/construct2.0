@@ -12,57 +12,44 @@ export default function StructureSection() {
           transition={{ duration: 0.8 }}
           className="mb-16 max-w-3xl space-y-4"
         >
-          <h2 className="font-display text-3xl text-white sm:text-4xl">
-            Hackathon <span className="text-neon">Structure</span> & Timeline
+          <h2 className="font-display text-3xl text-ink sm:text-4xl">
+            How the hackathon runs
           </h2>
-          <p className="text-base text-white/70">
-            Two luminous phases keep your squad in flow. We alternate deep work, sonic breaks, and intimate guidance sessions so you never
-            lose the cozy-but-electric momentum.
+          <p className="text-base text-ink/70">
+            Two scrappy phases with weekly check-ins, honest critique circles, and just enough structure to keep your team sprinting.
           </p>
         </motion.div>
         <div className="grid gap-10 lg:grid-cols-2">
           {timeline.map((phase, index) => (
             <motion.article
               key={phase.id}
-              initial={{ opacity: 0, y: 60, rotateX: 10 }}
-              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-150px' }}
-              whileHover={{ y: -8, rotateX: 0, rotate: index % 2 === 0 ? -1.5 : 1.5 }}
-              transition={{ duration: 0.9, delay: index * 0.1, type: 'spring', stiffness: 60 }}
-              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-black/50 p-6 shadow-holo backdrop-blur-xl"
+              whileHover={{ y: -6, rotate: index % 2 === 0 ? -1.2 : 1.2 }}
+              transition={{ duration: 0.8, delay: index * 0.08 }}
+              className="relative rounded-3xl border border-ink/15 bg-white/80 p-6 shadow-card"
             >
-              <div className="pointer-events-none absolute inset-0 opacity-0 transition group-hover:opacity-100">
-                <div className="animate-glow-pulse absolute -top-1/2 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-neon/30" />
-                <div className="animate-glow-pulse absolute -bottom-1/3 right-0 h-32 w-32 rounded-full bg-magenta/20 blur-3xl" />
-              </div>
-              <div className="absolute -top-6 left-6 inline-flex items-center rounded-full border border-neon/40 bg-neon/10 px-3 py-1 text-xs uppercase tracking-[0.4em] text-neon/80">
+              <div className="absolute -top-6 left-6 inline-flex rotate-[-3deg] items-center rounded-full bg-accentAlt px-4 py-1 font-display text-xs uppercase tracking-[0.4em] text-ink shadow-card">
                 {phase.phase}
               </div>
               <div className="mt-6 flex flex-col gap-4">
                 <div>
-                  <h3 className="font-display text-2xl text-white">{phase.title}</h3>
-                  <p className="text-sm uppercase tracking-[0.3em] text-white/50">{phase.duration}</p>
+                  <h3 className="font-display text-2xl text-ink">{phase.title}</h3>
+                  <p className="text-sm uppercase tracking-[0.3em] text-ink/50">{phase.duration}</p>
                 </div>
-                <ul className="space-y-4 text-sm text-white/70">
+                <ul className="space-y-4 text-sm text-ink/80">
                   {phase.bullets.map((bullet) => (
-                    <motion.li
-                      key={bullet.label}
-                      whileHover={{ scale: 1.02, x: 4 }}
-                      className="rounded-2xl border border-white/5 bg-white/5 p-4 shadow-inner transition"
-                    >
-                      <p className="text-xs uppercase tracking-[0.4em] text-neon/70">{bullet.label}</p>
+                    <li key={bullet.label} className="rounded-2xl border border-ink/10 bg-paper p-4 shadow-insetNote">
+                      <p className="font-display text-xs uppercase tracking-[0.4em] text-accent">{bullet.label}</p>
                       <ul className="mt-2 space-y-1.5">
                         {bullet.items.map((item) => (
-                          <motion.li
-                            key={item}
-                            whileHover={{ x: 4 }}
-                            className="leading-relaxed text-white/80"
-                          >
+                          <li key={item} className="leading-relaxed">
                             {item}
-                          </motion.li>
+                          </li>
                         ))}
                       </ul>
-                    </motion.li>
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -74,10 +61,9 @@ export default function StructureSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.8 }}
-          className="mt-16 rounded-3xl border border-white/10 bg-gradient-to-r from-neon/20 via-transparent to-magenta/20 p-8 text-center text-sm text-white/70"
+          className="mt-16 rounded-3xl border border-dashed border-ink/30 bg-white/70 p-8 text-center text-sm text-ink/70 shadow-card"
         >
-          Top-performing teams unlock continued expert support, Product Hunt amplification, and community spotlights from NST, TPF &
-          Emergent.
+          Top teams get post-event mentorship, launch runways, and a spotlight with our community partners.
         </motion.div>
       </div>
     </section>
