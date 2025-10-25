@@ -69,5 +69,19 @@
 
 /* Respect user's reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .btn::after, .glass-card, body::before, body::after { transition: none !important; animation: none !important; }
+  .reveal,
+  .btn::after,
+  .glass-card,
+  body::before,
+  body::after,
+  .hero::before,
+  .hero::after,
+  .hero-orbit,
+  .hero-glow,
+  .hero-aster,
+  .hero-cosmos *,
+  .hero-pylon {
+    transition: none !important;
+    animation: none !important;
+  }
 }
