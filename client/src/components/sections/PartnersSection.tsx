@@ -35,7 +35,7 @@ export default function PartnersSection() {
               <motion.img
                 src={partner.image}
                 alt={partner.name}
-                className="max-h-16 object-contain transition group-hover:scale-105"
+                className="partner-logo max-h-16 object-contain transition group-hover:scale-105"
                 whileHover={{ rotate: index % 2 === 0 ? -2 : 2 }}
               />
               <motion.div

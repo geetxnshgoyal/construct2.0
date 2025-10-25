@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import ConstructingRigs from './ConstructingRigs';
+import PixelBuildMatrix from './PixelBuildMatrix';
 
 const PARTICLE_COUNT = 48;
 
@@ -24,6 +25,7 @@ export default function DarkModeBackdrop() {
 
       <NightSkyParticles count={PARTICLE_COUNT} />
       <ConstructingRigs />
+      <PixelBuildMatrix variant="dark" />
     </div>
   );
 }
