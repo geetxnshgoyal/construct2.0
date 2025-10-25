@@ -37,7 +37,7 @@ const generatePixels = (): Pixel[] => {
 };
 
 export default function PixelBuildMatrix({ variant }: PixelBuildMatrixProps) {
-  const [showMatrix, setShowMatrix] = useState(false);
+  const [showMatrix, setShowMatrix] = useState(() => (typeof window === 'undefined' ? true : window.innerWidth >= 640));
 
   useEffect(() => {
     const handleResize = () => {

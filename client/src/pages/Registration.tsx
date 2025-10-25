@@ -199,44 +199,41 @@ export default function Registration() {
           </fieldset>
 
           <div className="mt-10 space-y-8">
-            {members.map((member, index) => {
+            {members.slice(0, requiredMembers).map((member, index) => {
               const slotNumber = index + 1;
-              const required = index < requiredMembers;
 
               return (
-                <fieldset key={slotNumber} className={`space-y-4 rounded-3xl border border-white/10 bg-white/5 p-6 transition ${required ? 'opacity-100' : 'opacity-60'}`}>
-                  <legend className="px-2 text-sm uppercase tracking-[0.4em] text-white/60">
-                    Team Member #{slotNumber} {required ? '(Required)' : '(Optional)'}
-                  </legend>
+                <fieldset key={slotNumber} className="space-y-4 rounded-3xl border border-white/10 bg-white/5 p-6">
+                  <legend className="px-2 text-sm uppercase tracking-[0.4em] text-white/60">Team Member #{slotNumber} *</legend>
                   <div className="grid gap-6 md:grid-cols-2">
                     <label className="flex flex-col gap-2 text-sm">
-                      <span className="uppercase tracking-[0.4em] text-white/50">Name {required ? '*' : ''}</span>
+                      <span className="uppercase tracking-[0.4em] text-white/50">Name *</span>
                       <input
                         value={member.name}
                         onChange={(event) => handleMemberChange(index, 'name', event.target.value)}
                         placeholder="Teammate name"
                         className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white placeholder:text-white/30 focus:border-neon focus:outline-none"
-                        required={required}
+                        required
                       />
                     </label>
                     <label className="flex flex-col gap-2 text-sm">
-                      <span className="uppercase tracking-[0.4em] text-white/50">College Email {required ? '*' : ''}</span>
+                      <span className="uppercase tracking-[0.4em] text-white/50">College Email *</span>
                       <input
                         type="email"
                         value={member.email}
                         onChange={(event) => handleMemberChange(index, 'email', event.target.value)}
                         placeholder="name@college.edu.in"
                         className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white placeholder:text-white/30 focus:border-neon focus:outline-none"
-                        required={required}
+                        required
                       />
                     </label>
                     <label className="flex flex-col gap-2 text-sm md:col-span-2 md:max-w-xs">
-                      <span className="uppercase tracking-[0.4em] text-white/50">Gender {required ? '*' : ''}</span>
+                      <span className="uppercase tracking-[0.4em] text-white/50">Gender *</span>
                       <select
                         value={member.gender}
                         onChange={(event) => handleMemberChange(index, 'gender', event.target.value)}
                         className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white focus:border-neon focus:outline-none"
-                        required={required}
+                        required
                       >
                         <option value="" className="bg-cosmos text-white">
                           Select gender

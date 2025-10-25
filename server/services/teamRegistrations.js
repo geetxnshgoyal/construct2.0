@@ -1,4 +1,5 @@
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const { getDb, serverTimestamp, adminAvailable } = require('../firebaseAdmin');
 
@@ -117,6 +118,22 @@ const validateTeamPayload = (payload) => {
   return { status: 200, data: record };
 };
 
+const getWritableDataDir = () => {
+  const preferredDir = path.join(process.cwd(), 'data');
+  try {
+    fs.mkdirSync(preferredDir, { recursive: true });
+    return preferredDir;
+  } catch (error) {
+    if (error.code !== 'EROFS' && error.code !== 'EACCES') {
+      throw error;
+    }
+  }
+
+  const tempDir = path.join(os.tmpdir(), 'construct-registrations');
+  fs.mkdirSync(tempDir, { recursive: true });
+  return tempDir;
+};
+
 const saveTeamRegistration = async (teamPayload) => {
   if (adminAvailable()) {
     const db = getDb();
@@ -125,12 +142,7 @@ const saveTeamRegistration = async (teamPayload) => {
   }
 
   // Fallback: persist to a local JSON file for testing when Firestore is not available.
-  const dataDir = path.join(process.cwd(), 'data');
-  try {
-    fs.mkdirSync(dataDir, { recursive: true });
-  } catch (e) {
-    // ignore mkdir errors
-  }
+  const dataDir = getWritableDataDir();
 
   const filePath = path.join(dataDir, 'local-registrations.json');
   const nowIso = new Date().toISOString();
@@ -154,15 +166,24 @@ const saveTeamRegistration = async (teamPayload) => {
   }
 
   list.unshift(entry);
-  fs.writeFileSync(filePath, JSON.stringify(list, null, 2), 'utf8');
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(list, null, 2), 'utf8');
+  } catch (error) {
+    console.error('Local registration save failed', error);
+    throw new Error('Registration storage is not configured. Provide Firebase credentials.');
+  }
 };
 
 const listTeamRegistrations = async ({ limit = 100 } = {}) => {
   if (!adminAvailable()) {
     // Read from local fallback file if Firestore isn't configured.
-    const filePath = path.join(process.cwd(), 'data', 'local-registrations.json');
+    const candidates = [
+      path.join(process.cwd(), 'data', 'local-registrations.json'),
+      path.join(os.tmpdir(), 'construct-registrations', 'local-registrations.json'),
+    ];
     try {
-      if (!fs.existsSync(filePath)) return [];
+      const filePath = candidates.find((candidate) => fs.existsSync(candidate));
+      if (!filePath) return [];
       const raw = fs.readFileSync(filePath, 'utf8') || '[]';
       const list = JSON.parse(raw);
       return list.slice(0, Math.min(list.length, Number.parseInt(limit, 10) || 100));

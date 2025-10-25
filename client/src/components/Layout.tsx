@@ -36,11 +36,13 @@ export default function Layout({ children }: PropsWithChildren) {
   const isDark = theme === 'dark';
 
   return (
-    <div className={`relative min-h-screen overflow-hidden ${isDark ? 'bg-cosmos text-white' : 'bg-paper text-ink'}`}>
-      {isDark ? <DarkModeBackdrop /> : <LightBackdrop />}
+    <div className={`relative min-h-screen ${isDark ? 'bg-cosmos text-white' : 'bg-paper text-ink'}`}>
+      <div className="fixed inset-0 pointer-events-none">
+        {isDark ? <DarkModeBackdrop /> : <LightBackdrop />}
+      </div>
       <div className="relative z-10 flex min-h-screen flex-col">
         <Navbar />
-        <main className="flex-1 pt-24 lg:pt-28">{children}</main>
+        <main className="flex-1 pt-20 sm:pt-24 lg:pt-28">{children}</main>
         <Footer />
       </div>
     </div>
