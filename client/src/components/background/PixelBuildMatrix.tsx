@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 type PixelBuildMatrixProps = {
   variant: 'light' | 'dark';
@@ -37,6 +37,22 @@ const generatePixels = (): Pixel[] => {
 };
 
 export default function PixelBuildMatrix({ variant }: PixelBuildMatrixProps) {
+  const [showMatrix, setShowMatrix] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setShowMatrix(window.innerWidth >= 640);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  if (!showMatrix) {
+    return null;
+  }
+
   const pixels = useMemo(() => generatePixels(), []);
   const size = variant === 'dark' ? 16 : 12;
   const color =
