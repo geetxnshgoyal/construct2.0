@@ -22,6 +22,7 @@ export default function Registration() {
   const [members, setMembers] = useState<MemberField[]>(() => Array.from({ length: 4 }, () => ({ name: '', email: '', gender: '' })));
   const [submissionState, setSubmissionState] = useState<SubmissionState>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [theme] = useState(() => document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
 
   const requiredMembers = useMemo(() => Math.max(0, teamSize - 1), [teamSize]);
 
@@ -96,11 +97,11 @@ export default function Registration() {
           transition={{ duration: 0.8 }}
           className="mb-12 text-center"
         >
-          <p className="text-xs uppercase tracking-[0.6em] text-white/40">Registration</p>
-          <h1 className="mt-4 font-display text-4xl text-white sm:text-5xl">
+          <p className="text-xs uppercase tracking-[0.6em] text-ink/40">Registration</p>
+          <h1 className="mt-4 font-display text-4xl text-ink sm:text-5xl">
             Register for Co<span className="text-neon">NST</span>ruct 2025
           </h1>
-          <p className="mt-6 text-base text-white/70">
+          <p className="mt-6 text-base text-ink/70">
             Ship your team details so we can activate Emergent workspaces, assemble collaboration pods, and prep checkpoints ahead of the
             Build for Impact sprint.
           </p>
@@ -111,41 +112,77 @@ export default function Registration() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15 }}
-          className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-black/60 p-10 shadow-[0_40px_120px_rgba(0,245,255,0.12)] backdrop-blur-2xl"
+          className={`relative overflow-hidden rounded-[2rem] p-8 sm:p-10 backdrop-blur-xl
+            ${theme === 'dark' 
+              ? 'border border-white/10 bg-black/30 text-white' 
+              : 'border border-ink/5 bg-white/80 text-ink shadow-lg'
+            }`}
         >
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-neon/10 via-transparent to-magenta/10" />
+          <div className={`absolute inset-0 -z-10 ${
+            theme === 'dark'
+              ? 'bg-gradient-to-br from-neon/10 via-transparent to-magenta/10'
+              : 'bg-gradient-to-br from-accent/5 via-transparent to-magenta/5'
+          }`} />
           {submissionState === 'success' ? (
-            <div className="mb-8 rounded-2xl border border-neon/40 bg-neon/10 p-4 text-center text-sm text-neon">
+            <div className={`mb-8 rounded-xl border p-4 text-center text-sm ${
+              theme === 'dark'
+                ? 'border-neon/40 bg-neon/10 text-neon'
+                : 'border-green-200 bg-green-50 text-green-600'
+            }`}>
               Team locked in! Check your email soon for onboarding rituals.
             </div>
           ) : null}
           {submissionState === 'error' ? (
-            <div className="mb-8 rounded-2xl border border-magenta/40 bg-magenta/10 p-4 text-sm text-magenta">
+            <div className={`mb-8 rounded-xl border p-4 text-sm ${
+              theme === 'dark'
+                ? 'border-magenta/40 bg-magenta/10 text-magenta'
+                : 'border-red-200 bg-red-50 text-red-600'
+            }`}>
               {errorMessage}
             </div>
           ) : null}
 
           <div className="grid gap-6">
-            <label className="flex flex-col gap-2 text-sm">
-              <span className="uppercase tracking-[0.4em] text-white/50">Team Name *</span>
+            <label className="flex flex-col gap-2">
+              <span className={`text-xs font-medium uppercase tracking-wide ${
+                theme === 'dark' ? 'text-white/60' : 'text-ink/60'
+              }`}>
+                Team Name <span className="text-red-500">*</span>
+              </span>
               <input
                 required
                 value={teamName}
                 onChange={(event) => setTeamName(event.target.value)}
                 placeholder="e.g. Product Mavericks"
-                className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white placeholder:text-white/30 focus:border-neon focus:outline-none"
+                className={`rounded-xl border px-4 py-3 transition-colors
+                  ${theme === 'dark'
+                    ? 'border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:border-neon/50 focus:bg-white/10'
+                    : 'border-ink/10 bg-white text-ink placeholder:text-ink/40 focus:border-accent/30'
+                  } focus:outline-none focus:ring-2 ${
+                    theme === 'dark' ? 'focus:ring-neon/20' : 'focus:ring-accent/10'
+                  }`}
               />
             </label>
 
-            <label className="flex flex-col gap-2 text-sm">
-              <span className="uppercase tracking-[0.4em] text-white/50">Team Size *</span>
+            <label className="flex flex-col gap-2">
+              <span className={`text-xs font-medium uppercase tracking-wide ${
+                theme === 'dark' ? 'text-white/60' : 'text-ink/60'
+              }`}>
+                Team Size <span className="text-red-500">*</span>
+              </span>
               <select
                 value={teamSize}
                 onChange={(event) => setTeamSize(Number.parseInt(event.target.value, 10))}
-                className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white focus:border-neon focus:outline-none"
+                className={`rounded-xl border px-4 py-3 transition-colors
+                  ${theme === 'dark'
+                    ? 'border-white/10 bg-white/5 text-white focus:border-neon/50 focus:bg-white/10'
+                    : 'border-ink/10 bg-white text-ink focus:border-accent/30'
+                  } focus:outline-none focus:ring-2 ${
+                    theme === 'dark' ? 'focus:ring-neon/20' : 'focus:ring-accent/10'
+                  }`}
               >
                 {[1, 2, 3, 4, 5].map((value) => (
-                  <option key={value} value={value} className="bg-cosmos text-white">
+                  <option key={value} value={value} className="bg-white text-ink">
                     {value} member{value === 1 ? '' : 's'}
                   </option>
                 ))}
@@ -153,43 +190,43 @@ export default function Registration() {
             </label>
           </div>
 
-          <fieldset className="mt-10 space-y-4 rounded-3xl border border-white/10 bg-white/5 p-6">
-            <legend className="px-2 text-sm uppercase tracking-[0.4em] text-white/60">Team Lead *</legend>
+          <fieldset className="mt-10 space-y-4 rounded-3xl border border-ink/10 bg-white/70 p-6">
+            <legend className="px-2 text-sm uppercase tracking-[0.4em] text-ink/60">Team Lead *</legend>
             <div className="grid gap-6 md:grid-cols-2">
               <label className="flex flex-col gap-2 text-sm">
-                <span className="uppercase tracking-[0.4em] text-white/50">Name *</span>
+                <span className="uppercase tracking-[0.4em] text-ink/50">Name *</span>
                 <input
                   required
                   value={lead.name}
                   onChange={(event) => setLead((prev) => ({ ...prev, name: event.target.value }))}
                   placeholder="Team leader name"
-                  className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white placeholder:text-white/30 focus:border-neon focus:outline-none"
+                  className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink placeholder:text-ink/40 focus:border-neon focus:outline-none"
                 />
               </label>
               <label className="flex flex-col gap-2 text-sm">
-                <span className="uppercase tracking-[0.4em] text-white/50">College Email *</span>
+                <span className="uppercase tracking-[0.4em] text-ink/50">College Email *</span>
                 <input
                   required
                   type="email"
                   value={lead.email}
                   onChange={(event) => setLead((prev) => ({ ...prev, email: event.target.value }))}
                   placeholder="name@college.edu.in"
-                  className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white placeholder:text-white/30 focus:border-neon focus:outline-none"
+                  className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink placeholder:text-ink/40 focus:border-neon focus:outline-none"
                 />
               </label>
               <label className="flex flex-col gap-2 text-sm md:col-span-2 md:max-w-xs">
-                <span className="uppercase tracking-[0.4em] text-white/50">Gender *</span>
+                <span className="uppercase tracking-[0.4em] text-ink/50">Gender *</span>
                 <select
                   required
                   value={lead.gender}
                   onChange={(event) => setLead((prev) => ({ ...prev, gender: event.target.value }))}
-                  className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white focus:border-neon focus:outline-none"
+                  className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink focus:border-neon focus:outline-none"
                 >
-                  <option value="" className="bg-cosmos text-white">
+                  <option value="" className="bg-white text-ink">
                     Select gender
                   </option>
                   {genders.map((option) => (
-                    <option key={option.value} value={option.value} className="bg-cosmos text-white">
+                    <option key={option.value} value={option.value} className="bg-white text-ink">
                       {option.label}
                     </option>
                   ))}
@@ -203,43 +240,45 @@ export default function Registration() {
               const slotNumber = index + 1;
 
               return (
-                <fieldset key={slotNumber} className="space-y-4 rounded-3xl border border-white/10 bg-white/5 p-6">
-                  <legend className="px-2 text-sm uppercase tracking-[0.4em] text-white/60">Team Member #{slotNumber} *</legend>
+                <fieldset key={slotNumber} className="space-y-4 rounded-3xl border border-ink/10 bg-white/70 p-6">
+                  <legend className="px-2 text-sm uppercase tracking-[0.4em] text-ink/60">
+                    Team Member #{slotNumber} *
+                  </legend>
                   <div className="grid gap-6 md:grid-cols-2">
                     <label className="flex flex-col gap-2 text-sm">
-                      <span className="uppercase tracking-[0.4em] text-white/50">Name *</span>
+                      <span className="uppercase tracking-[0.4em] text-ink/50">Name *</span>
                       <input
                         value={member.name}
                         onChange={(event) => handleMemberChange(index, 'name', event.target.value)}
                         placeholder="Teammate name"
-                        className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white placeholder:text-white/30 focus:border-neon focus:outline-none"
+                        className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink placeholder:text-ink/40 focus:border-neon focus:outline-none"
                         required
                       />
                     </label>
                     <label className="flex flex-col gap-2 text-sm">
-                      <span className="uppercase tracking-[0.4em] text-white/50">College Email *</span>
+                      <span className="uppercase tracking-[0.4em] text-ink/50">College Email *</span>
                       <input
                         type="email"
                         value={member.email}
                         onChange={(event) => handleMemberChange(index, 'email', event.target.value)}
                         placeholder="name@college.edu.in"
-                        className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white placeholder:text-white/30 focus:border-neon focus:outline-none"
+                        className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink placeholder:text-ink/40 focus:border-neon focus:outline-none"
                         required
                       />
                     </label>
                     <label className="flex flex-col gap-2 text-sm md:col-span-2 md:max-w-xs">
-                      <span className="uppercase tracking-[0.4em] text-white/50">Gender *</span>
+                      <span className="uppercase tracking-[0.4em] text-ink/50">Gender *</span>
                       <select
                         value={member.gender}
                         onChange={(event) => handleMemberChange(index, 'gender', event.target.value)}
-                        className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white focus:border-neon focus:outline-none"
+                        className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink focus:border-neon focus:outline-none"
                         required
                       >
-                        <option value="" className="bg-cosmos text-white">
+                        <option value="" className="bg-white text-ink">
                           Select gender
                         </option>
                         {genders.map((option) => (
-                          <option key={option.value} value={option.value} className="bg-cosmos text-white">
+                          <option key={option.value} value={option.value} className="bg-white text-ink">
                             {option.label}
                           </option>
                         ))}
@@ -255,11 +294,17 @@ export default function Registration() {
             <button
               type="submit"
               disabled={submissionState === 'submitting'}
-              className="w-full rounded-full border border-neon bg-neon/20 px-6 py-4 text-sm font-semibold uppercase tracking-[0.4em] text-white shadow-neon transition hover:-translate-y-1 hover:bg-neon/30 disabled:cursor-not-allowed disabled:border-white/20 disabled:bg-white/10 disabled:text-white/40"
+              className={`w-full rounded-xl px-6 py-4 text-sm font-semibold shadow-sm transition-all active:scale-[0.98] ${
+                theme === 'dark'
+                  ? 'border border-neon/40 bg-neon/20 text-white hover:bg-neon/30 disabled:border-white/20 disabled:bg-white/10 disabled:text-white/40'
+                  : 'bg-accent text-white hover:bg-accent/90 disabled:bg-ink/10 disabled:text-ink/40'
+              } disabled:cursor-not-allowed`}
             >
-              {submissionState === 'submitting' ? 'Transmitting…' : 'Submit registration'}
+              {submissionState === 'submitting' ? 'Submitting...' : 'Submit Registration'}
             </button>
-            <p className="text-xs uppercase tracking-[0.4em] text-white/40">
+            <p className={`text-xs font-medium ${
+              theme === 'dark' ? 'text-white/40' : 'text-ink/50'
+            }`}>
               Expect a confirmation email within 24 hours
             </p>
           </div>

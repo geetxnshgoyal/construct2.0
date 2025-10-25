@@ -38,6 +38,8 @@ The CoNSTruct hackathon experience now runs on a React + Vite front-end with an 
 
 ## Environment variables
 
+Copy `.env.example` → `.env` (server/API) and `client/.env.example` → `client/.env` (Vite) before running locally or configuring hosting.
+
 | Variable | Description |
 | --- | --- |
 | `FIREBASE_SERVICE_ACCOUNT` | Optional. Inline JSON (or base64) for the service account. |
@@ -47,6 +49,7 @@ The CoNSTruct hackathon experience now runs on a React + Vite front-end with an 
 | `API_RATE_LIMIT_MAX` | Requests per minute for the `/api` limiter (default `60`). |
 | `ADMIN_USERNAME` | Basic Auth username for the admin console (default `admin`). |
 | `ADMIN_PASSWORD` | Basic Auth password (required in production). |
+| `VITE_ADMIN_USERNAME` | Vite build-time variable that surfaces the preset username on the admin login UI. |
 
 ## Install & run
 

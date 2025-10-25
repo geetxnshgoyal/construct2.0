@@ -1,46 +1,18 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren } from 'react';
 import Navbar from './navigation/Navbar';
 import Footer from './navigation/Footer';
-import LightBackdrop from './background/LightBackdrop';
-import DarkModeBackdrop from './background/DarkModeBackdrop';
-
-type Theme = 'light' | 'dark';
 
 export default function Layout({ children }: PropsWithChildren) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof document === 'undefined') return 'light';
-    const current = document.documentElement.dataset.theme as Theme | undefined;
-    return current ?? 'light';
-  });
-
-  useEffect(() => {
-    const handler = (event: Event) => {
-      const next = (event as CustomEvent<Theme>).detail;
-      if (next) {
-        setTheme(next);
-      }
-    };
-
-    window.addEventListener('construct-theme-change', handler as EventListener);
-
-    const initial = document.documentElement.dataset.theme as Theme | undefined;
-    if (initial) {
-      setTheme(initial);
-    }
-
-    return () => {
-      window.removeEventListener('construct-theme-change', handler as EventListener);
-    };
-  }, []);
-
-  const isDark = theme === 'dark';
+  const isDark = document.documentElement.dataset.theme === 'dark';
 
   return (
-    <div className={`relative min-h-screen overflow-hidden ${isDark ? 'bg-cosmos text-white' : 'bg-paper text-ink'}`}>
-      {isDark ? <DarkModeBackdrop /> : <LightBackdrop />}
-      <div className="relative z-10 flex min-h-screen flex-col">
+    <div className={`min-h-screen ${isDark ? 'bg-gradient-to-b from-midnight via-cosmos to-midnight text-white' : 'bg-paper text-ink'}`}>
+      <div className={`fixed inset-0 pointer-events-none ${isDark ? 'bg-grid-dark' : 'bg-grid-light'} opacity-30`} />
+      <div className="relative flex min-h-screen flex-col">
         <Navbar />
-        <main className="flex-1 pt-24 lg:pt-28">{children}</main>
+        <main className="flex-1 pt-16 sm:pt-20 lg:pt-24">
+          {children}
+        </main>
         <Footer />
       </div>
     </div>

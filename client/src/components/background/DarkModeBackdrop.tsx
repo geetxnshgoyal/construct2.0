@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion';
 import ConstructingRigs from './ConstructingRigs';
-import PixelBuildMatrix from './PixelBuildMatrix';
 
 const PARTICLE_COUNT = 48;
 
 export default function DarkModeBackdrop() {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-gradient-to-b from-midnight via-cosmos to-midnight">
+    <div aria-hidden className="pointer-events-none absolute inset-0 h-full w-full bg-gradient-to-b from-midnight via-cosmos to-midnight">
       <div className="absolute inset-0">
         <div className="animate-pulse-glow absolute -top-1/3 left-1/5 h-[40rem] w-[40rem] rounded-full bg-gradient-to-br from-neon/30 via-magenta/20 to-transparent blur-[160px]" />
         <div className="animate-floaty absolute -bottom-1/2 right-1/4 h-[45rem] w-[45rem] rounded-full bg-gradient-to-bl from-sunset/35 via-magenta/20 to-transparent blur-[180px]" />
@@ -25,7 +24,6 @@ export default function DarkModeBackdrop() {
 
       <NightSkyParticles count={PARTICLE_COUNT} />
       <ConstructingRigs />
-      <PixelBuildMatrix variant="dark" />
     </div>
   );
 }

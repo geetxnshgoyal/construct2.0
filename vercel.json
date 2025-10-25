@@ -1,9 +1,27 @@
 {
+  "version": 2,
+  "buildCommand": "cd client && npm install && npm run build",
+  "outputDirectory": "client/dist",
+  "framework": "vite",
   "rewrites": [
-    { "source": "/register", "destination": "/registration.html" },
-    { "source": "/register/", "destination": "/registration.html" },
-    { "source": "/registration", "destination": "/registration.html" },
-    { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/admin/", "destination": "/admin.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
   ]
 }
