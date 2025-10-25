@@ -20,6 +20,7 @@ type RegistrationRecord = {
 };
 
 const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME ?? 'admin';
+const FETCH_LIMIT = 500;
 
 export default function Admin() {
   const [accessCode, setAccessCode] = useState('');
@@ -39,7 +40,7 @@ export default function Admin() {
     setError('');
 
     try {
-      const response = await fetch('/api/registrations', {
+      const response = await fetch(`/api/registrations?limit=${FETCH_LIMIT}`, {
         headers: {
           Authorization: `Basic ${btoa(`${ADMIN_USERNAME}:${accessCode}`)}`
         }
@@ -130,8 +131,20 @@ export default function Admin() {
         </motion.form>
 
         {error ? (
-          <div className="mt-8 rounded-3xl border border-magenta/40 bg-magenta/10 p-4 text-sm text-magenta">{error}</div>
-        ) : null}
+          <div className={`mt-8 rounded-xl border p-4 text-sm ${
+            theme === 'dark'
+              ? 'border-magenta/40 bg-magenta/10 text-magenta'
+              : 'border-red-200 bg-red-50 text-red-600'
+          }`}>{error}</div>
+        ) : (
+          registrations.length > 0 && (
+            <p className={`mt-8 text-xs uppercase tracking-[0.4em] ${
+              theme === 'dark' ? 'text-white/50' : 'text-ink/40'
+            }`}>
+              Showing {registrations.length} registration{registrations.length === 1 ? '' : 's'} (limit {FETCH_LIMIT})
+            </p>
+          )
+        )}
 
         {registrations.length > 0 ? (
           <motion.div
@@ -143,33 +156,65 @@ export default function Admin() {
             {registrations.map((registration) => (
               <article
                 key={registration.id || `${registration.teamName}-${registration.submittedAt}`}
-                className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-holo backdrop-blur-xl"
+                className={`rounded-xl border p-6 backdrop-blur-xl ${
+                  theme === 'dark'
+                    ? 'border-white/10 bg-black/30'
+                    : 'border-ink/5 bg-white/90 shadow-md'
+                }`}
               >
-                <header className="flex flex-col gap-3 text-ink sm:flex-row sm:items-center sm:justify-between">
+                <header className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between ${
+                  theme === 'dark' ? 'text-white' : 'text-ink'
+                }`}>
                   <div>
                     <h2 className="text-xl font-semibold">{registration.teamName}</h2>
-                    <p className="text-xs uppercase tracking-[0.4em] text-ink/50">{registration.teamSize} members</p>
+                    <p className={`text-xs font-medium uppercase tracking-wide ${
+                      theme === 'dark' ? 'text-white/50' : 'text-ink/50'
+                    }`}>{registration.teamSize} members</p>
                   </div>
-                  <div className="text-xs uppercase tracking-[0.4em] text-ink/40">
+                  <div className={`text-xs font-medium uppercase tracking-wide ${
+                    theme === 'dark' ? 'text-white/40' : 'text-ink/40'
+                  }`}>
                     {registration.submittedAt ? new Date(registration.submittedAt).toLocaleString() : 'Pending timestamp'}
                   </div>
                 </header>
                 <div className="mt-6 grid gap-6 md:grid-cols-2">
-                  <div className="rounded-2xl border border-ink/10 bg-white/70 p-4 text-ink">
-                    <h3 className="text-sm uppercase tracking-[0.4em] text-neon/70">Team Lead</h3>
-                    <p className="mt-2 text-sm text-ink/80">{registration.lead.name}</p>
-                    <p className="text-xs text-ink/60">{registration.lead.email}</p>
+                  <div className={`rounded-xl border p-4 ${
+                    theme === 'dark'
+                      ? 'border-white/10 bg-white/5'
+                      : 'border-ink/10 bg-white'
+                  }`}>
+                    <h3 className={`text-sm font-medium uppercase tracking-wide ${
+                      theme === 'dark' ? 'text-neon' : 'text-accent'
+                    }`}>Team Lead</h3>
+                    <p className={`mt-2 text-sm ${
+                      theme === 'dark' ? 'text-white' : 'text-ink'
+                    }`}>{registration.lead.name}</p>
+                    <p className={`text-xs ${
+                      theme === 'dark' ? 'text-white/60' : 'text-ink/60'
+                    }`}>{registration.lead.email}</p>
                     {registration.lead.gender ? (
-                      <p className="text-xs uppercase tracking-[0.4em] text-ink/40">{registration.lead.gender}</p>
+                      <p className={`mt-1 text-xs uppercase tracking-wide ${
+                        theme === 'dark' ? 'text-white/40' : 'text-ink/40'
+                      }`}>{registration.lead.gender}</p>
                     ) : null}
                   </div>
-                  <div className="rounded-2xl border border-ink/10 bg-white/70 p-4 text-ink">
-                    <h3 className="text-sm uppercase tracking-[0.4em] text-magenta/70">Squadmates</h3>
-                    <ul className="mt-2 space-y-2 text-sm text-ink/70">
+                  <div className={`rounded-xl border p-4 ${
+                    theme === 'dark'
+                      ? 'border-white/10 bg-white/5'
+                      : 'border-ink/10 bg-white'
+                  }`}>
+                    <h3 className={`text-sm font-medium uppercase tracking-wide ${
+                      theme === 'dark' ? 'text-magenta' : 'text-accent'
+                    }`}>Squadmates</h3>
+                    <ul className="mt-2 space-y-3">
                       {registration.members.map((member) => (
                         <li key={member.slot}>
-                          <p className="font-medium text-ink/80">{member.name || '—'}</p>
-                          <p className="text-xs text-ink/50">{member.email || '—'}</p>
+                          <p className={`text-sm font-medium ${
+                            theme === 'dark' ? 'text-white' : 'text-ink'
+                          }`}>{member.name || '—'}</p>
+                          <p className={`text-xs ${
+                            theme === 'dark' ? 'text-white/60' : 'text-ink/60'
+                          }`}>{member.email || '—'}</p>
                         </li>
                       ))}
                     </ul>
