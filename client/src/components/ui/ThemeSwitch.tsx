@@ -17,27 +17,28 @@ export default function ThemeSwitch() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    document.body.classList.toggle('bg-white', theme === 'light');
-    document.body.classList.toggle('text-slate-900', theme === 'light');
-    document.body.classList.toggle('bg-cosmos', theme === 'dark');
-    document.body.classList.toggle('text-white', theme === 'dark');
     localStorage.setItem(storageKey, theme);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent<Theme>('construct-theme-change', { detail: theme }));
+    }
   }, [theme]);
 
   const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+
+  const isDark = theme === 'dark';
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white transition hover:border-neon/70 hover:text-neon"
+      className={`relative inline-flex h-10 w-10 items-center justify-center rounded-full border transition ${
+        isDark
+          ? 'border-neon/60 bg-white/10 text-neon hover:border-white/80'
+          : 'border-ink/10 bg-white text-ink hover:border-accent hover:text-accent'
+      }`}
       aria-label="Toggle theme"
     >
-      {theme === 'dark' ? (
-        <span className="text-xl">🌙</span>
-      ) : (
-        <span className="text-xl">🌞</span>
-      )}
+      {isDark ? <span className="text-xl">🌙</span> : <span className="text-xl">☾</span>}
     </button>
   );
 }

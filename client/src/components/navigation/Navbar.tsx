@@ -27,18 +27,12 @@ export default function Navbar() {
             to="/"
             className="group relative flex items-center gap-3 text-lg font-bold tracking-wide text-ink transition-all hover:text-accent"
           >
-            <span className="flex items-center gap-2">
+            <span className="flex items-center">
               <img
                 src="/assets/logos/construct-logo.svg"
                 alt="CoNSTruct logo"
                 className="h-9 w-auto"
               />
-              <span className="hidden font-display text-xl uppercase tracking-[0.4em] text-ink/80 sm:block">
-                Hack, test, repeat
-              </span>
-            </span>
-            <span className="inline-flex items-center rounded-full border border-ink/10 bg-white px-3 py-1 text-xs font-medium uppercase tracking-[0.3em] text-ink/70 transition-all group-hover:border-accent group-hover:text-accent">
-              2025
             </span>
           </Link>
         </motion.div>

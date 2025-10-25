@@ -5,13 +5,6 @@ import { useCountdown } from '../../hooks/useCountdown';
 
 const COUNTDOWN_TARGET = '2025-11-05T09:00:00+05:30';
 
-const stats = [
-  { label: 'Registered Teams', value: '120+' },
-  { label: 'Workshops', value: '08' },
-  { label: 'Mentors', value: '30+' },
-  { label: 'Weeks', value: '4' }
-];
-
 export default function HeroSection() {
   const { remaining, isComplete } = useCountdown(COUNTDOWN_TARGET);
 
@@ -24,7 +17,7 @@ export default function HeroSection() {
       </div>
       <div className="mx-auto flex max-w-6xl flex-col gap-16 px-6 lg:flex-row lg:items-start">
         <div className="flex flex-1 flex-col gap-10">
-          <div className="inline-flex items-center gap-4 rounded-full border border-ink/10 bg-white/70 px-5 py-2 text-xs uppercase tracking-[0.4em] text-ink/70 shadow-card">
+          <div className="inline-flex items-center gap-4 rounded-full border border-ink/10 bg-white/70 px-5 py-2 text-xs uppercase tracking-[0.4em] text-ink/70">
             Product x Community Hackathon · {eventMeta.timeframe}
           </div>
           <div className="max-w-2xl space-y-4">
@@ -44,7 +37,7 @@ export default function HeroSection() {
           <div className="grid gap-4 sm:grid-cols-2">
             <Link
               to="/register"
-              className="flex items-center justify-between rounded-3xl border border-ink/80 bg-accent px-6 py-4 text-left text-white shadow-card transition hover:-translate-y-1 hover:shadow-[8px_8px_0_rgba(0,0,0,0.25)]"
+              className="flex items-center justify-between rounded-3xl border border-ink/80 bg-accent px-6 py-4 text-left text-white transition hover:-translate-y-1 hover:shadow-[8px_8px_0_rgba(0,0,0,0.25)]"
             >
               <div>
                 <span className="text-[0.7rem] uppercase tracking-[0.5em] text-white/80">Register now</span>
@@ -54,7 +47,7 @@ export default function HeroSection() {
             </Link>
             <a
               href="#structure"
-              className="flex items-center justify-between rounded-3xl border border-ink/20 bg-white/70 px-6 py-4 text-left shadow-card transition hover:-translate-y-1 hover:rotate-1"
+              className="flex items-center justify-between rounded-3xl border border-ink/20 bg-white/70 px-6 py-4 text-left transition hover:-translate-y-1 hover:rotate-1"
             >
               <div>
                 <span className="text-[0.7rem] uppercase tracking-[0.5em] text-ink/60">How it runs</span>
@@ -68,7 +61,7 @@ export default function HeroSection() {
             {highlights.map((highlight) => (
               <div
                 key={highlight.title}
-                className="flex flex-col gap-3 rounded-2xl border border-ink/10 bg-white/80 p-4 shadow-card transition hover:-translate-y-1 hover:-rotate-1"
+                className="flex flex-col gap-3 rounded-2xl border border-ink/10 bg-white/80 p-4 transition hover:-translate-y-1 hover:-rotate-1"
               >
                 <h3 className="font-display text-sm text-ink">{highlight.title}</h3>
                 <p className="text-sm text-ink/80">{highlight.description}</p>
@@ -78,7 +71,7 @@ export default function HeroSection() {
         </div>
 
         <aside className="flex flex-1 flex-col gap-8">
-          <div className="relative rounded-[2.5rem] border border-ink/20 bg-white/80 p-6 shadow-card">
+          <div className="relative rounded-[2.5rem] border border-ink/20 bg-white/80 p-6">
             <div className="absolute -top-6 left-8 inline-flex rotate-[-4deg] items-center gap-2 rounded-full bg-accentAlt px-3 py-1 font-display text-xs uppercase tracking-[0.4em] text-ink shadow-card">
               Countdown board
             </div>
@@ -97,19 +90,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-2xl border border-ink/15 bg-white/90 p-4 text-left shadow-card transition hover:-translate-y-1 hover:rotate-1"
-              >
-                <p className="font-display text-2xl text-ink">{stat.value}</p>
-                <p className="mt-1 text-xs uppercase tracking-[0.35em] text-ink/60">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="relative rounded-[2rem] border border-ink/10 bg-white/70 p-6 shadow-card">
+          <div className="relative rounded-[2rem] border border-ink/10 bg-white/70 p-6">
             <div className="absolute -top-6 right-6 rotate-6 rounded-full bg-seafoam px-4 py-2 font-note text-lg text-white shadow-card">
               ₹50,000 prize pool
             </div>
