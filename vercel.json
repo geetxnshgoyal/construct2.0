@@ -1,9 +1,16 @@
 {
+  "buildCommand": "cd client && npm install && npm run build",
+  "outputDirectory": "client/dist",
   "rewrites": [
-    { "source": "/register", "destination": "/registration.html" },
-    { "source": "/register/", "destination": "/registration.html" },
-    { "source": "/registration", "destination": "/registration.html" },
-    { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/admin/", "destination": "/admin.html" }
-  ]
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ],
+  "framework": "vite",
+  "regions": ["bom1"]
 }
