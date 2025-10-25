@@ -20,8 +20,8 @@ export default function Navbar() {
   }, [location.pathname, location.hash]);
 
   return (
-    <header className="fixed top-0 z-20 w-full border-b border-ink/10 bg-paper/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
+    <header className="fixed top-0 z-20 w-full border-b border-ink/10 bg-paper/90 backdrop-blur-sm">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <motion.div whileHover={{ scale: 1.04 }}>
           <Link
             to="/"
@@ -68,38 +68,31 @@ export default function Navbar() {
           </div>
         </button>
       </div>
-      {isOpen && (
-        <div className="fixed inset-0 z-20 bg-black/20 backdrop-blur-sm md:hidden" onClick={() => setIsOpen(false)} />
-      )}
       <div
-        className={`fixed inset-x-0 top-[72px] z-30 transform transition-all duration-300 md:hidden ${
-          isOpen ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0 pointer-events-none'
-        }`}
+        className={`md:hidden ${isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'} transition`}
       >
-        <div className="mx-4 mb-4 rounded-2xl border border-ink/10 bg-paper shadow-lg">
-          <div className="p-4 flex items-center justify-between border-b border-ink/10">
-            <span className="text-xs font-medium uppercase tracking-[0.3em] text-ink/60">Menu</span>
+        <div className="mx-4 mb-4 rounded-3xl border border-ink/10 bg-white/95 p-6 shadow-card">
+          <div className="mb-6 flex items-center justify-between">
+            <span className="text-xs uppercase tracking-[0.5em] text-ink/50">Navigate</span>
             <ThemeSwitch />
           </div>
-          <nav className="p-4">
-            <div className="flex flex-col gap-3">
-              {navLinks.map((link) => (
-                <NavLink
-                  key={link.href}
-                  to={link.href}
-                  className="px-3 py-2 text-base font-medium text-ink/80 transition-colors hover:text-accent rounded-lg hover:bg-ink/5"
-                >
-                  {link.label}
-                </NavLink>
-              ))}
-              <Link
-                to="/register"
-                className="mt-2 text-center rounded-xl bg-accent px-4 py-3 text-base font-semibold text-white shadow-sm transition-all hover:bg-accent/90 active:scale-[0.98]"
+          <div className="flex flex-col gap-4">
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.href}
+                to={link.href}
+                className="text-lg font-semibold text-ink/80 transition hover:text-accent"
               >
-                Register Now
-              </Link>
-            </div>
-          </nav>
+                {link.label}
+              </NavLink>
+            ))}
+            <Link
+              to="/register"
+              className="mt-2 inline-flex items-center justify-center rounded-full border border-ink bg-accent px-4 py-2 text-base font-semibold text-white shadow-card transition hover:shadow-[4px_4px_0_rgba(0,0,0,0.2)]"
+            >
+              Reserve Your Crew
+            </Link>
+          </div>
         </div>
       </div>
     </header>
