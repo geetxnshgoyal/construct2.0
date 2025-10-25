@@ -27,12 +27,6 @@ export default function CallToAction() {
             >
               Register now
             </Link>
-            <Link
-              to="/admin"
-              className="rounded-full border border-ink/20 bg-white px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-ink/70 transition hover:-translate-y-1 hover:-rotate-1"
-            >
-              Admin console
-            </Link>
           </div>
         </motion.div>
       </div>
