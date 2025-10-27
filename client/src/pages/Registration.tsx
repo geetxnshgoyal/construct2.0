@@ -142,12 +142,14 @@ export default function Registration() {
             }`}
           />
           {submissionState === 'success' ? (
-            <div className={`mb-8 rounded-xl border p-4 text-center text-sm ${
-              isDark
-                ? 'border-neon/40 bg-neon/10 text-neon'
-                : 'border-green-200 bg-green-50 text-green-600'
-            }`}>
-              Team locked in! Check your email soon for onboarding rituals.
+            <div
+              className={`mb-8 rounded-xl border p-4 text-center text-sm ${
+                isDark
+                  ? 'border-neon/40 bg-neon/10 text-neon'
+                  : 'border-green-200 bg-green-50 text-green-600'
+              }`}
+            >
+              Team locked in! Onboarding resources unlock inside the Emergent workspace at kickoff.
             </div>
           ) : null}
           {submissionState === 'error' ? (
