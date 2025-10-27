@@ -32,7 +32,7 @@ export default function GuidelinesSection() {
               <span className="inline-flex items-center gap-2 rounded-full bg-accent/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-ink">
                 {panel.badge}
               </span>
-              <h3 className="mt-4 font-display text-2xl text-ink">{panel.title}</h3>
+              <h3 className="mt-4 font-serif text-2xl font-semibold text-ink">{panel.title}</h3>
               <ul className="mt-6 space-y-3 text-sm text-ink/75">
                 {panel.items.map((item) => (
                   <li key={item} className="flex gap-3">

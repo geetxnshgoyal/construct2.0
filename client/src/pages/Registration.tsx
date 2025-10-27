@@ -2,6 +2,8 @@ import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../hooks/useTheme';
 
+const EDU_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.edu\.in$/i;
+
 const genders = [
   { value: 'male', label: 'Male' },
   { value: 'female', label: 'Female' },
@@ -81,8 +83,57 @@ export default function Registration() {
     };
   };
 
+  const validateEmails = (payload: ReturnType<typeof buildPayload>) => {
+    const seen = new Set<string>();
+    const normalize = (value: string) => value.trim().toLowerCase();
+
+    const checkEmail = (email: string, label: string) => {
+      const trimmed = email.trim();
+      if (!trimmed) {
+        return `${label} email is required.`;
+      }
+      if (!EDU_EMAIL_PATTERN.test(trimmed)) {
+        return `${label} must use a college email ending with .edu.in.`;
+      }
+      const normalized = normalize(trimmed);
+      if (seen.has(normalized)) {
+        return `Duplicate email detected for ${label}. Every teammate needs a unique address.`;
+      }
+      seen.add(normalized);
+      return null;
+    };
+
+    const leadResult = checkEmail(payload.lead.email, 'Team lead');
+    if (leadResult) {
+      return leadResult;
+    }
+
+    for (let index = 0; index < payload.members.length; index += 1) {
+      const member = payload.members[index];
+      if (!member.email?.trim()) {
+        // Optional members may be left blank; required ones have native validation.
+        continue;
+      }
+      const memberResult = checkEmail(member.email, `Squadmate ${index + 1}`);
+      if (memberResult) {
+        return memberResult;
+      }
+    }
+
+    return null;
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const payload = buildPayload();
+    const validationError = validateEmails(payload);
+    if (validationError) {
+      setSubmissionState('error');
+      setErrorMessage(validationError);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
     setSubmissionState('submitting');
     setErrorMessage('');
@@ -91,7 +142,7 @@ export default function Registration() {
       const response = await fetch('/api/registrations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(buildPayload())
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) {

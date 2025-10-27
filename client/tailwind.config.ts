@@ -23,7 +23,8 @@ const config: Config = {
       fontFamily: {
         sans: ['"Work Sans"', 'Inter', 'system-ui', 'sans-serif'],
         display: ['"Permanent Marker"', '"Work Sans"', 'cursive'],
-        note: ['"Shadows Into Light"', 'cursive']
+        note: ['"Shadows Into Light"', 'cursive'],
+        serif: ['"Playfair Display"', 'Georgia', 'serif']
       },
       animation: {
         marquee: 'marquee 24s linear infinite',

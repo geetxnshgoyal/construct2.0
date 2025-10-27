@@ -30,18 +30,18 @@ export default function StructureSection() {
               transition={{ duration: 0.8, delay: index * 0.08 }}
               className="relative rounded-3xl border border-ink/15 bg-white/80 p-6 shadow-card"
             >
-              <div className="absolute -top-6 left-6 inline-flex rotate-[-3deg] items-center rounded-full bg-accentAlt px-4 py-1 font-display text-xs uppercase tracking-[0.4em] text-ink shadow-card">
+              <div className="absolute -top-6 left-6 inline-flex rotate-[-2deg] items-center rounded-full bg-accentAlt px-4 py-1 font-serif text-xs font-semibold uppercase tracking-[0.25em] text-ink/90 shadow-card">
                 {phase.phase}
               </div>
               <div className="mt-6 flex flex-col gap-4">
                 <div>
-                  <h3 className="font-display text-2xl text-ink">{phase.title}</h3>
+                  <h3 className="font-serif text-2xl font-semibold text-ink">{phase.title}</h3>
                   <p className="text-sm uppercase tracking-[0.3em] text-ink/50">{phase.duration}</p>
                 </div>
                 <ul className="space-y-4 text-sm text-ink/80">
                   {phase.bullets.map((bullet) => (
                     <li key={bullet.label} className="rounded-2xl border border-ink/10 bg-paper p-4 shadow-insetNote">
-                      <p className="font-display text-xs uppercase tracking-[0.4em] text-accent">{bullet.label}</p>
+                      <p className="font-serif text-xs font-semibold uppercase tracking-[0.3em] text-accent">{bullet.label}</p>
                       <ul className="mt-2 space-y-1.5">
                         {bullet.items.map((item) => (
                           <li key={item} className="leading-relaxed">

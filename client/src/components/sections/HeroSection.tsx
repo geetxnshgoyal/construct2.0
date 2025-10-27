@@ -21,7 +21,14 @@ export default function HeroSection() {
             Product x Community Hackathon · {eventMeta.timeframe}
           </div>
           <div className="max-w-2xl space-y-4">
-            <p className="font-display text-2xl text-ink">coNSTruct 2025</p>
+            <div className="flex items-center gap-3">
+              <img
+                src="/assets/logos/construct-logo.svg"
+                alt="coNSTruct"
+                className="h-9 w-auto drop-shadow-sm"
+              />
+              <span className="font-serif text-xl tracking-[0.3em] text-ink/80">2025</span>
+            </div>
             <h1 className="text-balance font-display text-4xl leading-[1.05] text-ink sm:text-5xl lg:text-[3.6rem]">
               Build something real with a room full of scrappy makers.
             </h1>
@@ -60,7 +67,7 @@ export default function HeroSection() {
                 key={highlight.title}
                 className="flex flex-col gap-3 rounded-2xl border border-ink/10 bg-white/80 p-4 transition hover:-translate-y-1 hover:-rotate-1"
               >
-                <h3 className="font-display text-sm text-ink">{highlight.title}</h3>
+                <h3 className="font-serif text-base font-semibold text-ink">{highlight.title}</h3>
                 <p className="text-sm text-ink/80">{highlight.description}</p>
               </div>
             ))}
@@ -69,13 +76,13 @@ export default function HeroSection() {
 
         <aside className="flex flex-1 flex-col gap-8">
           <div className="relative rounded-[2.5rem] border border-ink/20 bg-white/80 p-6">
-            <div className="absolute -top-6 left-8 inline-flex rotate-[-4deg] items-center gap-2 rounded-full bg-accentAlt px-3 py-1 font-display text-xs uppercase tracking-[0.4em] text-ink shadow-card">
+            <div className="absolute -top-6 left-8 inline-flex rotate-[-2deg] items-center gap-2 rounded-full bg-accentAlt px-4 py-1 font-serif text-xs font-semibold uppercase tracking-[0.25em] text-ink/90 shadow-card">
               Countdown board
             </div>
             <div className="mt-6 grid gap-4 sm:grid-cols-4">
               {Object.entries(remaining).map(([label, value]) => (
                 <div key={label} className="rounded-2xl border border-ink/10 bg-paper p-4 text-center shadow-insetNote">
-                  <p className="font-display text-2xl text-ink">{value.toString().padStart(2, '0')}</p>
+                  <p className="font-serif text-2xl font-semibold text-ink">{value.toString().padStart(2, '0')}</p>
                   <p className="mt-2 text-[0.7rem] uppercase tracking-[0.4em] text-ink/60">{label}</p>
                 </div>
               ))}
