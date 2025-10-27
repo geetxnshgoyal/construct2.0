@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../hooks/useTheme';
 
@@ -28,22 +28,25 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [registrations, setRegistrations] = useState<RegistrationRecord[]>([]);
+  const [lastUsedCode, setLastUsedCode] = useState('');
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const theme = useTheme();
 
-  const handleFetch = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!accessCode.trim()) {
+  const fetchRegistrations = async (code: string) => {
+    const trimmedCode = code.trim();
+    if (!trimmedCode) {
       setError('Enter the current access code.');
       setRegistrations([]);
-      return;
+      return false;
     }
+
     setLoading(true);
     setError('');
 
     try {
       const response = await fetch(`/api/registrations?limit=${FETCH_LIMIT}`, {
         headers: {
-          Authorization: `Basic ${btoa(`${ADMIN_USERNAME}:${accessCode}`)}`
+          Authorization: `Basic ${btoa(`${ADMIN_USERNAME}:${trimmedCode}`)}`
         }
       });
 
@@ -54,12 +57,101 @@ export default function Admin() {
 
       const data = await response.json();
       setRegistrations(Array.isArray(data.items) ? data.items : []);
+      setLastUsedCode(trimmedCode);
+      setIsAuthorized(true);
+      return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
       setRegistrations([]);
+      setIsAuthorized(false);
+      return false;
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFetch = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void fetchRegistrations(accessCode);
+  };
+
+  const handleRefresh = () => {
+    if (!lastUsedCode) {
+      setError('Fetch registrations first.');
+      return;
+    }
+    void fetchRegistrations(lastUsedCode);
+  };
+
+  const handleLogout = () => {
+    setAccessCode('');
+    setLastUsedCode('');
+    setRegistrations([]);
+    setError('');
+    setIsAuthorized(false);
+  };
+
+  const handleDownloadCsv = () => {
+    if (registrations.length === 0) {
+      setError('Nothing to export. Fetch registrations first.');
+      return;
+    }
+
+    const csvHeader = [
+      'Team Name',
+      'Team Size',
+      'Lead Name',
+      'Lead Email',
+      'Lead Gender',
+      'Members',
+      'Submitted At'
+    ];
+
+    const toCsvRow = (record: RegistrationRecord) => {
+      const members = record.members
+        .map((member) => {
+          if (!member.name && !member.email) {
+            return '';
+          }
+          const details = [member.name ?? '', member.email ?? '', member.gender ?? ''].filter(Boolean).join(' • ');
+          return details;
+        })
+        .filter(Boolean)
+        .join(' | ');
+
+      return [
+        record.teamName,
+        record.teamSize.toString(),
+        record.lead.name,
+        record.lead.email,
+        record.lead.gender ?? '',
+        members,
+        record.submittedAt ? new Date(record.submittedAt).toISOString() : ''
+      ];
+    };
+
+    const csvRows = [csvHeader, ...registrations.map(toCsvRow)];
+    const csvString = csvRows
+      .map((row) =>
+        row
+          .map((value) => {
+            const safeValue = value.replace(/"/g, '""');
+            return `"${safeValue}"`;
+          })
+          .join(',')
+      )
+      .join('\r\n');
+
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `construct-registrations-${new Date().toISOString().slice(0, 10)}.csv`;
+    anchor.style.display = 'none';
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -130,6 +222,42 @@ export default function Admin() {
             <p className="text-xs uppercase tracking-[0.4em] text-ink/40">Protected via rotating access code</p>
           </div>
         </motion.form>
+
+        {isAuthorized ? (
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={handleRefresh}
+            disabled={loading}
+            className={`rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] transition ${
+              theme === 'dark'
+                ? 'border border-white/15 text-white/80 hover:text-white disabled:border-white/10 disabled:text-white/30'
+                : 'border border-ink/15 text-ink/70 hover:text-ink disabled:border-ink/10 disabled:text-ink/40'
+            }`}
+          >
+            Refresh
+          </button>
+          <button
+            type="button"
+            onClick={handleDownloadCsv}
+            className={`rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] transition ${
+              theme === 'dark'
+                ? 'border border-white/15 text-white/80 hover:text-white disabled:border-white/10 disabled:text-white/30'
+                : 'border border-ink/15 text-ink/70 hover:text-ink disabled:border-ink/10 disabled:text-ink/40'
+            }`}
+            disabled={registrations.length === 0}
+          >
+            Download CSV
+          </button>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="rounded-full border border-magenta/40 bg-magenta/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-magenta transition hover:bg-magenta/20"
+          >
+            Log out
+          </button>
+        </div>
+        ) : null}
 
         {error ? (
           <div className={`mt-8 rounded-xl border p-4 text-sm ${
@@ -210,12 +338,29 @@ export default function Admin() {
                     <ul className="mt-2 space-y-3">
                       {registration.members.map((member) => (
                         <li key={member.slot}>
-                          <p className={`text-sm font-medium ${
-                            theme === 'dark' ? 'text-white' : 'text-ink'
-                          }`}>{member.name || '—'}</p>
-                          <p className={`text-xs ${
-                            theme === 'dark' ? 'text-white/60' : 'text-ink/60'
-                          }`}>{member.email || '—'}</p>
+                          <p
+                            className={`text-sm font-medium ${
+                              theme === 'dark' ? 'text-white' : 'text-ink'
+                            }`}
+                          >
+                            {member.name || '—'}
+                          </p>
+                          <p
+                            className={`text-xs ${
+                              theme === 'dark' ? 'text-white/60' : 'text-ink/60'
+                            }`}
+                          >
+                            {member.email || '—'}
+                          </p>
+                          {member.gender ? (
+                            <p
+                              className={`text-[0.6rem] uppercase tracking-[0.35em] ${
+                                theme === 'dark' ? 'text-white/40' : 'text-ink/40'
+                              }`}
+                            >
+                              {member.gender}
+                            </p>
+                          ) : null}
                         </li>
                       ))}
                     </ul>

@@ -72,11 +72,21 @@ export default function Home() {
               <motion.div whileHover={{ y: -6 }} className="rounded-2xl border border-ink/15 bg-paper p-6 shadow-insetNote transition">
                 <h3 className="text-sm uppercase tracking-[0.4em] text-ink/70">Hosted Sessions</h3>
                 <ul className="mt-4 space-y-3 text-sm text-ink/75">
-                  <motion.li whileHover={{ x: 6 }}>Immersive masterclasses that go deep on the craft.</motion.li>
-                  <motion.li whileHover={{ x: 6 }}>Regular checkpoints to keep builds on track.</motion.li>
-                  <motion.li whileHover={{ x: 6 }}>Dedicated expert sessions for tailored feedback.</motion.li>
-                  <motion.li whileHover={{ x: 6 }}>50 Emergent credits for every squad to experiment.</motion.li>
-                  <motion.li whileHover={{ x: 6 }}>Launch on Product Hunt with momentum and support.</motion.li>
+                  <motion.li whileHover={{ x: 6 }}>
+                    <span className="font-semibold text-ink">Masterclasses:</span> Immersive craft deep dives with hands-on jams.
+                  </motion.li>
+                  <motion.li whileHover={{ x: 6 }}>
+                    <span className="font-semibold text-ink">Checkpoints:</span> Regular progress syncs to keep builds on track.
+                  </motion.li>
+                  <motion.li whileHover={{ x: 6 }}>
+                    <span className="font-semibold text-ink">Expert rooms:</span> Dedicated feedback pods tailored to each squad.
+                  </motion.li>
+                  <motion.li whileHover={{ x: 6 }}>
+                    <span className="font-semibold text-ink">Emergent credits:</span> 50 credits per crew to explore new tools.
+                  </motion.li>
+                  <motion.li whileHover={{ x: 6 }}>
+                    <span className="font-semibold text-ink">Launch runway:</span> Product Hunt push with community momentum.
+                  </motion.li>
                 </ul>
               </motion.div>
               <motion.div whileHover={{ y: -6 }} className="rounded-2xl border border-ink/15 bg-paper p-6 shadow-insetNote transition">
