@@ -29,9 +29,6 @@ export default function HeroSection() {
               Forget the spotless AI glow. This is a month of scribbled canvases, midnight prototyping, pizza boxes, and shipping with heart.
               {` ${eventMeta.heroQuote}`} Bring your notebooks, sticky tapes, and stubborn ideas.
             </p>
-            <p className="text-sm uppercase tracking-[0.35em] text-ink/60">
-              {eventMeta.duration} · {eventMeta.location}
-            </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">

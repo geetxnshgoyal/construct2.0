@@ -20,7 +20,7 @@ export default function Footer() {
             Admin Console
           </Link>
           <span className="text-xs uppercase tracking-[0.4em] text-white/30">
-            © {currentYear} CoNSTruct Collective
+            © {currentYear} CoNSTruct
           </span>
         </div>
       </div>

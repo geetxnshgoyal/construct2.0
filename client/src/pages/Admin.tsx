@@ -1,5 +1,6 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../hooks/useTheme';
 
 type RegistrationRecord = {
   id?: string;
@@ -27,7 +28,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [registrations, setRegistrations] = useState<RegistrationRecord[]>([]);
-  const [theme] = useState(() => document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  const theme = useTheme();
 
   const handleFetch = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

@@ -3,7 +3,7 @@ export const eventMeta = {
   tagline: 'Hands-on build for impact hackathon',
   timeframe: 'Nov 5 – Dec 5, 2025',
   duration: '4-week hybrid sprint',
-  location: 'Hybrid · Newton School of Technology x Emergent Studios',
+  location: 'Hybrid · Newton School of Technology x The Product Folks x Emergent',
   heroQuote: '“Ideate. Prototype. Launch.”'
 };
 

@@ -72,9 +72,11 @@ export default function Home() {
               <motion.div whileHover={{ y: -6 }} className="rounded-2xl border border-ink/15 bg-paper p-6 shadow-insetNote transition">
                 <h3 className="text-sm uppercase tracking-[0.4em] text-ink/70">Hosted Sessions</h3>
                 <ul className="mt-4 space-y-3 text-sm text-ink/75">
-                  <motion.li whileHover={{ x: 6 }}>Immersive masterclasses, nightly jams, critiques inside a neon studio.</motion.li>
-                  <motion.li whileHover={{ x: 6 }}>Dedicated mentor feedback circles and 50 credits to power up your tech stack.</motion.li>
-                  <motion.li whileHover={{ x: 6 }}>Soft-launch bar, Product Hunt rehearsals, and spotlight features for standout teams.</motion.li>
+                  <motion.li whileHover={{ x: 6 }}>Immersive masterclasses that go deep on the craft.</motion.li>
+                  <motion.li whileHover={{ x: 6 }}>Regular checkpoints to keep builds on track.</motion.li>
+                  <motion.li whileHover={{ x: 6 }}>Dedicated expert sessions for tailored feedback.</motion.li>
+                  <motion.li whileHover={{ x: 6 }}>50 Emergent credits for every squad to experiment.</motion.li>
+                  <motion.li whileHover={{ x: 6 }}>Launch on Product Hunt with momentum and support.</motion.li>
                 </ul>
               </motion.div>
               <motion.div whileHover={{ y: -6 }} className="rounded-2xl border border-ink/15 bg-paper p-6 shadow-insetNote transition">

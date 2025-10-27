@@ -50,8 +50,8 @@ const config: Config = {
           '50%': { transform: 'rotate(1.5deg)' }
         },
         scribble: {
-          '0%': { strokeDashoffset: 16 },
-          '100%': { strokeDashoffset: 0 }
+          '0%': { strokeDashoffset: '16' },
+          '100%': { strokeDashoffset: '0' }
         },
         floatNote: {
           '0%, 100%': { transform: 'translateY(-12px) rotate(-1deg)' },
@@ -62,8 +62,8 @@ const config: Config = {
           '50%': { transform: 'translateY(-6px)' }
         },
         pulseGlow: {
-          '0%, 100%': { opacity: 0.45, filter: 'blur(18px)' },
-          '50%': { opacity: 0.85, filter: 'blur(12px)' }
+          '0%, 100%': { opacity: '0.45', filter: 'blur(18px)' },
+          '50%': { opacity: '0.85', filter: 'blur(12px)' }
         },
         floaty: {
           '0%, 100%': { transform: 'translateY(-6px) rotate(-1deg)' },
@@ -74,18 +74,19 @@ const config: Config = {
           '100%': { transform: 'rotate(360deg)' }
         },
         glowPulse: {
-          '0%, 100%': { opacity: 0.6, filter: 'blur(20px)' },
-          '50%': { opacity: 1, filter: 'blur(10px)' }
+          '0%, 100%': { opacity: '0.6', filter: 'blur(20px)' },
+          '50%': { opacity: '1', filter: 'blur(10px)' }
         },
         floatSlow: {
           '0%, 100%': { transform: 'translateY(-12px)' },
           '50%': { transform: 'translateY(12px)' }
         },
         rise: {
-          '0%': { transform: 'translateY(18px)', opacity: 0.2 },
-          '50%': { transform: 'translateY(-8px)', opacity: 0.7 },
-          '100%': { transform: 'translateY(18px)', opacity: 0.2 }
+          '0%': { transform: 'translateY(18px)', opacity: '0.2' },
+          '50%': { transform: 'translateY(-8px)', opacity: '0.7' },
+          '100%': { transform: 'translateY(18px)', opacity: '0.2' }
         }
+        
       },
       boxShadow: {
         card: '6px 6px 0 rgba(0,0,0,0.15)',

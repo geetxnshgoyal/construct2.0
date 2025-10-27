@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../hooks/useTheme';
 
 const genders = [
   { value: 'male', label: 'Male' },
@@ -22,7 +23,26 @@ export default function Registration() {
   const [members, setMembers] = useState<MemberField[]>(() => Array.from({ length: 4 }, () => ({ name: '', email: '', gender: '' })));
   const [submissionState, setSubmissionState] = useState<SubmissionState>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-  const [theme] = useState(() => document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  const theme = useTheme();
+  const isDark = theme === 'dark';
+
+  const labelAccent = `text-xs font-medium uppercase tracking-wide ${isDark ? 'text-white/60' : 'text-ink/60'}`;
+  const subLabel = `uppercase tracking-[0.4em] text-sm ${isDark ? 'text-white/50' : 'text-ink/50'}`;
+  const inputBase = `rounded-xl border px-4 py-3 transition-colors focus:outline-none focus:ring-2 ${
+    isDark
+      ? 'border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:border-neon/50 focus:bg-white/10 focus:ring-neon/20'
+      : 'border-ink/10 bg-white text-ink placeholder:text-ink/40 focus:border-accent/30 focus:ring-accent/10'
+  }`;
+  const selectBase = `rounded-xl border px-4 py-3 transition-colors focus:outline-none focus:ring-2 ${
+    isDark
+      ? 'border-white/10 bg-white/5 text-white focus:border-neon/50 focus:bg-white/10 focus:ring-neon/20'
+      : 'border-ink/10 bg-white text-ink focus:border-accent/30 focus:ring-accent/10'
+  }`;
+  const fieldsetClass = `space-y-4 rounded-3xl border p-6 ${isDark ? 'border-white/10 bg-white/5' : 'border-ink/10 bg-white/70'}`;
+  const legendTone = `px-2 text-sm uppercase tracking-[0.4em] ${isDark ? 'text-white/60' : 'text-ink/60'}`;
+  const accentButton = isDark
+    ? 'border border-neon/40 bg-neon/20 text-white hover:bg-neon/30 disabled:border-white/20 disabled:bg-white/10 disabled:text-white/40'
+    : 'bg-accent text-white hover:bg-accent/90 disabled:bg-ink/10 disabled:text-ink/40';
 
   const requiredMembers = useMemo(() => Math.max(0, teamSize - 1), [teamSize]);
 
@@ -112,20 +132,18 @@ export default function Registration() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15 }}
-          className={`relative overflow-hidden rounded-[2rem] p-8 sm:p-10 backdrop-blur-xl
-            ${theme === 'dark' 
-              ? 'border border-white/10 bg-black/30 text-white' 
-              : 'border border-ink/5 bg-white/80 text-ink shadow-lg'
-            }`}
+          className={`relative overflow-hidden rounded-[2rem] p-8 sm:p-10 backdrop-blur-xl ${
+            isDark ? 'border border-white/10 bg-black/30 text-white' : 'border border-ink/5 bg-white/80 text-ink shadow-lg'
+          }`}
         >
-          <div className={`absolute inset-0 -z-10 ${
-            theme === 'dark'
-              ? 'bg-gradient-to-br from-neon/10 via-transparent to-magenta/10'
-              : 'bg-gradient-to-br from-accent/5 via-transparent to-magenta/5'
-          }`} />
+          <div
+            className={`absolute inset-0 -z-10 ${
+              isDark ? 'bg-gradient-to-br from-neon/10 via-transparent to-magenta/10' : 'bg-gradient-to-br from-accent/5 via-transparent to-magenta/5'
+            }`}
+          />
           {submissionState === 'success' ? (
             <div className={`mb-8 rounded-xl border p-4 text-center text-sm ${
-              theme === 'dark'
+              isDark
                 ? 'border-neon/40 bg-neon/10 text-neon'
                 : 'border-green-200 bg-green-50 text-green-600'
             }`}>
@@ -134,7 +152,7 @@ export default function Registration() {
           ) : null}
           {submissionState === 'error' ? (
             <div className={`mb-8 rounded-xl border p-4 text-sm ${
-              theme === 'dark'
+              isDark
                 ? 'border-magenta/40 bg-magenta/10 text-magenta'
                 : 'border-red-200 bg-red-50 text-red-600'
             }`}>
@@ -144,9 +162,7 @@ export default function Registration() {
 
           <div className="grid gap-6">
             <label className="flex flex-col gap-2">
-              <span className={`text-xs font-medium uppercase tracking-wide ${
-                theme === 'dark' ? 'text-white/60' : 'text-ink/60'
-              }`}>
+              <span className={labelAccent}>
                 Team Name <span className="text-red-500">*</span>
               </span>
               <input
@@ -154,32 +170,18 @@ export default function Registration() {
                 value={teamName}
                 onChange={(event) => setTeamName(event.target.value)}
                 placeholder="e.g. Product Mavericks"
-                className={`rounded-xl border px-4 py-3 transition-colors
-                  ${theme === 'dark'
-                    ? 'border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:border-neon/50 focus:bg-white/10'
-                    : 'border-ink/10 bg-white text-ink placeholder:text-ink/40 focus:border-accent/30'
-                  } focus:outline-none focus:ring-2 ${
-                    theme === 'dark' ? 'focus:ring-neon/20' : 'focus:ring-accent/10'
-                  }`}
+                className={inputBase}
               />
             </label>
 
             <label className="flex flex-col gap-2">
-              <span className={`text-xs font-medium uppercase tracking-wide ${
-                theme === 'dark' ? 'text-white/60' : 'text-ink/60'
-              }`}>
+              <span className={labelAccent}>
                 Team Size <span className="text-red-500">*</span>
               </span>
               <select
                 value={teamSize}
                 onChange={(event) => setTeamSize(Number.parseInt(event.target.value, 10))}
-                className={`rounded-xl border px-4 py-3 transition-colors
-                  ${theme === 'dark'
-                    ? 'border-white/10 bg-white/5 text-white focus:border-neon/50 focus:bg-white/10'
-                    : 'border-ink/10 bg-white text-ink focus:border-accent/30'
-                  } focus:outline-none focus:ring-2 ${
-                    theme === 'dark' ? 'focus:ring-neon/20' : 'focus:ring-accent/10'
-                  }`}
+                className={selectBase}
               >
                 {[1, 2, 3, 4, 5].map((value) => (
                   <option key={value} value={value} className="bg-white text-ink">
@@ -190,37 +192,37 @@ export default function Registration() {
             </label>
           </div>
 
-          <fieldset className="mt-10 space-y-4 rounded-3xl border border-ink/10 bg-white/70 p-6">
-            <legend className="px-2 text-sm uppercase tracking-[0.4em] text-ink/60">Team Lead *</legend>
+          <fieldset className={`mt-10 ${fieldsetClass}`}>
+            <legend className={legendTone}>Team Lead *</legend>
             <div className="grid gap-6 md:grid-cols-2">
               <label className="flex flex-col gap-2 text-sm">
-                <span className="uppercase tracking-[0.4em] text-ink/50">Name *</span>
+                <span className={subLabel}>Name *</span>
                 <input
                   required
                   value={lead.name}
                   onChange={(event) => setLead((prev) => ({ ...prev, name: event.target.value }))}
                   placeholder="Team leader name"
-                  className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink placeholder:text-ink/40 focus:border-neon focus:outline-none"
+                  className={inputBase}
                 />
               </label>
               <label className="flex flex-col gap-2 text-sm">
-                <span className="uppercase tracking-[0.4em] text-ink/50">College Email *</span>
+                <span className={subLabel}>College Email *</span>
                 <input
                   required
                   type="email"
                   value={lead.email}
                   onChange={(event) => setLead((prev) => ({ ...prev, email: event.target.value }))}
                   placeholder="name@college.edu.in"
-                  className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink placeholder:text-ink/40 focus:border-neon focus:outline-none"
+                  className={inputBase}
                 />
               </label>
               <label className="flex flex-col gap-2 text-sm md:col-span-2 md:max-w-xs">
-                <span className="uppercase tracking-[0.4em] text-ink/50">Gender *</span>
+                <span className={subLabel}>Gender *</span>
                 <select
                   required
                   value={lead.gender}
                   onChange={(event) => setLead((prev) => ({ ...prev, gender: event.target.value }))}
-                  className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink focus:border-neon focus:outline-none"
+                  className={selectBase}
                 >
                   <option value="" className="bg-white text-ink">
                     Select gender
@@ -240,38 +242,38 @@ export default function Registration() {
               const slotNumber = index + 1;
 
               return (
-                <fieldset key={slotNumber} className="space-y-4 rounded-3xl border border-ink/10 bg-white/70 p-6">
-                  <legend className="px-2 text-sm uppercase tracking-[0.4em] text-ink/60">
+                <fieldset key={slotNumber} className={fieldsetClass}>
+                  <legend className={legendTone}>
                     Team Member #{slotNumber} *
                   </legend>
                   <div className="grid gap-6 md:grid-cols-2">
                     <label className="flex flex-col gap-2 text-sm">
-                      <span className="uppercase tracking-[0.4em] text-ink/50">Name *</span>
+                      <span className={subLabel}>Name *</span>
                       <input
                         value={member.name}
                         onChange={(event) => handleMemberChange(index, 'name', event.target.value)}
                         placeholder="Teammate name"
-                        className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink placeholder:text-ink/40 focus:border-neon focus:outline-none"
+                        className={inputBase}
                         required
                       />
                     </label>
                     <label className="flex flex-col gap-2 text-sm">
-                      <span className="uppercase tracking-[0.4em] text-ink/50">College Email *</span>
+                      <span className={subLabel}>College Email *</span>
                       <input
                         type="email"
                         value={member.email}
                         onChange={(event) => handleMemberChange(index, 'email', event.target.value)}
                         placeholder="name@college.edu.in"
-                        className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink placeholder:text-ink/40 focus:border-neon focus:outline-none"
+                        className={inputBase}
                         required
                       />
                     </label>
                     <label className="flex flex-col gap-2 text-sm md:col-span-2 md:max-w-xs">
-                      <span className="uppercase tracking-[0.4em] text-ink/50">Gender *</span>
+                      <span className={subLabel}>Gender *</span>
                       <select
                         value={member.gender}
                         onChange={(event) => handleMemberChange(index, 'gender', event.target.value)}
-                        className="rounded-2xl border border-ink/10 bg-white/80 px-4 py-3 text-ink focus:border-neon focus:outline-none"
+                        className={selectBase}
                         required
                       >
                         <option value="" className="bg-white text-ink">
@@ -294,17 +296,11 @@ export default function Registration() {
             <button
               type="submit"
               disabled={submissionState === 'submitting'}
-              className={`w-full rounded-xl px-6 py-4 text-sm font-semibold shadow-sm transition-all active:scale-[0.98] ${
-                theme === 'dark'
-                  ? 'border border-neon/40 bg-neon/20 text-white hover:bg-neon/30 disabled:border-white/20 disabled:bg-white/10 disabled:text-white/40'
-                  : 'bg-accent text-white hover:bg-accent/90 disabled:bg-ink/10 disabled:text-ink/40'
-              } disabled:cursor-not-allowed`}
+              className={`w-full rounded-xl px-6 py-4 text-sm font-semibold shadow-sm transition-all active:scale-[0.98] ${accentButton} disabled:cursor-not-allowed`}
             >
               {submissionState === 'submitting' ? 'Submitting...' : 'Submit Registration'}
             </button>
-            <p className={`text-xs font-medium ${
-              theme === 'dark' ? 'text-white/40' : 'text-ink/50'
-            }`}>
+            <p className={`text-xs font-medium ${isDark ? 'text-white/40' : 'text-ink/50'}`}>
               Expect a confirmation email within 24 hours
             </p>
           </div>

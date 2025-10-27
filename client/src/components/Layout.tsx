@@ -1,25 +1,11 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren } from 'react';
 import Navbar from './navigation/Navbar';
 import Footer from './navigation/Footer';
+import { useTheme } from '../hooks/useTheme';
 
 export default function Layout({ children }: PropsWithChildren) {
-  const [isDark, setIsDark] = useState(() => document.documentElement.dataset.theme === 'dark');
-
-  useEffect(() => {
-    const handleThemeChange = (event: Event) => {
-      const detail = (event as CustomEvent<'dark' | 'light'>).detail;
-      if (detail) {
-        setIsDark(detail === 'dark');
-      }
-    };
-
-    setIsDark(document.documentElement.dataset.theme === 'dark');
-    window.addEventListener('construct-theme-change', handleThemeChange as EventListener);
-
-    return () => {
-      window.removeEventListener('construct-theme-change', handleThemeChange as EventListener);
-    };
-  }, []);
+  const theme = useTheme();
+  const isDark = theme === 'dark';
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gradient-to-b from-midnight via-cosmos to-midnight text-white' : 'bg-paper text-ink'}`}>

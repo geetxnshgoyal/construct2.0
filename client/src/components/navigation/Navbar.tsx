@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import ThemeSwitch from '../ui/ThemeSwitch';
+import { useTheme } from '../../hooks/useTheme';
 
 const navLinks = [
   { label: 'About', href: '/#about' },
@@ -11,37 +12,14 @@ const navLinks = [
   { label: 'Partners', href: '/#partners' }
 ];
 
-type Theme = 'dark' | 'light';
-
-const readTheme = (): Theme => {
-  if (typeof document === 'undefined') return 'dark';
-  const theme = document.documentElement.dataset.theme;
-  return theme === 'light' ? 'light' : 'dark';
-};
-
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [theme, setTheme] = useState<Theme>(() => readTheme());
   const location = useLocation();
+  const theme = useTheme();
 
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname, location.hash]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handleThemeChange = (event: Event) => {
-      const detail = (event as CustomEvent<Theme>).detail;
-      if (detail === 'dark' || detail === 'light') {
-        setTheme(detail);
-      }
-    };
-
-    setTheme(readTheme());
-    window.addEventListener('construct-theme-change', handleThemeChange as EventListener);
-    return () => window.removeEventListener('construct-theme-change', handleThemeChange as EventListener);
-  }, []);
 
   const isDark = theme === 'dark';
 

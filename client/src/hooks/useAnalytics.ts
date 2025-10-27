@@ -7,13 +7,19 @@ type AnalyticsEvent = {
   ts: string;
 };
 
+const ANALYTICS_ENDPOINT = import.meta.env.VITE_ANALYTICS_ENDPOINT ?? '/api/_analytics';
+const ANALYTICS_ENABLED = import.meta.env.PROD || import.meta.env.VITE_ENABLE_ANALYTICS === 'true';
+
 const sendAnalyticsEvent = (event: AnalyticsEvent) => {
-  const payload = JSON.stringify(event);
-  if ('sendBeacon' in navigator) {
-    navigator.sendBeacon('/api/_analytics', payload);
+  if (!ANALYTICS_ENABLED) {
     return;
   }
-  fetch('/api/_analytics', {
+  const payload = JSON.stringify(event);
+  if ('sendBeacon' in navigator) {
+    navigator.sendBeacon(ANALYTICS_ENDPOINT, payload);
+    return;
+  }
+  fetch(ANALYTICS_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: payload,
