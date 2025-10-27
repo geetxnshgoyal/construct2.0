@@ -4,12 +4,14 @@ import Layout from './components/Layout';
 import LoadingOverlay from './components/LoadingOverlay';
 import ScrollRestoration from './components/ScrollRestoration';
 import { useAnalytics } from './hooks/useAnalytics';
+import { useCookieReset } from './hooks/useCookieReset';
 
 const HomePage = lazy(() => import('./pages/Home'));
 const RegistrationPage = lazy(() => import('./pages/Registration'));
 const AdminPage = lazy(() => import('./pages/Admin'));
 
 export default function App() {
+  useCookieReset();
   useAnalytics();
 
   return (
