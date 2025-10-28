@@ -24,19 +24,35 @@ const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME ?? 'admin';
 const FETCH_LIMIT = 500;
 const ADMIN_MEMES = [
   {
-    src: 'https://i.imgflip.com/30zz5g.jpg',
-    alt: 'Leonardo DiCaprio cheers with a glass',
-    caption: 'When the access code finally works.'
+    command: 'admin@construct:~$ fortune hackathon',
+    output: [
+      '╭────────────────────────────────────────────╮',
+      '│  Keep calm and ship the demo before dawn.  │',
+      '╰────────────────────────────────────────────╯'
+    ]
   },
   {
-    src: 'https://i.imgflip.com/26am.jpg',
-    alt: 'Success Kid celebrates',
-    caption: 'Registrations fetched like a pro.'
+    command: 'admin@construct:~$ curl https://meme.api/cli.gif',
+    output: [
+      'Downloading meme...',
+      '██████████ 100%',
+      '┌────────────────────────────┐',
+      '│  ({^_^})  systems go!       │',
+      '└────────────────────────────┘'
+    ]
   },
   {
-    src: 'https://i.imgflip.com/1ur9b0.jpg',
-    alt: 'Distracted Boyfriend looking at new data',
-    caption: 'You vs. new submissions popping up.'
+    command: 'admin@construct:~$ cowsay "registrations unlocked!"',
+    output: [
+      ' ________________',
+      '< registrations unlocked! >',
+      ' ----------------',
+      '        \\   ^__^',
+      '         \\  (oo)\\_______',
+      '            (__)\\       )\\/\\',
+      '                ||----w |',
+      '                ||     ||'
+    ]
   }
 ] as const;
 
@@ -48,7 +64,6 @@ export default function Admin() {
   const [lastUsedCode, setLastUsedCode] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(false);
   const theme = useTheme();
-  const memeCaptionTone = theme === 'dark' ? 'text-white/60' : 'text-ink/60';
 
   const fetchRegistrations = async (code: string) => {
     const trimmedCode = code.trim();
@@ -199,20 +214,43 @@ export default function Admin() {
             <p className={`mt-2 text-sm ${theme === 'dark' ? 'text-white/70' : 'text-ink/70'}`}>
               You&apos;re authenticated. Use the controls below to keep tabs on incoming registrations.
             </p>
-            <div className="mt-8 grid gap-6 sm:grid-cols-3">
-              {ADMIN_MEMES.map((meme) => (
-                <figure
-                  key={meme.src}
-                  className={`rounded-xl border p-3 ${
-                    theme === 'dark' ? 'border-white/10 bg-white/5' : 'border-ink/10 bg-white'
-                  }`}
-                >
-                  <img src={meme.src} alt={meme.alt} className="h-40 w-full rounded-lg object-cover" />
-                  <figcaption className={`mt-2 text-center text-xs uppercase tracking-[0.25em] ${memeCaptionTone}`}>
-                    {meme.caption}
-                  </figcaption>
-                </figure>
-              ))}
+            <div
+              className={`mt-8 rounded-2xl border shadow-inner ${
+                theme === 'dark'
+                  ? 'border-white/10 bg-black/80 text-white/80'
+                  : 'border-ink/10 bg-ink/95 text-green-200'
+              }`}
+            >
+              <div
+                className={`flex items-center gap-2 rounded-t-2xl px-4 py-2 ${
+                  theme === 'dark' ? 'bg-white/10' : 'bg-ink/80'
+                }`}
+              >
+                <span className="h-3 w-3 rounded-full bg-red-500/80" />
+                <span className="h-3 w-3 rounded-full bg-yellow-400/80" />
+                <span className="h-3 w-3 rounded-full bg-green-500/80" />
+                <p className="ml-4 text-xs uppercase tracking-[0.35em]">Construct Terminal</p>
+              </div>
+              <div className="space-y-6 px-6 py-5 font-mono text-[0.8rem]">
+                {ADMIN_MEMES.map((meme) => (
+                  <div key={meme.command}>
+                    <p
+                      className={`${
+                        theme === 'dark' ? 'text-neon' : 'text-emerald-300'
+                      }`}
+                    >
+                      {meme.command}
+                    </p>
+                    <pre
+                      className={`mt-2 whitespace-pre ${
+                        theme === 'dark' ? 'text-white/80' : 'text-green-200'
+                      }`}
+                    >
+                      {meme.output.join('\n')}
+                    </pre>
+                  </div>
+                ))}
+              </div>
             </div>
           </motion.div>
         ) : (
