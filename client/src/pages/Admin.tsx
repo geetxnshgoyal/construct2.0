@@ -22,6 +22,23 @@ type RegistrationRecord = {
 
 const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME ?? 'admin';
 const FETCH_LIMIT = 500;
+const ADMIN_MEMES = [
+  {
+    src: 'https://i.imgflip.com/30zz5g.jpg',
+    alt: 'Leonardo DiCaprio cheers with a glass',
+    caption: 'When the access code finally works.'
+  },
+  {
+    src: 'https://i.imgflip.com/26am.jpg',
+    alt: 'Success Kid celebrates',
+    caption: 'Registrations fetched like a pro.'
+  },
+  {
+    src: 'https://i.imgflip.com/1ur9b0.jpg',
+    alt: 'Distracted Boyfriend looking at new data',
+    caption: 'You vs. new submissions popping up.'
+  }
+] as const;
 
 export default function Admin() {
   const [accessCode, setAccessCode] = useState('');
@@ -31,6 +48,7 @@ export default function Admin() {
   const [lastUsedCode, setLastUsedCode] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(false);
   const theme = useTheme();
+  const memeCaptionTone = theme === 'dark' ? 'text-white/60' : 'text-ink/60';
 
   const fetchRegistrations = async (code: string) => {
     const trimmedCode = code.trim();
@@ -166,62 +184,95 @@ export default function Admin() {
           </p>
         </motion.header>
 
-        <motion.form
-          onSubmit={handleFetch}
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className={`mt-10 rounded-xl border p-8 backdrop-blur-xl ${
-            theme === 'dark'
-              ? 'border-white/10 bg-black/30'
-              : 'border-ink/5 bg-white/90 shadow-lg'
-          }`}
-        >
-          <div className="grid gap-6 md:grid-cols-[1fr_auto]">
-            <label className="flex flex-col gap-2 md:col-start-1">
-              <span className={`text-xs font-medium uppercase tracking-wide ${
-                theme === 'dark' ? 'text-white/60' : 'text-ink/60'
-              }`}>Access code</span>
-              <input
-                type="password"
-                value={accessCode}
-                onChange={(event) => {
-                  setAccessCode(event.target.value);
-                  if (error) {
-                    setError('');
-                  }
-                }}
-                placeholder="Enter secure code"
-                className={`rounded-xl border px-4 py-3 transition-colors
-                  ${theme === 'dark'
-                    ? 'border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:border-neon/50 focus:bg-white/10'
-                    : 'border-ink/10 bg-white text-ink placeholder:text-ink/40 focus:border-accent/30'
-                  } focus:outline-none focus:ring-2 ${
-                    theme === 'dark' ? 'focus:ring-neon/20' : 'focus:ring-accent/10'
+        {isAuthorized ? (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className={`mt-10 rounded-xl border p-8 backdrop-blur-xl ${
+              theme === 'dark'
+                ? 'border-white/10 bg-black/30 text-white'
+                : 'border-ink/5 bg-white/90 text-ink shadow-lg'
+            }`}
+          >
+            <h2 className="text-2xl font-semibold">Hello, Admin 👋</h2>
+            <p className={`mt-2 text-sm ${theme === 'dark' ? 'text-white/70' : 'text-ink/70'}`}>
+              You&apos;re authenticated. Use the controls below to keep tabs on incoming registrations.
+            </p>
+            <div className="mt-8 grid gap-6 sm:grid-cols-3">
+              {ADMIN_MEMES.map((meme) => (
+                <figure
+                  key={meme.src}
+                  className={`rounded-xl border p-3 ${
+                    theme === 'dark' ? 'border-white/10 bg-white/5' : 'border-ink/10 bg-white'
                   }`}
-              />
-            </label>
-            <div className="flex items-end">
-              <p className="text-[0.6rem] uppercase tracking-[0.35em] text-ink/40">
-                Username preset to <span className="text-ink/60">{ADMIN_USERNAME}</span>
-              </p>
+                >
+                  <img src={meme.src} alt={meme.alt} className="h-40 w-full rounded-lg object-cover" />
+                  <figcaption className={`mt-2 text-center text-xs uppercase tracking-[0.25em] ${memeCaptionTone}`}>
+                    {meme.caption}
+                  </figcaption>
+                </figure>
+              ))}
             </div>
-          </div>
-          <div className="mt-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
-            <button
-              type="submit"
-              disabled={loading}
-              className={`rounded-xl px-6 py-3 text-sm font-semibold transition-all active:scale-[0.98] ${
-                theme === 'dark'
-                  ? 'border border-neon/40 bg-neon/20 text-white hover:bg-neon/30 disabled:border-white/20 disabled:bg-white/10 disabled:text-white/40'
-                  : 'bg-accent text-white hover:bg-accent/90 disabled:bg-ink/10 disabled:text-ink/40'
-              } disabled:cursor-not-allowed`}
-            >
-              {loading ? 'Fetching...' : 'Fetch registrations'}
-            </button>
-            <p className="text-xs uppercase tracking-[0.4em] text-ink/40">Protected via rotating access code</p>
-          </div>
-        </motion.form>
+          </motion.div>
+        ) : (
+          <motion.form
+            onSubmit={handleFetch}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className={`mt-10 rounded-xl border p-8 backdrop-blur-xl ${
+              theme === 'dark'
+                ? 'border-white/10 bg-black/30'
+                : 'border-ink/5 bg-white/90 shadow-lg'
+            }`}
+          >
+            <div className="grid gap-6 md:grid-cols-[1fr_auto]">
+              <label className="flex flex-col gap-2 md:col-start-1">
+                <span className={`text-xs font-medium uppercase tracking-wide ${
+                  theme === 'dark' ? 'text-white/60' : 'text-ink/60'
+                }`}>Access code</span>
+                <input
+                  type="password"
+                  value={accessCode}
+                  onChange={(event) => {
+                    setAccessCode(event.target.value);
+                    if (error) {
+                      setError('');
+                    }
+                  }}
+                  placeholder="Enter secure code"
+                  className={`rounded-xl border px-4 py-3 transition-colors
+                    ${theme === 'dark'
+                      ? 'border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:border-neon/50 focus:bg-white/10'
+                      : 'border-ink/10 bg-white text-ink placeholder:text-ink/40 focus:border-accent/30'
+                    } focus:outline-none focus:ring-2 ${
+                      theme === 'dark' ? 'focus:ring-neon/20' : 'focus:ring-accent/10'
+                    }`}
+                />
+              </label>
+              <div className="flex items-end">
+                <p className="text-[0.6rem] uppercase tracking-[0.35em] text-ink/40">
+                  Username preset to <span className="text-ink/60">{ADMIN_USERNAME}</span>
+                </p>
+              </div>
+            </div>
+            <div className="mt-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
+              <button
+                type="submit"
+                disabled={loading}
+                className={`rounded-xl px-6 py-3 text-sm font-semibold transition-all active:scale-[0.98] ${
+                  theme === 'dark'
+                    ? 'border border-neon/40 bg-neon/20 text-white hover:bg-neon/30 disabled:border-white/20 disabled:bg-white/10 disabled:text-white/40'
+                    : 'bg-accent text-white hover:bg-accent/90 disabled:bg-ink/10 disabled:text-ink/40'
+                } disabled:cursor-not-allowed`}
+              >
+                {loading ? 'Fetching...' : 'Fetch registrations'}
+              </button>
+              <p className="text-xs uppercase tracking-[0.4em] text-ink/40">Protected via rotating access code</p>
+            </div>
+          </motion.form>
+        )}
 
         {isAuthorized ? (
         <div className="mt-6 flex flex-wrap items-center gap-3">
