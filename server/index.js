@@ -2,11 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const registrationsRouter = require('./routes/registrations');
+const authRouter = require('./routes/auth');
 const { initAdmin } = require('./firebaseAdmin');
 
 try {
@@ -19,6 +21,12 @@ try {
 const app = express();
 
 app.disable('x-powered-by');
+const trustProxySetting = process.env.TRUST_PROXY_SETTING;
+if (typeof trustProxySetting !== 'undefined') {
+  app.set('trust proxy', trustProxySetting === 'false' ? false : trustProxySetting);
+} else {
+  app.set('trust proxy', 1);
+}
 
 app.use(helmet());
 app.use(
@@ -28,6 +36,7 @@ app.use(
       : undefined,
   })
 );
+app.use(cookieParser());
 app.use(express.json({ limit: '1mb' }));
 
 const maxRequests = Number.parseInt(process.env.API_RATE_LIMIT_MAX || '60', 10);
@@ -66,6 +75,7 @@ if (staticDir) {
   );
 }
 
+app.use('/api/auth', authRouter);
 app.use('/api', registrationsRouter);
 
 app.post('/api/_analytics', (req, res) => {

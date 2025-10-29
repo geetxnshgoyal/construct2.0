@@ -1,4 +1,7 @@
 const { Buffer } = require('buffer');
+const {
+  getSessionFromRequest,
+} = require('../services/adminSessions');
 
 const username = process.env.ADMIN_USERNAME || 'admin';
 const password = process.env.ADMIN_PASSWORD || '';
@@ -8,8 +11,14 @@ const respondUnauthorized = (res, message = 'Authentication required.') => {
 };
 
 module.exports = (req, res, next) => {
+  const session = getSessionFromRequest(req);
+  if (session) {
+    next();
+    return;
+  }
+
   if (!password) {
-    res.status(500).json({ error: 'Admin access is not configured. Set ADMIN_PASSWORD in the server environment.' });
+    res.status(401).json({ error: 'Admin session required.' });
     return;
   }
 

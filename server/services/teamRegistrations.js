@@ -3,7 +3,8 @@ const os = require('os');
 const path = require('path');
 const { getDb, serverTimestamp, adminAvailable } = require('../firebaseAdmin');
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
+const EDU_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.edu\.in$/i;
+const BLOCKED_EMAIL_DOMAINS = new Set(['test.edu.in']);
 const MIN_TEAM_SIZE = 1;
 const MAX_TEAM_SIZE = 5;
 const MAX_MEMBERS = MAX_TEAM_SIZE - 1;
@@ -18,6 +19,13 @@ const sanitizeString = (value) => {
   return '';
 };
 
+const normalizeEmail = (value) => sanitizeString(value).toLowerCase();
+
+const isBlockedDomain = (email) => {
+  const [, domain = ''] = email.split('@');
+  return BLOCKED_EMAIL_DOMAINS.has(domain);
+};
+
 const validateTeamPayload = (payload) => {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
     return { status: 400, error: 'Invalid request body. Expected a JSON object.' };
@@ -26,6 +34,11 @@ const validateTeamPayload = (payload) => {
   const teamName = sanitizeString(payload.teamName);
   const teamSizeRaw = sanitizeString(payload.teamSize);
   const teamSize = Number.parseInt(teamSizeRaw, 10);
+  const honeypot = sanitizeString(payload.honeypot || payload.website || payload.phone || payload.url);
+
+  if (honeypot) {
+    return { status: 400, error: 'Submission failed verification. Please contact the organizers if this persists.' };
+  }
 
   if (!teamName) {
     return { status: 400, error: 'Team name is required.' };
@@ -40,26 +53,31 @@ const validateTeamPayload = (payload) => {
 
   const leadInput = payload.lead || {};
   const leadName = sanitizeString(leadInput.name);
-  const leadEmail = sanitizeString(leadInput.email).toLowerCase();
+  const leadEmail = normalizeEmail(leadInput.email);
   const leadGender = sanitizeString(leadInput.gender);
 
   if (!leadName || !leadEmail || !leadGender) {
     return { status: 400, error: 'Team lead name, email, and gender are required.' };
   }
 
-  if (!EMAIL_REGEX.test(leadEmail)) {
-    return { status: 400, error: 'Team lead email must be a valid email address.' };
+  if (!EDU_EMAIL_REGEX.test(leadEmail)) {
+    return { status: 400, error: 'Team lead email must be a valid college email ending with .edu.in.' };
+  }
+
+  if (isBlockedDomain(leadEmail)) {
+    return { status: 400, error: 'Registrations from this email domain are not permitted. Use your official college email.' };
   }
 
   const membersRaw = Array.isArray(payload.members) ? payload.members : [];
   const members = [];
   let membersError = null;
+  const seenEmails = new Set([leadEmail]);
 
   membersRaw.forEach((member, index) => {
     if (membersError || members.length >= MAX_MEMBERS) return;
 
     const name = sanitizeString(member.name);
-    const email = sanitizeString(member.email).toLowerCase();
+    const email = normalizeEmail(member.email);
     const gender = sanitizeString(member.gender);
     const isRequired = index < (teamSize - 1);
 
@@ -68,8 +86,8 @@ const validateTeamPayload = (payload) => {
         membersError = 'Each submitted teammate must include name, college email, and gender.';
         return;
       }
-      if (!EMAIL_REGEX.test(email)) {
-        membersError = 'Provide valid college emails for every teammate you include.';
+      if (!EDU_EMAIL_REGEX.test(email)) {
+        membersError = 'Provide valid college emails ending with .edu.in for every teammate you include.';
         return;
       }
     }
@@ -78,9 +96,20 @@ const validateTeamPayload = (payload) => {
       return;
     }
 
-    if (email && !EMAIL_REGEX.test(email)) {
-      membersError = 'Team member emails must be valid email addresses.';
-      return;
+    if (email) {
+      if (!EDU_EMAIL_REGEX.test(email)) {
+        membersError = 'Team member emails must be valid college addresses ending with .edu.in.';
+        return;
+      }
+      if (isBlockedDomain(email)) {
+        membersError = 'One or more teammate email domains are not permitted. Use official college emails.';
+        return;
+      }
+      if (seenEmails.has(email)) {
+        membersError = 'Each teammate must have a unique college email address.';
+        return;
+      }
+      seenEmails.add(email);
     }
 
     members.push({
