@@ -3,7 +3,6 @@ const { validateTeamPayload, saveTeamRegistration, listTeamRegistrations } = req
 const adminAuth = require('../middleware/adminAuth');
 const submissionGuard = require('../middleware/submissionGuard');
 const recaptchaGuard = require('../middleware/recaptcha');
-const { getSessionFromRequest } = require('../services/participantSessions');
 
 const router = express.Router();
 
@@ -17,21 +16,7 @@ const submitHandler = asyncHandler(async (req, res) => {
     return;
   }
 
-  const participant = getSessionFromRequest(req)?.user || null;
-  const record = participant
-    ? {
-        ...data,
-        submittedBy: {
-          login: participant.login,
-          name: participant.name,
-          profileUrl: participant.profileUrl,
-          avatarUrl: participant.avatarUrl,
-          id: participant.id,
-        },
-      }
-    : data;
-
-  await saveTeamRegistration(record);
+  await saveTeamRegistration(data);
   res.status(201).json({ ok: true });
 });
 

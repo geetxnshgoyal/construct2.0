@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../hooks/useTheme';
 
@@ -20,20 +20,6 @@ type RegistrationRecord = {
   submittedAt?: string | null;
 };
 
-type AdminSessionInfo = {
-  authenticated: boolean;
-  user: {
-    login: string;
-    name: string | null;
-    avatarUrl: string | null;
-    profileUrl: string | null;
-  } | null;
-  methods: {
-    github: boolean;
-    passcode: boolean;
-  };
-};
-
 const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME ?? 'admin';
 const FETCH_LIMIT = 500;
 const ADMIN_MEMES = [
@@ -42,8 +28,8 @@ const ADMIN_MEMES = [
     output: [
       '╭────────────────────────────────────────────╮',
       '│  Keep calm and ship the demo before dawn.  │',
-      '╰────────────────────────────────────────────╯'
-    ]
+      '╰────────────────────────────────────────────╯',
+    ],
   },
   {
     command: 'admin@construct:~$ curl https://meme.api/cli.gif',
@@ -52,8 +38,8 @@ const ADMIN_MEMES = [
       '██████████ 100%',
       '┌────────────────────────────┐',
       '│  ({^_^})  systems go!       │',
-      '└────────────────────────────┘'
-    ]
+      '└────────────────────────────┘',
+    ],
   },
   {
     command: 'admin@construct:~$ cowsay "registrations unlocked!"',
@@ -65,9 +51,9 @@ const ADMIN_MEMES = [
       '         \\  (oo)\\_______',
       '            (__)\\       )\\/\\',
       '                ||----w |',
-      '                ||     ||'
-    ]
-  }
+      '                ||     ||',
+    ],
+  },
 ] as const;
 
 export default function Admin() {
@@ -77,62 +63,14 @@ export default function Admin() {
   const [registrations, setRegistrations] = useState<RegistrationRecord[]>([]);
   const [lastUsedCode, setLastUsedCode] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const [sessionInfo, setSessionInfo] = useState<AdminSessionInfo | null>(null);
-  const [authMode, setAuthMode] = useState<'session' | 'passcode' | null>(null);
-  const [checkingSession, setCheckingSession] = useState(true);
-  const hasLoadedFromSession = useRef(false);
   const theme = useTheme();
-  const githubEnabled = sessionInfo?.methods.github ?? false;
-  const passcodeEnabled = sessionInfo?.methods.passcode ?? true;
-  const authenticatedUser = sessionInfo?.user;
   const subtleText = theme === 'dark' ? 'text-white/40' : 'text-ink/40';
   const subtleTextStrong = theme === 'dark' ? 'text-white/60' : 'text-ink/60';
 
-  const refreshSessionInfo = async () => {
-    setCheckingSession(true);
-    try {
-      const response = await fetch('/api/auth/session', { credentials: 'include' });
-      if (!response.ok) {
-        throw new Error('Failed to load session information.');
-      }
-      const payload: AdminSessionInfo = await response.json();
-      setSessionInfo(payload);
-      if (payload.authenticated) {
-        setIsAuthorized(true);
-        setAuthMode('session');
-        if (!hasLoadedFromSession.current) {
-          hasLoadedFromSession.current = true;
-          void fetchRegistrations({ skipSessionCheck: true });
-        }
-      } else if (authMode === 'session') {
-        setIsAuthorized(false);
-        setAuthMode(null);
-        setRegistrations([]);
-      }
-    } catch (err) {
-      console.error('Failed to refresh session', err);
-      setSessionInfo(null);
-      if (authMode === 'session') {
-        setIsAuthorized(false);
-        setAuthMode(null);
-        setRegistrations([]);
-      }
-    } finally {
-      setCheckingSession(false);
-    }
-  };
-
-  const fetchRegistrations = async ({ passcode, skipSessionCheck = false }: { passcode?: string; skipSessionCheck?: boolean } = {}) => {
-    const trimmedCode = passcode?.trim();
-
-    if (typeof passcode !== 'undefined' && !trimmedCode) {
+  const fetchRegistrations = async (passcode: string) => {
+    const trimmed = passcode.trim();
+    if (!trimmed) {
       setError('Enter the current access code.');
-      setRegistrations([]);
-      return false;
-    }
-
-    if (!skipSessionCheck && typeof passcode === 'undefined' && !sessionInfo?.authenticated) {
-      setError('Sign in first to view registrations.');
       setRegistrations([]);
       return false;
     }
@@ -141,14 +79,10 @@ export default function Admin() {
     setError('');
 
     try {
-      const headers: Record<string, string> = {};
-      if (trimmedCode) {
-        headers.Authorization = `Basic ${btoa(`${ADMIN_USERNAME}:${trimmedCode}`)}`;
-      }
-
       const response = await fetch(`/api/registrations?limit=${FETCH_LIMIT}`, {
-        headers,
-        credentials: 'include',
+        headers: {
+          Authorization: `Basic ${btoa(`${ADMIN_USERNAME}:${trimmed}`)}`,
+        },
       });
 
       if (!response.ok) {
@@ -158,75 +92,38 @@ export default function Admin() {
 
       const data = await response.json();
       setRegistrations(Array.isArray(data.items) ? data.items : []);
-
-      if (trimmedCode) {
-        setLastUsedCode(trimmedCode);
-        setAuthMode('passcode');
-      } else {
-        setAuthMode('session');
-      }
-
+      setLastUsedCode(trimmed);
       setIsAuthorized(true);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
       setRegistrations([]);
-      if (!trimmedCode) {
-        setIsAuthorized(false);
-        setAuthMode(null);
-      }
+      setIsAuthorized(false);
       return false;
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    void refreshSessionInfo();
-  }, []);
-
-  const handleFetch = async (event: FormEvent<HTMLFormElement>) => {
+  const handleFetch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    void fetchRegistrations({ passcode: accessCode });
-  };
-
-  const handleGithubLogin = () => {
-    window.location.href = '/api/auth/github/login';
+    void fetchRegistrations(accessCode);
   };
 
   const handleRefresh = () => {
-    if (authMode === 'passcode') {
-      if (!lastUsedCode) {
-        setError('Fetch registrations first.');
-        return;
-      }
-      void fetchRegistrations({ passcode: lastUsedCode });
+    if (!lastUsedCode) {
+      setError('Fetch registrations first.');
       return;
     }
-    void fetchRegistrations();
+    void fetchRegistrations(lastUsedCode);
   };
 
   const handleLogout = () => {
-    if (authMode === 'session' || sessionInfo?.authenticated) {
-      void fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      })
-        .catch((err) => {
-          console.error('Failed to end admin session', err);
-        })
-        .finally(() => {
-          void refreshSessionInfo();
-        });
-    }
-
     setAccessCode('');
     setLastUsedCode('');
     setRegistrations([]);
     setError('');
     setIsAuthorized(false);
-    setAuthMode(null);
-    hasLoadedFromSession.current = false;
   };
 
   const handleDownloadCsv = () => {
@@ -242,7 +139,7 @@ export default function Admin() {
       'Lead Email',
       'Lead Gender',
       'Members',
-      'Submitted At'
+      'Submitted At',
     ];
 
     const toCsvRow = (record: RegistrationRecord) => {
@@ -251,7 +148,9 @@ export default function Admin() {
           if (!member.name && !member.email) {
             return '';
           }
-          const details = [member.name ?? '', member.email ?? '', member.gender ?? ''].filter(Boolean).join(' • ');
+          const details = [member.name ?? '', member.email ?? '', member.gender ?? '']
+            .filter(Boolean)
+            .join(' • ');
           return details;
         })
         .filter(Boolean)
@@ -264,7 +163,7 @@ export default function Admin() {
         record.lead.email,
         record.lead.gender ?? '',
         members,
-        record.submittedAt ? new Date(record.submittedAt).toISOString() : ''
+        record.submittedAt ? new Date(record.submittedAt).toISOString() : '',
       ];
     };
 
@@ -319,20 +218,6 @@ export default function Admin() {
             <p className={`mt-2 text-sm ${theme === 'dark' ? 'text-white/70' : 'text-ink/70'}`}>
               You&apos;re authenticated. Use the controls below to keep tabs on incoming registrations.
             </p>
-            {authenticatedUser ? (
-              <p className={`mt-2 text-xs ${subtleText}`}>
-                Signed in as{' '}
-                <a
-                  href={authenticatedUser.profileUrl || '#'}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={theme === 'dark' ? 'text-neon hover:underline' : 'text-accent hover:underline'}
-                >
-                  {authenticatedUser.login}
-                </a>
-                {authenticatedUser.name ? ` (${authenticatedUser.name})` : ''}
-              </p>
-            ) : null}
             <div
               className={`mt-8 rounded-2xl border shadow-inner ${
                 theme === 'dark'
@@ -353,13 +238,7 @@ export default function Admin() {
               <div className="space-y-6 px-6 py-5 font-mono text-[0.8rem]">
                 {ADMIN_MEMES.map((meme) => (
                   <div key={meme.command}>
-                    <p
-                      className={`${
-                        theme === 'dark' ? 'text-neon' : 'text-emerald-300'
-                      }`}
-                    >
-                      {meme.command}
-                    </p>
+                    <p className={`${theme === 'dark' ? 'text-neon' : 'text-emerald-300'}`}>{meme.command}</p>
                     <pre
                       className={`mt-2 whitespace-pre ${
                         theme === 'dark' ? 'text-white/80' : 'text-green-200'
@@ -373,136 +252,99 @@ export default function Admin() {
             </div>
           </motion.div>
         ) : (
-          <motion.div
+          <motion.form
+            onSubmit={handleFetch}
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
             className={`mt-10 rounded-xl border p-8 backdrop-blur-xl ${
               theme === 'dark'
-                ? 'border-white/10 bg-black/30 text-white'
-                : 'border-ink/5 bg-white/90 text-ink shadow-lg'
+                ? 'border-white/10 bg-black/30'
+                : 'border-ink/5 bg-white/90 shadow-lg'
             }`}
           >
-            <h2 className="text-2xl font-semibold">Authenticate to continue</h2>
-            <p className={`mt-2 text-sm ${theme === 'dark' ? 'text-white/70' : 'text-ink/70'}`}>
-              Sign in with GitHub or use the rotating access code to unlock the admin console.
-            </p>
-
-            <div className="mt-8 space-y-8">
-              {checkingSession ? (
-                <p className={`text-sm ${theme === 'dark' ? 'text-white/50' : 'text-ink/50'}`}>
-                  Checking session status…
+            <div className="grid gap-6 md:grid-cols-[1fr_auto]">
+              <label className="flex flex-col gap-2 md:col-start-1">
+                <span className={`text-xs font-medium uppercase tracking-wide ${subtleTextStrong}`}>Access code</span>
+                <input
+                  type="password"
+                  value={accessCode}
+                  onChange={(event) => {
+                    setAccessCode(event.target.value);
+                    if (error) {
+                      setError('');
+                    }
+                  }}
+                  placeholder="Enter secure code"
+                  className={`rounded-xl border px-4 py-3 transition-colors
+                    ${
+                      theme === 'dark'
+                        ? 'border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:border-neon/50 focus:bg-white/10'
+                        : 'border-ink/10 bg-white text-ink placeholder:text-ink/40 focus:border-accent/30'
+                    } focus:outline-none focus:ring-2 ${
+                      theme === 'dark' ? 'focus:ring-neon/20' : 'focus:ring-accent/10'
+                    }`}
+                />
+              </label>
+              <div className="flex items-end">
+                <p className={`text-[0.6rem] uppercase tracking-[0.35em] ${subtleText}`}>
+                  Username preset to <span className={subtleTextStrong}>{ADMIN_USERNAME}</span>
                 </p>
-              ) : (
-                <>
-                  {githubEnabled ? (
-                    <button
-                      type="button"
-                      onClick={handleGithubLogin}
-                      className={`w-full rounded-xl px-6 py-3 text-sm font-semibold transition-all active:scale-[0.98] ${
-                        theme === 'dark'
-                          ? 'border border-white/15 bg-white/10 text-white hover:bg-white/15'
-                          : 'border border-ink/15 bg-white text-ink hover:border-ink/30'
-                      }`}
-                    >
-                      Continue with GitHub
-                    </button>
-                  ) : null}
-
-                  {passcodeEnabled ? (
-                    <form onSubmit={handleFetch} className="space-y-6">
-                      <div className="grid gap-6 md:grid-cols-[1fr_auto]">
-                        <label className="flex flex-col gap-2 md:col-start-1">
-                          <span className={`text-xs font-medium uppercase tracking-wide ${subtleTextStrong}`}>
-                            Access code
-                          </span>
-                          <input
-                            type="password"
-                            value={accessCode}
-                            onChange={(event) => {
-                              setAccessCode(event.target.value);
-                              if (error) {
-                                setError('');
-                              }
-                            }}
-                            placeholder="Enter secure code"
-                            className={`rounded-xl border px-4 py-3 transition-colors
-                              ${theme === 'dark'
-                                ? 'border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:border-neon/50 focus:bg-white/10'
-                                : 'border-ink/10 bg-white text-ink placeholder:text-ink/40 focus:border-accent/30'
-                              } focus:outline-none focus:ring-2 ${
-                                theme === 'dark' ? 'focus:ring-neon/20' : 'focus:ring-accent/10'
-                              }`}
-                          />
-                        </label>
-                        <div className="flex items-end">
-                          <p className={`text-[0.6rem] uppercase tracking-[0.35em] ${subtleText}`}>
-                            Username preset to <span className={subtleTextStrong}>{ADMIN_USERNAME}</span>
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
-                        <button
-                          type="submit"
-                          disabled={loading}
-                          className={`rounded-xl px-6 py-3 text-sm font-semibold transition-all active:scale-[0.98] ${
-                            theme === 'dark'
-                              ? 'border border-neon/40 bg-neon/20 text-white hover:bg-neon/30 disabled:border-white/20 disabled:bg-white/10 disabled:text-white/40'
-                              : 'bg-accent text-white hover:bg-accent/90 disabled:bg-ink/10 disabled:text-ink/40'
-                          } disabled:cursor-not-allowed`}
-                        >
-                          {loading ? 'Verifying…' : 'Use access code'}
-                        </button>
-                        <p className={`text-xs uppercase tracking-[0.4em] ${subtleText}`}>
-                          Protected via rotating access code
-                        </p>
-                      </div>
-                    </form>
-                  ) : (
-                    <p className={`text-sm ${theme === 'dark' ? 'text-white/50' : 'text-ink/50'}`}>
-                      Passcode login is disabled. Ask the ops team to enable GitHub access.
-                    </p>
-                  )}
-                </>
-              )}
+              </div>
             </div>
-          </motion.div>
+            <div className="mt-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
+              <button
+                type="submit"
+                disabled={loading}
+                className={`rounded-xl px-6 py-3 text-sm font-semibold transition-all active:scale-[0.98] ${
+                  theme === 'dark'
+                    ? 'border border-neon/40 bg-neon/20 text-white hover:bg-neon/30 disabled:border-white/20 disabled:bg-white/10 disabled:text-white/40'
+                    : 'bg-accent text-white hover:bg-accent/90 disabled:bg-ink/10 disabled:text-ink/40'
+                } disabled:cursor-not-allowed`}
+              >
+                {loading ? 'Verifying…' : 'Use access code'}
+              </button>
+              <p className={`text-xs uppercase tracking-[0.4em] ${subtleText}`}>
+                Protected via rotating access code
+              </p>
+            </div>
+          </motion.form>
         )}
 
         {isAuthorized ? (
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={handleRefresh}
-            disabled={loading}
-            className={`rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] transition ${
-              theme === 'dark'
-                ? 'border border-white/15 text-white/80 hover:text-white disabled:border-white/10 disabled:text-white/30'
-                : 'border border-ink/15 text-ink/70 hover:text-ink disabled:border-ink/10 disabled:text-ink/40'
-            }`}
-          >
-            Refresh
-          </button>
-          <button
-            type="button"
-            onClick={handleDownloadCsv}
-            className={`rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] transition ${
-              theme === 'dark'
-                ? 'border border-white/15 text-white/80 hover:text-white disabled:border-white/10 disabled:text-white/30'
-                : 'border border-ink/15 text-ink/70 hover:text-ink disabled:border-ink/10 disabled:text-ink/40'
-            }`}
-            disabled={registrations.length === 0}
-          >
-            Download CSV
-          </button>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="rounded-full border border-magenta/40 bg-magenta/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-magenta transition hover:bg-magenta/20"
-          >
-            Log out
-          </button>
-        </div>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={handleRefresh}
+              disabled={loading}
+              className={`rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] transition ${
+                theme === 'dark'
+                  ? 'border border-white/15 text-white/80 hover:text-white disabled:border-white/10 disabled:text-white/30'
+                  : 'border border-ink/15 text-ink/70 hover:text-ink disabled:border-ink/10 disabled:text-ink/40'
+              }`}
+            >
+              Refresh
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadCsv}
+              className={`rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] transition ${
+                theme === 'dark'
+                  ? 'border border-white/15 text-white/80 hover:text-white disabled:border-white/10 disabled:text-white/30'
+                  : 'border border-ink/15 text-ink/70 hover:text-ink disabled:border-ink/10 disabled:text-ink/40'
+              }`}
+              disabled={registrations.length === 0}
+            >
+              Download CSV
+            </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-full border border-magenta/40 bg-magenta/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-magenta transition hover:bg-magenta/20"
+            >
+              Log out
+            </button>
+          </div>
         ) : null}
 
         {error ? (
@@ -600,7 +442,7 @@ export default function Admin() {
                           </p>
                           {member.gender ? (
                             <p
-                              className={`text-[0.6rem] uppercase tracking-[0.35em] ${
+                              className={`text-[0.65rem] uppercase tracking-[0.3em] ${
                                 theme === 'dark' ? 'text-white/40' : 'text-ink/40'
                               }`}
                             >
