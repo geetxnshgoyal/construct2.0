@@ -28,23 +28,8 @@ type MemberField = {
 
 type SubmissionState = 'idle' | 'submitting' | 'success' | 'error';
 
-type ParticipantSessionInfo = {
-  authenticated: boolean;
-  user: {
-    login: string;
-    name: string | null;
-    avatarUrl: string | null;
-    profileUrl: string | null;
-  } | null;
-  methods: {
-    github: boolean;
-  };
-};
-
 export default function Registration() {
   const recaptchaSiteKey = (import.meta.env.VITE_RECAPTCHA_SITE_KEY as string) || '';
-  const [sessionInfo, setSessionInfo] = useState<ParticipantSessionInfo | null>(null);
-  const [checkingSession, setCheckingSession] = useState(true);
   const [teamName, setTeamName] = useState('');
   const [teamSize, setTeamSize] = useState(1);
   const [lead, setLead] = useState<MemberField>({ name: '', email: '', gender: '' });
@@ -55,8 +40,6 @@ export default function Registration() {
   const [recaptchaReady, setRecaptchaReady] = useState(() => !recaptchaSiteKey);
   const theme = useTheme();
   const isDark = theme === 'dark';
-  const isAuthenticated = sessionInfo?.authenticated ?? false;
-  const participant = sessionInfo?.user ?? null;
 
   const labelAccent = `text-xs font-medium uppercase tracking-wide ${isDark ? 'text-white/60' : 'text-ink/60'}`;
   const subLabel = `uppercase tracking-[0.4em] text-sm ${isDark ? 'text-white/50' : 'text-ink/50'}`;
@@ -83,45 +66,6 @@ export default function Registration() {
       prev.map((member, index) => (index < requiredMembers ? member : { name: '', email: '', gender: '' }))
     );
   }, [requiredMembers]);
-
-  const refreshSession = async () => {
-    setCheckingSession(true);
-    try {
-      const response = await fetch('/api/auth/participant/session', { credentials: 'include' });
-      if (!response.ok) {
-        throw new Error('Failed to load session information.');
-      }
-      const payload: ParticipantSessionInfo = await response.json();
-      setSessionInfo(payload);
-    } catch (err) {
-      console.error('Unable to refresh participant session', err);
-      setSessionInfo({ authenticated: false, user: null, methods: { github: false } });
-    } finally {
-      setCheckingSession(false);
-    }
-  };
-
-  useEffect(() => {
-    void refreshSession();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleGithubLogin = () => {
-    window.location.href = '/api/auth/github/login?mode=participant';
-  };
-
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/participant/logout', {
-        method: 'POST',
-        credentials: 'include'
-      });
-    } catch (err) {
-      console.error('Failed to end participant session', err);
-    } finally {
-      void refreshSession();
-    }
-  };
 
   useEffect(() => {
     if (!recaptchaSiteKey || typeof window === 'undefined') {
@@ -233,13 +177,6 @@ export default function Registration() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!isAuthenticated) {
-      setSubmissionState('error');
-      setErrorMessage('Sign in with GitHub before submitting the registration form.');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
     const payload = buildPayload();
     const validationError = validateEmails(payload);
     if (validationError) {
@@ -321,72 +258,6 @@ export default function Registration() {
             isDark ? 'border border-white/10 bg-black/30 text-white' : 'border border-ink/5 bg-white/80 text-ink shadow-lg'
           }`}
         >
-          <div
-            className={`mb-8 flex flex-col gap-4 rounded-xl border p-4 text-sm sm:flex-row sm:items-center sm:justify-between ${
-              isDark ? 'border-white/10 bg-white/5 text-white/80' : 'border-ink/10 bg-white text-ink/80'
-            }`}
-          >
-            {checkingSession ? (
-              <p>Checking GitHub session…</p>
-            ) : isAuthenticated && participant ? (
-              <div>
-                <p className="font-medium">Signed in via GitHub</p>
-                <p className="mt-1 text-xs opacity-80">
-                  <a
-                    href={participant.profileUrl ?? '#'}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={isDark ? 'text-neon hover:underline' : 'text-accent hover:underline'}
-                  >
-                    {participant.login}
-                  </a>
-                  {participant.name ? ` (${participant.name})` : ''}
-                </p>
-              </div>
-            ) : (
-              <div>
-                <p className="font-medium">Connect GitHub to continue</p>
-                <p className="mt-1 text-xs opacity-80">
-                  We link your submission to a GitHub account so we can trace abuse and keep bots out.
-                </p>
-              </div>
-            )}
-            <div className="flex gap-2">
-              {isAuthenticated ? (
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className={`rounded-lg px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] ${
-                    isDark
-                      ? 'border border-white/20 text-white/80 hover:text-white'
-                      : 'border border-ink/15 text-ink/70 hover:text-ink'
-                  }`}
-                >
-                  Log out
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleGithubLogin}
-                  className={`rounded-lg px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] ${
-                    isDark ? 'bg-neon/20 text-white hover:bg-neon/30' : 'bg-accent text-white hover:bg-accent/90'
-                  }`}
-                >
-                  Continue with GitHub
-                </button>
-              )}
-            </div>
-          </div>
-
-          {!isAuthenticated ? (
-            <div className={`mb-8 rounded-xl border p-4 text-xs ${
-              isDark ? 'border-white/10 bg-white/5 text-white/70' : 'border-ink/10 bg-white text-ink/70'
-            }`}
-            >
-              Sign in is required before submitting. You can start filling details now, but the submit button stays disabled until GitHub is connected.
-            </div>
-          ) : null}
-
           <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px' }}>
             <label htmlFor="team-website">Team website</label>
             <input
@@ -560,19 +431,10 @@ export default function Registration() {
           <div className="mt-12 flex flex-col items-center gap-3">
             <button
               type="submit"
-              disabled={
-                submissionState === 'submitting' ||
-                (Boolean(recaptchaSiteKey) && !recaptchaReady) ||
-                checkingSession ||
-                !isAuthenticated
-              }
+              disabled={submissionState === 'submitting' || (Boolean(recaptchaSiteKey) && !recaptchaReady)}
               className={`w-full rounded-xl px-6 py-4 text-sm font-semibold shadow-sm transition-all active:scale-[0.98] ${accentButton} disabled:cursor-not-allowed`}
             >
-              {submissionState === 'submitting'
-                ? 'Submitting...'
-                : !isAuthenticated
-                  ? 'Connect GitHub to submit'
-                  : 'Submit Registration'}
+              {submissionState === 'submitting' ? 'Submitting...' : 'Submit Registration'}
             </button>
             <p className={`text-xs font-medium ${isDark ? 'text-white/40' : 'text-ink/50'}`}>
               Expect a confirmation email within 24 hours

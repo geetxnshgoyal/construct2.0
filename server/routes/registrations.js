@@ -3,7 +3,7 @@ const { validateTeamPayload, saveTeamRegistration, listTeamRegistrations } = req
 const adminAuth = require('../middleware/adminAuth');
 const submissionGuard = require('../middleware/submissionGuard');
 const recaptchaGuard = require('../middleware/recaptcha');
-const participantAuth = require('../middleware/participantAuth');
+const { getSessionFromRequest } = require('../services/participantSessions');
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ const submitHandler = asyncHandler(async (req, res) => {
     return;
   }
 
-  const participant = req.participant || null;
+  const participant = getSessionFromRequest(req)?.user || null;
   const record = participant
     ? {
         ...data,
@@ -35,8 +35,8 @@ const submitHandler = asyncHandler(async (req, res) => {
   res.status(201).json({ ok: true });
 });
 
-router.post('/registrations', participantAuth, submissionGuard, recaptchaGuard, submitHandler);
-router.post('/submit', participantAuth, submissionGuard, recaptchaGuard, submitHandler);
+router.post('/registrations', submissionGuard, recaptchaGuard, submitHandler);
+router.post('/submit', submissionGuard, recaptchaGuard, submitHandler);
 router.get(
   '/registrations',
   adminAuth,
