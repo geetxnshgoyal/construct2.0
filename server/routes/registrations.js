@@ -16,7 +16,15 @@ const submitHandler = asyncHandler(async (req, res) => {
     return;
   }
 
-  await saveTeamRegistration(data);
+  try {
+    await saveTeamRegistration(data);
+  } catch (error) {
+    if (error?.name === 'DuplicateRegistrationError') {
+      res.status(409).json({ error: error.message });
+      return;
+    }
+    throw error;
+  }
   res.status(201).json({ ok: true });
 });
 

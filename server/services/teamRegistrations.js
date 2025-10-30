@@ -3,11 +3,23 @@ const os = require('os');
 const path = require('path');
 const { getDb, serverTimestamp, adminAvailable } = require('../firebaseAdmin');
 
-const EDU_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.edu\.in$/i;
-const BLOCKED_EMAIL_DOMAINS = new Set(['test.edu.in']);
+const CAMPUS_DOMAIN_SUFFIXES = {
+  'NST Delhi': 'rishihood.edu.in',
+  'NST Pune': 'adypu.edu.in',
+  'NST Bangalore': 'svyasa-sas.edu.in',
+};
+const ALLOWED_EMAIL_DOMAINS = new Set(Object.values(CAMPUS_DOMAIN_SUFFIXES));
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
 const MIN_TEAM_SIZE = 1;
 const MAX_TEAM_SIZE = 5;
 const MAX_MEMBERS = MAX_TEAM_SIZE - 1;
+const CAMPUS_BATCH_RULES = {
+  'NST Delhi': ['Batch 2023', 'Batch 2024', 'Batch 2025'],
+  'NST Pune': ['Batch 2024', 'Batch 2025'],
+  'NST Bangalore': ['Batch 2025'],
+};
+const ALLOWED_CAMPUSES = new Set(Object.keys(CAMPUS_BATCH_RULES));
+const ALLOWED_BATCHES = new Set(['Batch 2023', 'Batch 2024', 'Batch 2025']);
 
 const sanitizeString = (value) => {
   if (typeof value === 'string') {
@@ -21,9 +33,20 @@ const sanitizeString = (value) => {
 
 const normalizeEmail = (value) => sanitizeString(value).toLowerCase();
 
-const isBlockedDomain = (email) => {
+const matchesSuffix = (domain = '', suffix) => domain === suffix || domain.endsWith(`.${suffix}`);
+
+const isAllowedDomain = (email) => {
   const [, domain = ''] = email.split('@');
-  return BLOCKED_EMAIL_DOMAINS.has(domain);
+  return Array.from(ALLOWED_EMAIL_DOMAINS).some((suffix) => matchesSuffix(domain, suffix));
+};
+
+const matchesCampusDomain = (email, campus) => {
+  const suffix = CAMPUS_DOMAIN_SUFFIXES[campus];
+  if (!suffix) {
+    return false;
+  }
+  const [, domain = ''] = email.split('@');
+  return matchesSuffix(domain, suffix);
 };
 
 const validateTeamPayload = (payload) => {
@@ -35,6 +58,8 @@ const validateTeamPayload = (payload) => {
   const teamSizeRaw = sanitizeString(payload.teamSize);
   const teamSize = Number.parseInt(teamSizeRaw, 10);
   const honeypot = sanitizeString(payload.honeypot || payload.website || payload.phone || payload.url);
+  const campus = sanitizeString(payload.campus);
+  const batch = sanitizeString(payload.batch);
 
   if (honeypot) {
     return { status: 400, error: 'Submission failed verification. Please contact the organizers if this persists.' };
@@ -42,6 +67,19 @@ const validateTeamPayload = (payload) => {
 
   if (!teamName) {
     return { status: 400, error: 'Team name is required.' };
+  }
+
+  if (!ALLOWED_CAMPUSES.has(campus)) {
+    return { status: 400, error: 'Please select your NST campus.' };
+  }
+
+  if (!ALLOWED_BATCHES.has(batch)) {
+    return { status: 400, error: 'Please select your batch year.' };
+  }
+
+  if (!CAMPUS_BATCH_RULES[campus]?.includes(batch)) {
+    const allowed = CAMPUS_BATCH_RULES[campus]?.join(', ') || 'the appropriate year';
+    return { status: 400, error: `${campus} students can register only for ${allowed}.` };
   }
 
   if (Number.isNaN(teamSize) || teamSize < MIN_TEAM_SIZE || teamSize > MAX_TEAM_SIZE) {
@@ -60,12 +98,9 @@ const validateTeamPayload = (payload) => {
     return { status: 400, error: 'Team lead name, email, and gender are required.' };
   }
 
-  if (!EDU_EMAIL_REGEX.test(leadEmail)) {
-    return { status: 400, error: 'Team lead email must be a valid college email ending with .edu.in.' };
-  }
-
-  if (isBlockedDomain(leadEmail)) {
-    return { status: 400, error: 'Registrations from this email domain are not permitted. Use your official college email.' };
+  if (!EMAIL_REGEX.test(leadEmail) || !isAllowedDomain(leadEmail) || !matchesCampusDomain(leadEmail, campus)) {
+    const suffix = CAMPUS_DOMAIN_SUFFIXES[campus];
+    return { status: 400, error: `Use your official ${campus} student email (@${suffix}).` };
   }
 
   const membersRaw = Array.isArray(payload.members) ? payload.members : [];
@@ -86,8 +121,9 @@ const validateTeamPayload = (payload) => {
         membersError = 'Each submitted teammate must include name, college email, and gender.';
         return;
       }
-      if (!EDU_EMAIL_REGEX.test(email)) {
-        membersError = 'Provide valid college emails ending with .edu.in for every teammate you include.';
+      if (!EMAIL_REGEX.test(email) || !isAllowedDomain(email) || !matchesCampusDomain(email, campus)) {
+        const suffix = CAMPUS_DOMAIN_SUFFIXES[campus];
+        membersError = `Every teammate must use their ${campus} student email (@${suffix}).`;
         return;
       }
     }
@@ -97,12 +133,8 @@ const validateTeamPayload = (payload) => {
     }
 
     if (email) {
-      if (!EDU_EMAIL_REGEX.test(email)) {
-        membersError = 'Team member emails must be valid college addresses ending with .edu.in.';
-        return;
-      }
-      if (isBlockedDomain(email)) {
-        membersError = 'One or more teammate email domains are not permitted. Use official college emails.';
+      if (!EMAIL_REGEX.test(email) || !isAllowedDomain(email) || !matchesCampusDomain(email, campus)) {
+        membersError = `One or more teammate emails are not recognised for ${campus}.`;
         return;
       }
       if (seenEmails.has(email)) {
@@ -132,15 +164,20 @@ const validateTeamPayload = (payload) => {
     return { status: 400, error: 'A maximum of four teammates can be submitted alongside the leader.' };
   }
 
+  const emails = Array.from(seenEmails);
+
   const record = {
     teamName,
     teamSize,
+    campus,
+    batch,
     lead: {
       name: leadName,
       email: leadEmail,
       gender: leadGender || null,
     },
     members,
+    emails,
     submittedAt: serverTimestamp(),
   };
 
@@ -163,9 +200,34 @@ const getWritableDataDir = () => {
   return tempDir;
 };
 
+class DuplicateRegistrationError extends Error {
+  constructor(email) {
+    super(`A registration already exists for ${email}.`);
+    this.name = 'DuplicateRegistrationError';
+    this.email = email;
+  }
+}
+
+const emailExistsInLocalList = (list, email) => list.some((entry) => Array.isArray(entry.emails) && entry.emails.includes(email));
+
+const enforceUniqueEmails = async (emails, { db, localList }) => {
+  for (const email of emails) {
+    if (!email) continue;
+    if (db) {
+      const snapshot = await db.collection('teamRegistrations').where('emails', 'array-contains', email).limit(1).get();
+      if (!snapshot.empty) {
+        throw new DuplicateRegistrationError(email);
+      }
+    } else if (localList && emailExistsInLocalList(localList, email)) {
+      throw new DuplicateRegistrationError(email);
+    }
+  }
+};
+
 const saveTeamRegistration = async (teamPayload) => {
   if (adminAvailable()) {
     const db = getDb();
+    await enforceUniqueEmails(teamPayload.emails || [], { db });
     await db.collection('teamRegistrations').add(teamPayload);
     return;
   }
@@ -194,6 +256,8 @@ const saveTeamRegistration = async (teamPayload) => {
     list = [];
   }
 
+  await enforceUniqueEmails(teamPayload.emails || [], { localList: list });
+
   list.unshift(entry);
   try {
     fs.writeFileSync(filePath, JSON.stringify(list, null, 2), 'utf8');
@@ -215,7 +279,9 @@ const listTeamRegistrations = async ({ limit = 100 } = {}) => {
       if (!filePath) return [];
       const raw = fs.readFileSync(filePath, 'utf8') || '[]';
       const list = JSON.parse(raw);
-      return list.slice(0, Math.min(list.length, Number.parseInt(limit, 10) || 100));
+      return list
+        .slice(0, Math.min(list.length, Number.parseInt(limit, 10) || 100))
+        .map(({ emails, ...rest }) => rest);
     } catch (e) {
       return [];
     }
@@ -237,9 +303,11 @@ const listTeamRegistrations = async ({ limit = 100 } = {}) => {
       ? data.submittedAt.toDate().toISOString()
       : null;
 
+    const { emails, ...rest } = data;
+
     return {
       id: doc.id,
-      ...data,
+      ...rest,
       submittedAt,
     };
   });

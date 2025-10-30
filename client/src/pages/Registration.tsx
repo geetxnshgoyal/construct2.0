@@ -2,8 +2,34 @@ import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../hooks/useTheme';
 
-const EDU_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.edu\.in$/i;
-const BLOCKED_EMAIL_DOMAINS = new Set(['test.edu.in']);
+type BatchOption = 'Batch 2023' | 'Batch 2024' | 'Batch 2025';
+const CAMPUS_DOMAIN_SUFFIXES = {
+  'NST Delhi': 'rishihood.edu.in',
+  'NST Pune': 'adypu.edu.in',
+  'NST Bangalore': 'svyasa-sas.edu.in',
+} as const;
+const CAMPUSES = Object.keys(CAMPUS_DOMAIN_SUFFIXES) as Array<keyof typeof CAMPUS_DOMAIN_SUFFIXES>;
+const ALL_BATCHES: BatchOption[] = ['Batch 2023', 'Batch 2024', 'Batch 2025'];
+const CAMPUS_BATCH_MAP: Record<keyof typeof CAMPUS_DOMAIN_SUFFIXES, BatchOption[]> = {
+  'NST Delhi': ['Batch 2023', 'Batch 2024', 'Batch 2025'],
+  'NST Pune': ['Batch 2024', 'Batch 2025'],
+  'NST Bangalore': ['Batch 2025'],
+};
+const ALLOWED_EMAIL_DOMAINS: string[] = Object.values(CAMPUS_DOMAIN_SUFFIXES);
+const buildDomainPattern = (suffix: string) => `(?:[a-z0-9-]+\\.)*${suffix.replace(/\./g, '\\.')}`;
+const ALLOWED_DOMAINS_PATTERN = ALLOWED_EMAIL_DOMAINS.map((suffix) => buildDomainPattern(suffix)).join('|');
+const EDU_EMAIL_PATTERN = new RegExp(`^[^\\s@]+@(${ALLOWED_DOMAINS_PATTERN})$`, 'i');
+
+const matchesSuffix = (domain: string, suffix: string) => domain === suffix || domain.endsWith(`.${suffix}`);
+
+const matchesAllowedDomain = (domain: string) => ALLOWED_EMAIL_DOMAINS.some((suffix) => matchesSuffix(domain, suffix));
+
+const matchesCampusEmail = (email: string, campusValue: typeof CAMPUSES[number] | undefined) => {
+  if (!campusValue) return false;
+  const suffix = CAMPUS_DOMAIN_SUFFIXES[campusValue];
+  const domain = email.split('@')[1] ?? '';
+  return matchesSuffix(domain, suffix);
+};
 
 declare global {
   interface Window {
@@ -35,8 +61,11 @@ export default function Registration() {
   const [lead, setLead] = useState<MemberField>({ name: '', email: '', gender: '' });
   const [members, setMembers] = useState<MemberField[]>(() => Array.from({ length: 4 }, () => ({ name: '', email: '', gender: '' })));
   const [honeypot, setHoneypot] = useState('');
+  const [campus, setCampus] = useState('');
+  const [batch, setBatch] = useState('');
   const [submissionState, setSubmissionState] = useState<SubmissionState>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
   const [recaptchaReady, setRecaptchaReady] = useState(() => !recaptchaSiteKey);
   const theme = useTheme();
   const isDark = theme === 'dark';
@@ -60,12 +89,21 @@ export default function Registration() {
     : 'bg-accent text-white hover:bg-accent/90 disabled:bg-ink/10 disabled:text-ink/40';
 
   const requiredMembers = useMemo(() => Math.max(0, teamSize - 1), [teamSize]);
+  const availableBatches = useMemo(() => (campus ? CAMPUS_BATCH_MAP[campus as typeof CAMPUSES[number]] ?? [] : []), [campus]);
+  const selectedDomain = campus ? CAMPUS_DOMAIN_SUFFIXES[campus as keyof typeof CAMPUS_DOMAIN_SUFFIXES] : undefined;
+  const emailPlaceholder = selectedDomain ? `name@${selectedDomain}` : 'name@rishihood.edu.in';
 
   useEffect(() => {
     setMembers((prev) =>
       prev.map((member, index) => (index < requiredMembers ? member : { name: '', email: '', gender: '' }))
     );
   }, [requiredMembers]);
+
+  useEffect(() => {
+    if (batch && !availableBatches.includes(batch as (typeof availableBatches)[number])) {
+      setBatch('');
+    }
+  }, [batch, availableBatches]);
 
   useEffect(() => {
     if (!recaptchaSiteKey || typeof window === 'undefined') {
@@ -105,6 +143,8 @@ export default function Registration() {
     setLead({ name: '', email: '', gender: '' });
     setMembers(Array.from({ length: 4 }, () => ({ name: '', email: '', gender: '' })));
     setHoneypot('');
+    setCampus('');
+    setBatch('');
   };
 
   const handleMemberChange = (index: number, field: keyof MemberField, value: string) => {
@@ -126,11 +166,25 @@ export default function Registration() {
       teamSize,
       lead,
       members: filteredMembers,
-      honeypot
+      honeypot,
+      campus,
+      batch
     };
   };
 
   const validateEmails = (payload: ReturnType<typeof buildPayload>) => {
+    if (!CAMPUSES.includes(payload.campus as typeof CAMPUSES[number])) {
+      return 'Select your NST campus from the list.';
+    }
+
+    if (!ALL_BATCHES.includes(payload.batch as BatchOption)) {
+      return 'Select your batch year from the list.';
+    }
+
+    if (!CAMPUS_BATCH_MAP[payload.campus as typeof CAMPUSES[number]]?.includes(payload.batch as BatchOption)) {
+      return 'Choose the batch assigned to your campus.';
+    }
+
     const seen = new Set<string>();
     const normalize = (value: string) => value.trim().toLowerCase();
 
@@ -140,12 +194,16 @@ export default function Registration() {
         return `${label} email is required.`;
       }
       if (!EDU_EMAIL_PATTERN.test(trimmed)) {
-        return `${label} must use a college email ending with .edu.in.`;
+        return `${label} must use the official student email for your campus.`;
       }
       const normalized = normalize(trimmed);
       const domain = normalized.split('@')[1] ?? '';
-      if (BLOCKED_EMAIL_DOMAINS.has(domain)) {
-        return `${label} email domain is not allowed. Please use your official college email.`;
+      if (!matchesAllowedDomain(domain)) {
+        return `${label} email domain is not recognised. Use your campus account.`;
+      }
+      if (!matchesCampusEmail(trimmed, payload.campus as typeof CAMPUSES[number])) {
+        const suffix = CAMPUS_DOMAIN_SUFFIXES[payload.campus as keyof typeof CAMPUS_DOMAIN_SUFFIXES];
+        return `${label} email must match the ${payload.campus} domain (@${suffix}).`;
       }
       if (seen.has(normalized)) {
         return `Duplicate email detected for ${label}. Every teammate needs a unique address.`;
@@ -176,6 +234,7 @@ export default function Registration() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setShowSuccess(false);
 
     const payload = buildPayload();
     const validationError = validateEmails(payload);
@@ -222,6 +281,7 @@ export default function Registration() {
       }
 
       setSubmissionState('success');
+      setShowSuccess(true);
       resetForm();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
@@ -232,6 +292,31 @@ export default function Registration() {
 
   return (
     <section className="relative pb-24 pt-16">
+      {showSuccess ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+          <div
+            className={`w-full max-w-sm rounded-2xl p-6 text-center shadow-xl ${
+              isDark ? 'bg-black/80 text-white' : 'bg-white text-ink'
+            }`}
+          >
+            <h2 className="text-xl font-semibold">Registration received!</h2>
+            <p className="mt-3 text-sm opacity-80">
+              You&apos;re all set. Check your inbox for next steps from the organizing team.
+            </p>
+            <button
+              type="button"
+              onClick={() => setShowSuccess(false)}
+              className={`mt-6 rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] transition ${
+                isDark
+                  ? 'border border-white/20 text-white hover:bg-white/10'
+                  : 'border border-ink/15 text-ink hover:border-ink/30'
+              }`}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      ) : null}
       <div className="mx-auto max-w-4xl px-6">
         <motion.header
           initial={{ opacity: 0, y: 40 }}
@@ -258,6 +343,58 @@ export default function Registration() {
             isDark ? 'border border-white/10 bg-black/30 text-white' : 'border border-ink/5 bg-white/80 text-ink shadow-lg'
           }`}
         >
+          <p className={`mb-6 text-xs font-medium uppercase tracking-[0.3em] ${isDark ? 'text-white/50' : 'text-ink/50'}`}>
+            {campus && selectedDomain
+              ? `Use your official ${campus} student email (e.g. name@${selectedDomain}).`
+              : 'Select your campus and use your official student email.'}
+          </p>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <label className="flex flex-col gap-2">
+              <span className={labelAccent}>
+                Campus <span className="text-red-500">*</span>
+              </span>
+              <select
+                value={campus}
+                onChange={(event) => setCampus(event.target.value)}
+                className={selectBase}
+                required
+              >
+                <option value="" disabled className="bg-white text-ink">
+                  Select campus
+                </option>
+                {CAMPUSES.map((value) => (
+                  <option key={value} value={value} className="bg-white text-ink">
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="flex flex-col gap-2">
+              <span className={labelAccent}>
+                Batch <span className="text-red-500">*</span>
+              </span>
+              <select
+                value={batch}
+                onChange={(event) => setBatch(event.target.value)}
+                className={selectBase}
+                required
+                disabled={!campus}
+              >
+                <option value="" disabled className="bg-white text-ink">
+                  Select batch
+                </option>
+                {availableBatches.map((value) => (
+                  <option key={value} value={value} className="bg-white text-ink">
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <hr className={`my-8 border-dashed ${isDark ? 'border-white/15' : 'border-ink/15'}`} />
           <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px' }}>
             <label htmlFor="team-website">Team website</label>
             <input
@@ -348,7 +485,7 @@ export default function Registration() {
                   type="email"
                   value={lead.email}
                   onChange={(event) => setLead((prev) => ({ ...prev, email: event.target.value }))}
-                  placeholder="name@college.edu.in"
+                placeholder={emailPlaceholder}
                   className={inputBase}
                 />
               </label>
@@ -399,7 +536,7 @@ export default function Registration() {
                         type="email"
                         value={member.email}
                         onChange={(event) => handleMemberChange(index, 'email', event.target.value)}
-                        placeholder="name@college.edu.in"
+                        placeholder={emailPlaceholder}
                         className={inputBase}
                         required
                       />

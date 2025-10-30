@@ -6,6 +6,8 @@ type RegistrationRecord = {
   id?: string;
   teamName: string;
   teamSize: number;
+  campus?: string | null;
+  batch?: string | null;
   lead: {
     name: string;
     email: string;
@@ -134,6 +136,8 @@ export default function Admin() {
 
     const csvHeader = [
       'Team Name',
+      'Campus',
+      'Batch',
       'Team Size',
       'Lead Name',
       'Lead Email',
@@ -158,6 +162,8 @@ export default function Admin() {
 
       return [
         record.teamName,
+        record.campus ?? '',
+        record.batch ?? '',
         record.teamSize.toString(),
         record.lead.name,
         record.lead.email,
@@ -379,14 +385,16 @@ export default function Admin() {
                     : 'border-ink/5 bg-white/90 shadow-md'
                 }`}
               >
-                <header className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between ${
+                <header className={`flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between ${
                   theme === 'dark' ? 'text-white' : 'text-ink'
                 }`}>
                   <div>
                     <h2 className="text-xl font-semibold">{registration.teamName}</h2>
                     <p className={`text-xs font-medium uppercase tracking-wide ${
                       theme === 'dark' ? 'text-white/50' : 'text-ink/50'
-                    }`}>{registration.teamSize} members</p>
+                    }`}>
+                      {registration.teamSize} members • {registration.campus ?? 'Campus N/A'} • {registration.batch ?? 'Batch N/A'}
+                    </p>
                   </div>
                   <div className={`text-xs font-medium uppercase tracking-wide ${
                     theme === 'dark' ? 'text-white/40' : 'text-ink/40'
