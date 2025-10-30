@@ -1,5 +1,6 @@
 const express = require('express');
 const { validateTeamPayload, saveTeamRegistration, listTeamRegistrations } = require('../services/teamRegistrations');
+const { notifyTeamRegistration } = require('../services/email');
 const adminAuth = require('../middleware/adminAuth');
 const submissionGuard = require('../middleware/submissionGuard');
 const recaptchaGuard = require('../middleware/recaptcha');
@@ -25,6 +26,11 @@ const submitHandler = asyncHandler(async (req, res) => {
     }
     throw error;
   }
+
+  const emailPayload = { ...data, submittedAt: new Date().toISOString() };
+  notifyTeamRegistration(emailPayload).catch((error) => {
+    console.error('Registration saved but failed to send notification email', error);
+  });
   res.status(201).json({ ok: true });
 });
 
