@@ -1,4 +1,5 @@
 const { validateTeamPayload, saveTeamRegistration, listTeamRegistrations } = require('../server/services/teamRegistrations');
+const { notifyTeamRegistration } = require('../server/services/email');
 const { initAdmin } = require('../server/firebaseAdmin');
 const { Buffer } = require('buffer');
 
@@ -58,11 +59,19 @@ module.exports = async (req, res) => {
 
     try {
       await saveTeamRegistration(data);
-      res.status(201).json({ ok: true });
     } catch (err) {
       console.error('Serverless write error', err);
       res.status(500).json({ error: 'Failed to save submission' });
+      return;
     }
+
+    const emailPayload = { ...data, submittedAt: new Date().toISOString() };
+    try {
+      await notifyTeamRegistration(emailPayload);
+    } catch (error) {
+      console.error('Registration saved but failed to send notification email', error);
+    }
+    res.status(201).json({ ok: true });
     return;
   }
 

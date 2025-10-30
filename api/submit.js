@@ -1,4 +1,5 @@
 const { validateTeamPayload, saveTeamRegistration } = require('../server/services/teamRegistrations');
+const { notifyTeamRegistration } = require('../server/services/email');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -16,9 +17,17 @@ module.exports = async (req, res) => {
 
   try {
     await saveTeamRegistration(data);
-    res.status(201).json({ ok: true });
   } catch (e) {
     console.error('Serverless write error', e);
     res.status(500).json({ error: 'Failed to save submission', details: process.env.NODE_ENV === 'production' ? undefined : e.message });
+    return;
   }
+
+  const emailPayload = { ...data, submittedAt: new Date().toISOString() };
+  try {
+    await notifyTeamRegistration(emailPayload);
+  } catch (error) {
+    console.error('Registration saved but failed to send notification email', error);
+  }
+  res.status(201).json({ ok: true });
 };
