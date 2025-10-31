@@ -4,16 +4,16 @@ import { useTheme } from '../hooks/useTheme';
 
 type BatchOption = 'Batch 2023' | 'Batch 2024' | 'Batch 2025';
 const CAMPUS_DOMAIN_SUFFIXES = {
-  'NST Delhi': 'rishihood.edu.in',
-  'NST Pune': 'adypu.edu.in',
-  'NST Bangalore': 'svyasa-sas.edu.in',
+  'NST-RU': 'rishihood.edu.in',
+  'NST-ADYPU': 'adypu.edu.in',
+  'NST-Svyasa': 'svyasa-sas.edu.in',
 } as const;
 const CAMPUSES = Object.keys(CAMPUS_DOMAIN_SUFFIXES) as Array<keyof typeof CAMPUS_DOMAIN_SUFFIXES>;
 const ALL_BATCHES: BatchOption[] = ['Batch 2023', 'Batch 2024', 'Batch 2025'];
 const CAMPUS_BATCH_MAP: Record<keyof typeof CAMPUS_DOMAIN_SUFFIXES, BatchOption[]> = {
-  'NST Delhi': ['Batch 2023', 'Batch 2024', 'Batch 2025'],
-  'NST Pune': ['Batch 2024', 'Batch 2025'],
-  'NST Bangalore': ['Batch 2025'],
+  'NST-RU': ['Batch 2023', 'Batch 2024', 'Batch 2025'],
+  'NST-ADYPU': ['Batch 2024', 'Batch 2025'],
+  'NST-Svyasa': ['Batch 2025'],
 };
 const ALLOWED_EMAIL_DOMAINS: string[] = Object.values(CAMPUS_DOMAIN_SUFFIXES);
 const buildDomainPattern = (suffix: string) => `(?:[a-z0-9-]+\\.)*${suffix.replace(/\./g, '\\.')}`;

@@ -1,5 +1,31 @@
 [
   {
+    "teamName": "CLI Demo Team 232099",
+    "teamSize": 2,
+    "campus": "NST-RU",
+    "batch": "Batch 2024",
+    "lead": {
+      "name": "CLI Demo Lead",
+      "email": "cli.lead.232099@rishihood.edu.in",
+      "gender": "Male"
+    },
+    "members": [
+      {
+        "slot": 1,
+        "name": "CLI Member One",
+        "email": "cli.member.232099@rishihood.edu.in",
+        "gender": "Female"
+      }
+    ],
+    "emails": [
+      "cli.lead.232099@rishihood.edu.in",
+      "cli.member.232099@rishihood.edu.in"
+    ],
+    "submittedAt": "2025-10-30T13:50:32.135Z",
+    "_localSavedAt": "2025-10-30T13:50:32.135Z",
+    "_id": "local-1761832232136-4m6et7"
+  },
+  {
     "teamName": "Test Team",
     "teamSize": 3,
     "lead": {

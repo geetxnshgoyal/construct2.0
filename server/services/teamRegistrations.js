@@ -4,9 +4,9 @@ const path = require('path');
 const { getDb, serverTimestamp, adminAvailable } = require('../firebaseAdmin');
 
 const CAMPUS_DOMAIN_SUFFIXES = {
-  'NST Delhi': 'rishihood.edu.in',
-  'NST Pune': 'adypu.edu.in',
-  'NST Bangalore': 'svyasa-sas.edu.in',
+  'NST-RU': 'rishihood.edu.in',
+  'NST-ADYPU': 'adypu.edu.in',
+  'NST-Svyasa': 'svyasa-sas.edu.in',
 };
 const ALLOWED_EMAIL_DOMAINS = new Set(Object.values(CAMPUS_DOMAIN_SUFFIXES));
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
@@ -14,9 +14,9 @@ const MIN_TEAM_SIZE = 1;
 const MAX_TEAM_SIZE = 5;
 const MAX_MEMBERS = MAX_TEAM_SIZE - 1;
 const CAMPUS_BATCH_RULES = {
-  'NST Delhi': ['Batch 2023', 'Batch 2024', 'Batch 2025'],
-  'NST Pune': ['Batch 2024', 'Batch 2025'],
-  'NST Bangalore': ['Batch 2025'],
+  'NST-RU': ['Batch 2023', 'Batch 2024', 'Batch 2025'],
+  'NST-ADYPU': ['Batch 2024', 'Batch 2025'],
+  'NST-Svyasa': ['Batch 2025'],
 };
 const ALLOWED_CAMPUSES = new Set(Object.keys(CAMPUS_BATCH_RULES));
 const ALLOWED_BATCHES = new Set(['Batch 2023', 'Batch 2024', 'Batch 2025']);
