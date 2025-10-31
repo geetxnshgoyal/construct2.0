@@ -13,7 +13,7 @@ const path = require('path');
 const dotenvPath = path.join(process.cwd(), '.env');
 require('dotenv').config({ path: dotenvPath });
 
-const { notifyTeamRegistration } = require('../server/services/email');
+const { sendRegistrationConfirmation } = require('../server/services/email');
 
 const registration = {
   teamName: 'Team Mayday',
@@ -30,7 +30,7 @@ const registration = {
   submittedAt: new Date().toISOString(),
 };
 
-notifyTeamRegistration(registration)
+sendRegistrationConfirmation(registration)
   .then(() => {
     console.log('Test registration email dispatched.');
     process.exit(0);

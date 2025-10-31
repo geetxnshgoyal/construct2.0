@@ -5,14 +5,17 @@ const args = process.argv.slice(2);
 
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
-const { initAdmin, adminAvailable, getDb } = require('../server/firebaseAdmin');
-const { notifyTeamRegistration } = require('../server/services/email');
+const { initAdmin, adminAvailable, getDb, serverTimestamp } = require('../server/firebaseAdmin');
+const { sendRegistrationConfirmation } = require('../server/services/email');
 
 const parseArgs = () => {
   const options = {
     limit: null,
     dryRun: false,
     delay: 500,
+    skipSent: false,
+    markSent: true,
+    sentField: 'confirmationEmailLastSentAt',
   };
 
   args.forEach((arg, index) => {
@@ -28,6 +31,15 @@ const parseArgs = () => {
       if (!Number.isNaN(value) && value >= 0) {
         options.delay = value;
       }
+    } else if (arg === '--skip-sent') {
+      options.skipSent = true;
+    } else if (arg === '--no-mark') {
+      options.markSent = false;
+    } else if (arg === '--field') {
+      const value = args[index + 1];
+      if (value) {
+        options.sentField = value;
+      }
     }
   });
 
@@ -37,7 +49,7 @@ const parseArgs = () => {
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const main = async () => {
-  const { limit, dryRun, delay } = parseArgs();
+  const { limit, dryRun, delay, skipSent, markSent, sentField } = parseArgs();
 
   try {
     initAdmin();
@@ -64,7 +76,13 @@ const main = async () => {
     return;
   }
 
-  console.log(`Preparing to resend confirmation emails for ${snapshot.size} registrations${dryRun ? ' (dry run)' : ''}.`);
+  console.log(
+    `Preparing to resend confirmation emails for ${snapshot.size} registrations${dryRun ? ' (dry run)' : ''}.`
+  );
+
+  const successes = [];
+  const failures = [];
+  const skipped = [];
 
   for (const doc of snapshot.docs) {
     const data = doc.data();
@@ -80,16 +98,44 @@ const main = async () => {
       continue;
     }
 
+    const sentMarker = sentField ? registration[sentField] : null;
+    if (skipSent && sentMarker) {
+      const sentDate =
+        sentMarker && typeof sentMarker.toDate === 'function'
+          ? sentMarker.toDate().toISOString()
+          : sentMarker;
+      skipped.push({ email: leadEmail, team: registration.teamName, sentDate });
+      console.log(
+        `⏭️  Skipping ${leadEmail} (team: ${registration.teamName}) — already marked sent${sentDate ? ` on ${sentDate}` : ''}.`
+      );
+      continue;
+    }
+
     if (dryRun) {
       console.log(`[DRY RUN] Would send to ${leadEmail} (team: ${registration.teamName})`);
       continue;
     }
 
     try {
-      await notifyTeamRegistration(registration);
-      console.log(`Sent to ${leadEmail} (team: ${registration.teamName})`);
+      await sendRegistrationConfirmation(registration);
+      if (markSent && sentField) {
+        try {
+          await doc.ref.update({
+            [sentField]: serverTimestamp(),
+          });
+        } catch (updateError) {
+          console.warn(
+            `⚠️  Sent to ${leadEmail} (team: ${registration.teamName}) but failed to mark '${sentField}':`,
+            updateError.message
+          );
+        }
+      }
+      successes.push({ email: leadEmail, team: registration.teamName });
+      console.log(`✅ Sent to ${leadEmail} (team: ${registration.teamName})`);
     } catch (error) {
-      console.error(`Failed to send to ${leadEmail}:`, error.message);
+      const reason = error?.response || error?.message || String(error);
+      failures.push({ email: leadEmail, team: registration.teamName, reason });
+      console.error(`❌ Failed to send to ${leadEmail} (team: ${registration.teamName}):`, reason);
     }
 
     if (delay > 0) {
@@ -98,6 +144,23 @@ const main = async () => {
   }
 
   console.log('Done.');
+
+  if (successes.length) {
+    console.log(`\nSuccessfully sent ${successes.length} confirmation email(s).`);
+  }
+  if (skipped.length) {
+    console.log(`\nSkipped ${skipped.length} registration(s) already marked as sent:`);
+    skipped.forEach(({ email, team, sentDate }) => {
+      console.log(` - ${email} (team: ${team})${sentDate ? ` :: sent ${sentDate}` : ''}`);
+    });
+  }
+  if (failures.length) {
+    console.log(`\n${failures.length} confirmation email(s) failed:`);
+    failures.forEach(({ email, team, reason }) => {
+      console.log(` - ${email} (team: ${team}) :: ${reason}`);
+    });
+    console.log('\nRe-run with --limit/--delay after your provider cool-down, or export this list for manual follow-up.');
+  }
 };
 
 main().catch((error) => {

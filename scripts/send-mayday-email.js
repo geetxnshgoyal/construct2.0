@@ -8,7 +8,7 @@ process.env.EMAIL_ADMIN_RECIPIENTS = ['saurabhkumar@newtonschool.co', 'goyalgeet
   .filter(Boolean)
   .join(',');
 
-const { notifyTeamRegistration } = require('../server/services/email');
+const { sendRegistrationConfirmation } = require('../server/services/email');
 
 const registration = {
   teamName: 'MayDay',
@@ -56,7 +56,7 @@ const registration = {
   submittedAt: '2025-10-30T19:16:59.000Z',
 };
 
-notifyTeamRegistration(registration)
+sendRegistrationConfirmation(registration)
   .then(() => {
     console.log('MayDay registration email dispatched.');
     process.exit(0);

@@ -8,7 +8,7 @@ require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 // Force confirmation emails even if disabled in the environment.
 process.env.EMAIL_SEND_CONFIRMATION = 'true';
 
-const { notifyTeamRegistration } = require('../server/services/email');
+const { sendRegistrationConfirmation } = require('../server/services/email');
 
 const [, , recipient, teamNameArg, leadNameArg] = process.argv;
 
@@ -37,7 +37,7 @@ const registration = {
 
 async function main() {
   try {
-    await notifyTeamRegistration(registration);
+    await sendRegistrationConfirmation(registration);
     console.log(`✅ Registration-style email sent to ${recipient}`);
   } catch (error) {
     console.error('❌ Failed to send registration email:', error);

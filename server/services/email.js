@@ -28,6 +28,14 @@ const collectMemberEmails = (registration) => {
   return uniqueEmails(registration.members.map((member) => member?.email).filter(Boolean));
 };
 
+const parseDelayMs = (value, fallback = 0) => {
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isFinite(parsed) && parsed >= 0) {
+    return parsed;
+  }
+  return fallback;
+};
+
 const buildTransporter = () => {
   if (transporter || transporterError) {
     return transporter;
@@ -101,6 +109,12 @@ try {
 
 const HERO_IMAGE_SRC = heroAttachment ? 'cid:construct-hero-poster' : HERO_URL_FALLBACK;
 const LOGO_IMAGE_SRC = logoAttachment ? 'cid:construct-logo-mark' : LOGO_URL_FALLBACK;
+
+const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
+const EMAIL_CONFIRMATION_DELAY_MS = parseDelayMs(process.env.EMAIL_CONFIRMATION_DELAY_MS, SIX_HOURS_MS);
+const EMAIL_SEND_DELAY_MS = parseDelayMs(process.env.EMAIL_SEND_DELAY_MS, 0);
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const sendMail = async (message) => {
   const mailer = getTransporterOrNull();
@@ -470,6 +484,10 @@ const sendRegistrationConfirmation = async (registration) => {
   const memberCc = collectMemberEmails(registration);
   const cc = memberCc;
 
+  if (EMAIL_SEND_DELAY_MS > 0) {
+    await wait(EMAIL_SEND_DELAY_MS);
+  }
+
   return sendMail({
     to: leadEmail,
     cc: cc.length ? cc : undefined,
@@ -480,19 +498,32 @@ const sendRegistrationConfirmation = async (registration) => {
   });
 };
 
-const notifyTeamRegistration = async (registration) => {
+const notifyTeamRegistration = (registration) => {
   if (!registration || typeof registration !== 'object') {
-    return;
+    return Promise.resolve();
   }
 
-  try {
-    await sendRegistrationConfirmation(registration);
-  } catch (error) {
-    console.error('Failed to send registration email', error);
+  if (EMAIL_CONFIRMATION_DELAY_MS > 0) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        sendRegistrationConfirmation(registration)
+          .then(resolve)
+          .catch((error) => {
+            console.error('Failed to send delayed registration email', error);
+            reject(error);
+          });
+      }, EMAIL_CONFIRMATION_DELAY_MS);
+    });
   }
+
+  return sendRegistrationConfirmation(registration).catch((error) => {
+    console.error('Failed to send registration email', error);
+    throw error;
+  });
 };
 
 module.exports = {
   emailEnabled,
   notifyTeamRegistration,
+  sendRegistrationConfirmation,
 };
