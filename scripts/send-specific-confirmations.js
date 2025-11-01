@@ -14,21 +14,8 @@ const args = process.argv.slice(2);
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 const targetLeads = [
-  'e25b070587@adypu.edu.in',
-  'kushal.g25241@nst.rishihood.edu.in',
-  'siddhant.s25450@nst.rishihood.edu.in',
-  'e25b070707@adypu.edu.in',
-  'nimit.s25306@nst.rishihood.edu.in',
-  'tuhinsuvra.r25480@nst.rishihood.edu.in',
-  '2102508802@svyasa-sas.edu.in',
-  'piyush.t25335@nst.rishihood.edu.in',
-  '2102508815@svyasa-sas.edu.in',
-  'ketan.a25218@nst.rishihood.edu.in',
-  'e25b070709@adypu.edu.in',
-  'ansh.s25578@nst.rishihood.edu.in',
-  'ekansh.s25160@nst.rishihood.edu.in',
-  'devanshi.k25139@nst.rishihood.edu.in',
-  'priyanshu.singh01@adypu.edu.in',
+  '2102508785@svyasa-sas.edu.in',
+  '2102508716@svyasa-sas.edu.in'
 ];
 
 const { initAdmin, adminAvailable, getDb, serverTimestamp } = require('../server/firebaseAdmin');

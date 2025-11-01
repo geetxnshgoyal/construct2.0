@@ -4,6 +4,29 @@ const path = require('path');
 
 let transporter;
 let transporterError;
+const MAX_SMTP_SEND_ATTEMPTS = 3;
+const SMTP_RETRYABLE_CODES = new Set(['ECONNECTION', 'ETIMEDOUT', 'ECONNRESET', 'EPIPE', 'EPROTO', 'ESOCKET']);
+
+const isRetryableSmtpError = (error) => {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  if (error.code && SMTP_RETRYABLE_CODES.has(error.code)) {
+    return true;
+  }
+
+  const message = String(error.message || '').toLowerCase();
+  if (!message) {
+    return false;
+  }
+  return (
+    message.includes('connection closed unexpectedly') ||
+    message.includes('lost connection') ||
+    message.includes('unexpected message') ||
+    message.includes('ssl routines')
+  );
+};
 
 const toBool = (value, defaultValue = false) => {
   if (typeof value === 'undefined' || value === null || value === '') {
@@ -110,13 +133,25 @@ try {
 const HERO_IMAGE_SRC = heroAttachment ? 'cid:construct-hero-poster' : HERO_URL_FALLBACK;
 const LOGO_IMAGE_SRC = logoAttachment ? 'cid:construct-logo-mark' : LOGO_URL_FALLBACK;
 
-const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
-const EMAIL_CONFIRMATION_DELAY_MS = parseDelayMs(process.env.EMAIL_CONFIRMATION_DELAY_MS, SIX_HOURS_MS);
+const EMAIL_CONFIRMATION_DELAY_MS = parseDelayMs(process.env.EMAIL_CONFIRMATION_DELAY_MS, 0);
 const EMAIL_SEND_DELAY_MS = parseDelayMs(process.env.EMAIL_SEND_DELAY_MS, 0);
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const sendMail = async (message) => {
+const resetTransporter = () => {
+  try {
+    if (transporter && typeof transporter.close === 'function') {
+      transporter.close();
+    }
+  } catch (closeError) {
+    console.warn('Failed to close SMTP transporter cleanly:', closeError.message);
+  } finally {
+    transporter = null;
+    transporterError = null;
+  }
+};
+
+const sendMail = async (message, attempt = 1) => {
   const mailer = getTransporterOrNull();
 
   if (!mailer) {
@@ -145,7 +180,17 @@ const sendMail = async (message) => {
 
   envelope.attachments = attachmentsToAdd.length ? [...existing, ...attachmentsToAdd] : existing;
 
-  return mailer.sendMail(envelope);
+  try {
+    return await mailer.sendMail(envelope);
+  } catch (error) {
+    if (attempt < MAX_SMTP_SEND_ATTEMPTS && isRetryableSmtpError(error)) {
+      console.warn(`Email send attempt ${attempt} failed (${error.code || error.message}). Retrying...`);
+      resetTransporter();
+      await wait(300 * attempt);
+      return sendMail(message, attempt + 1);
+    }
+    throw error;
+  }
 };
 
 const BRAND_BG = '#020E3B';
@@ -492,6 +537,7 @@ const sendRegistrationConfirmation = async (registration) => {
     to: leadEmail,
     cc: cc.length ? cc : undefined,
     replyTo: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || process.env.SMTP_USERNAME || undefined,
+    bcc: process.env.EMAIL_CONFIRMATION_BCC || undefined,
     subject: `✅ Confirmation: You’re In! CoNSTruct Hackathon 2025`,
     text: buildLeadBody(registration),
     html: buildLeadHtml(registration),
@@ -503,23 +549,19 @@ const notifyTeamRegistration = (registration) => {
     return Promise.resolve();
   }
 
-  if (EMAIL_CONFIRMATION_DELAY_MS > 0) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        sendRegistrationConfirmation(registration)
-          .then(resolve)
-          .catch((error) => {
-            console.error('Failed to send delayed registration email', error);
-            reject(error);
-          });
-      }, EMAIL_CONFIRMATION_DELAY_MS);
+  const scheduleSend = () => {
+    sendRegistrationConfirmation(registration).catch((error) => {
+      console.error('Failed to send registration email', error);
     });
+  };
+
+  if (EMAIL_CONFIRMATION_DELAY_MS > 0) {
+    setTimeout(scheduleSend, EMAIL_CONFIRMATION_DELAY_MS);
+  } else {
+    setTimeout(scheduleSend, 0);
   }
 
-  return sendRegistrationConfirmation(registration).catch((error) => {
-    console.error('Failed to send registration email', error);
-    throw error;
-  });
+  return Promise.resolve();
 };
 
 module.exports = {
