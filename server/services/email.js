@@ -549,19 +549,16 @@ const notifyTeamRegistration = (registration) => {
     return Promise.resolve();
   }
 
-  const scheduleSend = () => {
-    sendRegistrationConfirmation(registration).catch((error) => {
-      console.error('Failed to send registration email', error);
-    });
-  };
-
   if (EMAIL_CONFIRMATION_DELAY_MS > 0) {
-    setTimeout(scheduleSend, EMAIL_CONFIRMATION_DELAY_MS);
-  } else {
-    setTimeout(scheduleSend, 0);
+    console.warn(
+      'EMAIL_CONFIRMATION_DELAY_MS is set but delayed sending is not supported in this environment. Sending immediately instead.'
+    );
   }
 
-  return Promise.resolve();
+  return sendRegistrationConfirmation(registration).catch((error) => {
+    console.error('Failed to send registration email', error);
+    throw error;
+  });
 };
 
 module.exports = {

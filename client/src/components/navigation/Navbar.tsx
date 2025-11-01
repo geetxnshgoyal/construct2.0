@@ -61,6 +61,16 @@ export default function Navbar() {
             </NavLink>
           ))}
           <Link
+            to="/submit"
+            className={`rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] transition ${
+              isDark
+                ? 'border border-white/15 text-white hover:bg-white/10'
+                : 'border border-ink/15 text-ink hover:border-ink/30 hover:bg-ink/5'
+            }`}
+          >
+            Submit
+          </Link>
+          <Link
             to="/register"
             className={`rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] shadow-card transition hover:-translate-y-0.5 ${
               isDark ? 'border border-neon/40 bg-neon/20 text-white hover:bg-neon/30' : 'border border-ink bg-accent text-white'
@@ -128,6 +138,17 @@ export default function Navbar() {
                   {link.label}
                 </NavLink>
               ))}
+              <Link
+                to="/submit"
+                onClick={() => setIsOpen(false)}
+                className={`mt-1 rounded-xl px-4 py-3 text-base font-semibold transition ${
+                  isDark
+                    ? 'border border-white/10 text-white hover:bg-white/10'
+                    : 'border border-ink/15 text-ink hover:border-ink/20'
+                }`}
+              >
+                Submit Project
+              </Link>
               <Link
                 to="/register"
                 onClick={() => setIsOpen(false)}
