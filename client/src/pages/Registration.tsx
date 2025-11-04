@@ -332,6 +332,9 @@ export default function Registration() {
             Ship your team details so we can activate Emergent workspaces, assemble collaboration pods, and prep checkpoints ahead of the
             Build for Impact sprint.
           </p>
+          <p className="mt-4 text-sm text-ink/80 sm:text-base">
+            Heads up: every team needs to sign up on the Emergent website and be present at the official launch session to keep their slot locked. Registration closes today, so wrap up your details now.
+          </p>
         </motion.header>
 
         <motion.form

@@ -36,6 +36,9 @@ export default function HeroSection() {
               Forget the spotless AI glow. This is a month of scribbled canvases, midnight prototyping, pizza boxes, and shipping with heart.
               {` ${eventMeta.heroQuote}`} Bring your notebooks, sticky tapes, and stubborn ideas.
             </p>
+            <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-800 shadow-sm">
+              Registration closes today. Make sure your crew signs up on the Emergent website and shows up for the launch session to keep your spot.
+            </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">

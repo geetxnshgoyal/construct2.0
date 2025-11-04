@@ -17,8 +17,11 @@ export default function CallToAction() {
           <h2 className="mt-4 font-display text-3xl text-ink sm:text-4xl">
             Ready to build the craziest MVP your campus has seen?
           </h2>
+          <p className="mt-4 text-sm font-semibold uppercase tracking-[0.3em] text-rose-600">
+            Registration closes today
+          </p>
           <p className="mt-4 text-base text-ink/75">
-            Seats are moving fast. Grab your notebooks, power adapters, caffeine stash, and hit register before the board fills up.
+            Seats are moving fast. Grab your notebooks, power adapters, caffeine stash, and hit register before the board fills up. Make sure your crew signs up on the Emergent website and turns up for the launch session to lock your pod.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
