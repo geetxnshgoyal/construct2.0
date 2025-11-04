@@ -9,7 +9,7 @@ export const isRegistrationClosed = (): boolean => {
     return openFlag.toLowerCase() === 'false';
   }
 
-  return false;
+  return true;
 };
 
 export const isSubmissionClosed = (): boolean => {
@@ -23,5 +23,5 @@ export const isSubmissionClosed = (): boolean => {
     return openFlag.toLowerCase() === 'false';
   }
 
-  return false;
+  return true;
 };
