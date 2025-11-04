@@ -14,11 +14,11 @@ export default function HeroSection() {
   const isDark = theme === 'dark';
 
   const closedCardPrimary = isDark
-    ? 'border-rose-500/40 bg-rose-500/10 text-rose-100'
-    : 'border-rose-200 bg-rose-50 text-rose-700';
+    ? 'border-white/15 bg-white/[0.08] text-white'
+    : 'border-rose-100 bg-rose-50 text-rose-700';
   const closedCardSecondary = isDark
-    ? 'border-rose-500/25 bg-rose-500/8 text-rose-100'
-    : 'border-rose-200 bg-rose-100 text-rose-700';
+    ? 'border-white/15 bg-white/[0.05] text-white/85'
+    : 'border-rose-100 bg-rose-50 text-rose-700';
   const openCardPrimary = isDark
     ? 'border-accent/40 bg-accent/15 text-white'
     : 'border-accent/30 bg-accent/10 text-ink';
@@ -26,7 +26,7 @@ export default function HeroSection() {
     ? 'border-accent/30 bg-accent/12 text-white'
     : 'border-accent/20 bg-accent/15 text-ink';
   const accentPillTone = registrationClosed
-    ? (isDark ? 'text-rose-300' : 'text-rose-600')
+    ? (isDark ? 'text-white/70' : 'text-rose-500')
     : (isDark ? 'text-accent/90' : 'text-accent');
   const statusCardPrimary = registrationClosed ? closedCardPrimary : openCardPrimary;
   const statusCardSecondary = registrationClosed ? closedCardSecondary : openCardSecondary;

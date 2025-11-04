@@ -6,14 +6,14 @@ export default function RegistrationClosed() {
   const theme = useTheme();
   const isDark = theme === 'dark';
 
-  const backdropTone = isDark ? 'bg-black/90 text-white' : 'bg-paper/95 text-ink';
+  const backdropTone = isDark ? 'bg-black/80 text-white' : 'bg-paper/95 text-ink';
   const dialogTone = isDark
-    ? 'border-white/15 bg-black/80 text-white'
+    ? 'border-white/15 bg-white/10 text-white'
     : 'border-ink/10 bg-white text-ink';
-  const accentTone = isDark ? 'text-rose-200' : 'text-rose-600';
+  const accentTone = isDark ? 'text-white/60' : 'text-ink/60';
   const buttonTone = isDark
-    ? 'bg-rose-500 text-white hover:bg-rose-400'
-    : 'bg-rose-500 text-white hover:bg-rose-600';
+    ? 'border border-white/20 bg-white/10 text-white hover:bg-white/15'
+    : 'border border-ink/15 text-ink hover:bg-ink/5';
 
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-24">
