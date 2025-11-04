@@ -14,21 +14,18 @@ export default function CallToAction() {
         >
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle,rgba(255,209,102,0.25),transparent_70%)]" />
           <p className="text-xs uppercase tracking-[0.6em] text-ink/60">Limited pods available</p>
-          <div className="mx-auto mt-4 inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper px-6 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.5em] text-ink">
-            Registration closes today at 5 PM
-          </div>
           <h2 className="mt-4 font-display text-3xl text-ink sm:text-4xl">
             Ready to build the craziest MVP your campus has seen?
           </h2>
           <p className="mt-4 text-base text-ink/75">
-            Seats are moving fast and the form locks at 5 PM today. Grab your notebooks, power adapters, caffeine stash, and hit register before the board fills up.
+            Seats are moving fast. Grab your notebooks, power adapters, caffeine stash, and hit register before the board fills up.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/register"
               className="rounded-full border border-ink bg-accent px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-white shadow-card transition hover:-translate-y-1 hover:shadow-[6px_6px_0_rgba(0,0,0,0.2)]"
             >
-              Register before 5 PM
+              Register now
             </Link>
           </div>
         </motion.div>
