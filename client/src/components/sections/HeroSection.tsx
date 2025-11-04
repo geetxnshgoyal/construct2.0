@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { eventMeta, highlights } from '../../data/hackathon';
 import { useCountdown } from '../../hooks/useCountdown';
 
-const COUNTDOWN_TARGET = '2025-11-05T09:00:00+05:30';
+const COUNTDOWN_TARGET = '2025-11-05T19:00:00+05:30';
 
 export default function HeroSection() {
   const { remaining, isComplete } = useCountdown(COUNTDOWN_TARGET);
@@ -90,10 +90,25 @@ export default function HeroSection() {
                 </div>
               ))}
             </div>
-            <div className="mt-6 rounded-2xl border border-dashed border-ink/40 bg-paper/60 p-4 text-sm text-ink/70">
-              {isComplete
-                ? 'Hackathon is live — see you in the project war room!'
-                : 'Pin this date: bring your builds, your chaos, your friends. Submissions open soon.'}
+            <div className="mt-6 rounded-2xl border border-dashed border-ink/40 bg-paper/60 p-4 text-sm text-ink/80">
+              {isComplete ? (
+                <div className="space-y-2">
+                  <p className="font-medium text-ink">Launch session is live — head to your campus venue now.</p>
+                  <p className="text-rose-600 font-semibold">Attendance is mandatory.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="font-medium text-ink">
+                    Hackathon Launch Session &amp; Masterclass • 5 Nov (Wednesday), 7:00 – 8:30 PM.
+                  </p>
+                  <ul className="space-y-2 text-sm text-ink/80">
+                    <li>📍 RU Venue: A314 (Mini Audi)</li>
+                    <li>📍 ADYPU Venue: Room 501</li>
+                    <li>📍 S-Vyasa Venue: Classroom 5</li>
+                  </ul>
+                  <p className="text-rose-600 font-semibold">Attendance is mandatory.</p>
+                </div>
+              )}
             </div>
           </div>
 
