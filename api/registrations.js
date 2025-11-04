@@ -60,6 +60,10 @@ module.exports = async (req, res) => {
     try {
       await saveTeamRegistration(data);
     } catch (err) {
+      if (err?.name === 'DuplicateRegistrationError') {
+        res.status(409).json({ error: err.message });
+        return;
+      }
       console.error('Serverless write error', err);
       res.status(500).json({ error: 'Failed to save submission' });
       return;
