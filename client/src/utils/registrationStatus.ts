@@ -1,0 +1,27 @@
+export const isRegistrationClosed = (): boolean => {
+  const closedFlag = import.meta.env.VITE_REGISTRATION_CLOSED;
+  if (typeof closedFlag === 'string') {
+    return closedFlag.toLowerCase() === 'true';
+  }
+
+  const openFlag = import.meta.env.VITE_REGISTRATION_OPEN;
+  if (typeof openFlag === 'string') {
+    return openFlag.toLowerCase() === 'false';
+  }
+
+  return false;
+};
+
+export const isSubmissionClosed = (): boolean => {
+  const closedFlag = import.meta.env.VITE_SUBMISSION_CLOSED;
+  if (typeof closedFlag === 'string') {
+    return closedFlag.toLowerCase() === 'true';
+  }
+
+  const openFlag = import.meta.env.VITE_SUBMISSION_OPEN;
+  if (typeof openFlag === 'string') {
+    return openFlag.toLowerCase() === 'false';
+  }
+
+  return false;
+};
