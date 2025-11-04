@@ -1,12 +1,41 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { eventMeta, highlights } from '../../data/hackathon';
+import { isRegistrationClosed } from '../../utils/registrationStatus';
 import { useCountdown } from '../../hooks/useCountdown';
+import { useTheme } from '../../hooks/useTheme';
 
 const COUNTDOWN_TARGET = '2025-11-05T19:00:00+05:30';
 
 export default function HeroSection() {
   const { remaining, isComplete } = useCountdown(COUNTDOWN_TARGET);
+  const registrationClosed = isRegistrationClosed();
+  const theme = useTheme();
+  const isDark = theme === 'dark';
+
+  const closedCardPrimary = isDark
+    ? 'border-rose-500/40 bg-rose-500/10 text-rose-100'
+    : 'border-rose-200 bg-rose-50 text-rose-700';
+  const closedCardSecondary = isDark
+    ? 'border-rose-500/25 bg-rose-500/8 text-rose-100'
+    : 'border-rose-200 bg-rose-100 text-rose-700';
+  const openCardPrimary = isDark
+    ? 'border-accent/40 bg-accent/15 text-white'
+    : 'border-accent/30 bg-accent/10 text-ink';
+  const openCardSecondary = isDark
+    ? 'border-accent/30 bg-accent/12 text-white'
+    : 'border-accent/20 bg-accent/15 text-ink';
+  const accentPillTone = registrationClosed
+    ? (isDark ? 'text-rose-300' : 'text-rose-600')
+    : (isDark ? 'text-accent/90' : 'text-accent');
+  const statusCardPrimary = registrationClosed ? closedCardPrimary : openCardPrimary;
+  const statusCardSecondary = registrationClosed ? closedCardSecondary : openCardSecondary;
+  const primaryCtaClass = `inline-flex items-center justify-center rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition ${
+    isDark ? 'bg-accent text-white hover:bg-accent/80' : 'bg-accent text-white hover:bg-accent/90'
+  }`;
+  const secondaryCtaClass = `inline-flex items-center justify-center rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition ${
+    isDark ? 'border border-white/30 text-white hover:bg-white/10' : 'border border-ink/15 text-ink hover:bg-ink/5'
+  }`;
 
   return (
     <section id="top" className="relative pb-24 pt-16">
@@ -36,22 +65,49 @@ export default function HeroSection() {
               Forget the spotless AI glow. This is a month of scribbled canvases, midnight prototyping, pizza boxes, and shipping with heart.
               {` ${eventMeta.heroQuote}`} Bring your notebooks, sticky tapes, and stubborn ideas.
             </p>
-            <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-800 shadow-sm">
-              Registration closes today. Make sure your crew signs up on the Emergent website and shows up for the launch session to keep your spot.
+            <div className={`mt-5 rounded-[2.5rem] px-7 py-6 text-left shadow-sm ${statusCardPrimary}`}>
+              <div className="space-y-2">
+                <p className={`font-semibold uppercase tracking-[0.2em] ${accentPillTone}`}>
+                  {registrationClosed ? 'Registrations closed' : 'Registrations now open'}
+                </p>
+                <p>
+                  {registrationClosed
+                    ? 'Pods are locked. Watch your inbox for kickoff logistics and session check-in details.'
+                    : 'Form your squad and lock in your pod before slots fill up. Team leads submit one registration for the crew.'}
+                </p>
+                {!registrationClosed && (
+                  <Link to="/register" className={primaryCtaClass}>
+                    Start registration
+                    <span className="ml-2 text-lg" aria-hidden="true">
+                      ⟶
+                    </span>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Link
-              to="/register"
-              className="flex items-center justify-between rounded-3xl border border-ink/80 bg-accent px-6 py-4 text-left text-white transition hover:-translate-y-1 hover:shadow-[8px_8px_0_rgba(0,0,0,0.25)]"
-            >
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div className={`flex items-center justify-between rounded-[2.5rem] px-7 py-5 text-left shadow-sm ${statusCardSecondary}`}>
               <div>
-                <span className="text-[0.7rem] uppercase tracking-[0.5em] text-white/80">Register now</span>
-                <p className="mt-1 text-xl font-semibold">Lock in your team</p>
+                <span className={`text-[0.7rem] uppercase tracking-[0.5em] ${accentPillTone}`}>
+                  {registrationClosed ? 'Registrations closed' : 'Now accepting teams'}
+                </span>
+                <p className="mt-1 text-xl font-semibold">
+                  {registrationClosed ? 'See you at kickoff' : 'Register your team'}
+                </p>
               </div>
-              <span className="text-2xl">↗</span>
-            </Link>
+              {registrationClosed ? (
+                <span className={`text-xl ${accentPillTone}`}>✕</span>
+              ) : (
+                <Link to="/register" className={secondaryCtaClass}>
+                  Apply
+                  <span className="ml-2 text-lg" aria-hidden="true">
+                    ⟶
+                  </span>
+                </Link>
+              )}
+            </div>
             <a
               href="#structure"
               className="flex items-center justify-between rounded-3xl border border-ink/20 bg-white/70 px-6 py-4 text-left transition hover:-translate-y-1 hover:rotate-1"

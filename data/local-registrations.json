@@ -1,52 +1,114 @@
 [
   {
-    "teamName": "CLI Demo Team 232099",
-    "teamSize": 2,
+    "teamName": "Vector CoreX",
+    "teamSize": 5,
     "campus": "NST-RU",
     "batch": "Batch 2024",
     "lead": {
-      "name": "CLI Demo Lead",
-      "email": "cli.lead.232099@rishihood.edu.in",
+      "name": "Parv Goyal",
+      "email": "parv.g25328@nst.rishihood.edu.in",
+      "gender": "male"
+    },
+    "members": [
+      {
+        "slot": 1,
+        "name": "Akhil Sharma",
+        "email": "akhil.sharma2024@nst.rishihood.edu.in",
+        "gender": "male"
+      },
+      {
+        "slot": 2,
+        "name": "Hrishabh Prajapati",
+        "email": "hrishabh.prajapati2024@nst.rishihood.edu.in",
+        "gender": "male"
+      },
+      {
+        "slot": 3,
+        "name": "Vedant Satbhai",
+        "email": "vedant.satbhai2024@nst.rishihood.edu.in",
+        "gender": "male"
+      },
+      {
+        "slot": 4,
+        "name": "Kushagri Yadav",
+        "email": "kushagri.yadav2024@psy.rishihood.edu.in",
+        "gender": "female"
+      }
+    ],
+    "emails": [
+      "parv.g25328@nst.rishihood.edu.in",
+      "akhil.sharma2024@nst.rishihood.edu.in",
+      "hrishabh.prajapati2024@nst.rishihood.edu.in",
+      "vedant.satbhai2024@nst.rishihood.edu.in",
+      "kushagri.yadav2024@psy.rishihood.edu.in"
+    ],
+    "submittedAt": "2025-11-04T13:32:21.804Z",
+    "_localSavedAt": "2025-11-04T13:32:21.804Z",
+    "_id": "local-1762263141804-bszcbj"
+  },
+  {
+    "teamName": "Teamgoog",
+    "teamSize": 1,
+    "campus": "NST-Svyasa",
+    "batch": "Batch 2025",
+    "lead": {
+      "name": "Teamgoog",
+      "email": "gsneje@svyasa-sas.edu.in",
+      "gender": "male"
+    },
+    "members": [],
+    "emails": [
+      "gsneje@svyasa-sas.edu.in"
+    ],
+    "submittedAt": "2025-11-04T12:47:23.837Z",
+    "_localSavedAt": "2025-11-04T12:47:23.837Z",
+    "_id": "local-1762260443842-co9ni5"
+  },
+  {
+    "teamName": "Team Mayday",
+    "teamSize": 5,
+    "campus": "NST-Svyasa",
+    "batch": "Batch 2025",
+    "lead": {
+      "name": "Geetansh",
+      "email": "2102508748@svyasa-sas.edu.in",
       "gender": "Male"
     },
     "members": [
       {
         "slot": 1,
-        "name": "CLI Member One",
-        "email": "cli.member.232099@rishihood.edu.in",
+        "name": "Divya Yadav",
+        "email": "2102508743@svyasa-sas.edu.in",
         "gender": "Female"
+      },
+      {
+        "slot": 2,
+        "name": "Avanish Singh Sikarwar",
+        "email": "2102508723@svyasa-sas.edu.in",
+        "gender": "Male"
+      },
+      {
+        "slot": 3,
+        "name": "Sanskar Bansal",
+        "email": "2102508800@svyasa-sas.edu.in",
+        "gender": "Male"
+      },
+      {
+        "slot": 4,
+        "name": "Ravi Sharma",
+        "email": "2102508788@svyasa-sas.edu.in",
+        "gender": "Male"
       }
     ],
     "emails": [
-      "cli.lead.232099@rishihood.edu.in",
-      "cli.member.232099@rishihood.edu.in"
+      "2102508748@svyasa-sas.edu.in",
+      "2102508743@svyasa-sas.edu.in",
+      "2102508723@svyasa-sas.edu.in",
+      "2102508800@svyasa-sas.edu.in",
+      "2102508788@svyasa-sas.edu.in"
     ],
-    "submittedAt": "2025-10-30T13:50:32.135Z",
-    "_localSavedAt": "2025-10-30T13:50:32.135Z",
-    "_id": "local-1761832232136-4m6et7"
-  },
-  {
-    "teamName": "Test Team",
-    "teamSize": 3,
-    "lead": {
-      "name": "Lead",
-      "email": "lead@example.edu",
-      "gender": "female"
-    },
-    "members": [
-      {
-        "name": "Member One",
-        "email": "member1@example.edu",
-        "gender": "male"
-      },
-      {
-        "name": "Member Two",
-        "email": "member2@example.edu",
-        "gender": "male"
-      }
-    ],
-    "submittedAt": "2025-10-24T05:43:48.081Z",
-    "_localSavedAt": "2025-10-24T05:43:48.081Z",
-    "_id": "local-1761284628085-aknb5s"
+    "submittedAt": "2025-01-20T10:00:00.000Z",
+    "_localSavedAt": "2025-01-20T10:00:00.000Z",
+    "_id": "local-team-mayday"
   }
 ]

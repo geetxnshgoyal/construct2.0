@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import ThemeSwitch from '../ui/ThemeSwitch';
 import { useTheme } from '../../hooks/useTheme';
+import { isRegistrationClosed } from '../../utils/registrationStatus';
 
 const navLinks = [
   { label: 'About', href: '/#about' },
@@ -16,6 +17,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const theme = useTheme();
+  const registrationClosed = isRegistrationClosed();
 
   useEffect(() => {
     setIsOpen(false);
@@ -31,6 +33,38 @@ export default function Navbar() {
     [isDark]
   );
 
+  const statusBadgeClass = useMemo(
+    () =>
+      `rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] ${
+        isDark ? 'border border-white/20 text-white/70' : 'border border-ink/20 text-ink/60'
+      }`,
+    [isDark]
+  );
+
+  const registerCtaClass = useMemo(
+    () =>
+      `rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] transition ${
+        isDark ? 'bg-accent text-white hover:bg-accent/80' : 'bg-accent text-white hover:bg-accent/90'
+      }`,
+    [isDark]
+  );
+
+  const mobileStatusBadgeClass = useMemo(
+    () =>
+      `mt-3 text-center rounded-xl px-4 py-3 text-base font-semibold uppercase tracking-[0.3em] ${
+        isDark ? 'border border-white/20 text-white/70' : 'border border-ink/20 text-ink/70'
+      }`,
+    [isDark]
+  );
+
+  const mobileRegisterCtaClass = useMemo(
+    () =>
+      `mt-3 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-base font-semibold uppercase tracking-[0.3em] transition ${
+        isDark ? 'bg-accent text-white hover:bg-accent/80' : 'bg-accent text-white hover:bg-accent/90'
+      }`,
+    [isDark]
+  );
+
   return (
     <header
       className={`fixed top-0 z-50 w-full border-b backdrop-blur-xl transition-colors duration-300 ${
@@ -41,7 +75,7 @@ export default function Navbar() {
         <motion.div whileHover={{ scale: 1.04 }}>
           <Link
             to="/"
-            className={`group relative flex items-center gap-3 text-lg font-bold tracking-wide transition-all ${
+            className={`group relative flex items-center gap-5 text-lg font-bold tracking-wide transition-all ${
               isDark ? 'text-white hover:text-neon' : 'text-ink hover:text-accent'
             }`}
           >
@@ -54,20 +88,19 @@ export default function Navbar() {
             </span>
           </Link>
         </motion.div>
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-8 md:flex md:ml-8">
           {navLinks.map((link) => (
             <NavLink key={link.href} to={link.href} className={navLinkClass}>
               {link.label}
             </NavLink>
           ))}
-          <Link
-            to="/register"
-            className={`rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] shadow-card transition hover:-translate-y-0.5 ${
-              isDark ? 'border border-neon/40 bg-neon/20 text-white hover:bg-neon/30' : 'border border-ink bg-accent text-white'
-            }`}
-          >
-            Register
-          </Link>
+          {registrationClosed ? (
+            <span className={statusBadgeClass}>Registrations Closed</span>
+          ) : (
+            <NavLink to="/register" className={registerCtaClass}>
+              Register Now
+            </NavLink>
+          )}
           <ThemeSwitch />
         </nav>
         <button
@@ -128,17 +161,17 @@ export default function Navbar() {
                   {link.label}
                 </NavLink>
               ))}
-              <Link
-                to="/register"
-                onClick={() => setIsOpen(false)}
-                className={`mt-3 text-center rounded-xl px-4 py-3 text-base font-semibold shadow-sm transition-all active:scale-[0.98] ${
-                  isDark 
-                    ? 'bg-neon/20 text-white hover:bg-neon/30 border border-neon/40' 
-                    : 'bg-accent text-white hover:bg-accent/90'
-                }`}
-              >
-                Register Now
-              </Link>
+              {registrationClosed ? (
+                <span className={mobileStatusBadgeClass}>Registrations Closed</span>
+              ) : (
+                <NavLink
+                  to="/register"
+                  className={mobileRegisterCtaClass}
+                  onClick={() => setIsOpen(false)}
+                >
+                  Register Now
+                </NavLink>
+              )}
             </div>
           </nav>
         </div>
