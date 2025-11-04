@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import HeroSection from '../components/sections/HeroSection';
 import ExperienceTicker from '../components/sections/ExperienceTicker';
+import HeroSection from '../components/sections/HeroSection';
+import UpdatesSection from '../components/sections/UpdatesSection';
 import StructureSection from '../components/sections/StructureSection';
 import GuidelinesSection from '../components/sections/GuidelinesSection';
 import AwardsSection from '../components/sections/AwardsSection';
@@ -31,6 +32,7 @@ export default function Home() {
   return (
     <>
       <HeroSection />
+      <UpdatesSection />
       <ExperienceTicker />
       <section id="about" className="relative py-24">
         <motion.div
