@@ -97,9 +97,7 @@ export default function HeroSection() {
                   {registrationClosed ? 'See you at kickoff' : 'Register your team'}
                 </p>
               </div>
-              {registrationClosed ? (
-                <span className={`text-xl ${accentPillTone}`}>✕</span>
-              ) : (
+              {registrationClosed ? null : (
                 <Link to="/register" className={secondaryCtaClass}>
                   Apply
                   <span className="ml-2 text-lg" aria-hidden="true">
