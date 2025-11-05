@@ -4,6 +4,19 @@
   "buildCommand": "npm run client:build",
   "outputDirectory": "client/dist",
   "framework": "vite",
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://nstconstruct.xyz/submit",
+      "permanent": true,
+      "has": [
+        {
+          "type": "host",
+          "value": "submit.nstconstruct.xyz"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/:path*",
