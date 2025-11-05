@@ -11,7 +11,7 @@ firebase-service-account*.json
 
 # Submission codes
 data/submission-codes-plain.json
-
+client/public/data/
 
 # OS cruft
 .DS_Store.

@@ -40,6 +40,8 @@ node scripts/send-submission-codes.js --team-email team@example.com --confirm
 | `send-submission-codes.js` | Email codes to teams | ✅ Yes | ✅ Required |
 | `manage-submission-code.js` | Manage individual codes | ❌ No | N/A |
 | `test-submission-codes.js` | Test code system | ❌ No | N/A |
+| `sync-codes-to-firebase.js` | Sync codes to Firebase | ❌ No | ✅ Required |
+| `update-single-code-firebase.js` | Update one team's code | ❌ No | N/A |
 
 ## Recommended Workflow
 
@@ -76,6 +78,43 @@ node scripts/send-submission-codes.js --team-email team@example.com --confirm
    ```bash
    node scripts/send-submission-codes.js --team-email your-team@example.com --confirm
    ```
+
+## Firebase Management
+
+### Sync All Codes to Firebase
+
+Upload all hashed codes from JSON to Firebase:
+
+```bash
+# Dry run (shows what would happen)
+node scripts/sync-codes-to-firebase.js
+
+# Actually sync to Firebase
+node scripts/sync-codes-to-firebase.js --confirm
+```
+
+This uploads all entries from `data/submission-access.json` to the `submissionAccessKeys` collection in Firestore.
+
+### Update a Single Team's Code
+
+If you need to reset or update one team's access code:
+
+```bash
+# Regenerate a random code
+node scripts/update-single-code-firebase.js student@university.edu --regenerate
+
+# Set a specific code
+node scripts/update-single-code-firebase.js student@university.edu ABCD-1234-WXYZ
+```
+
+This updates:
+- ✅ Local JSON files (hashed + plain)
+- ✅ Firebase Firestore (if available)
+
+**Then send the new code:**
+```bash
+node scripts/send-submission-codes.js --team-email student@university.edu --confirm
+```
 
 ## Safety Features
 

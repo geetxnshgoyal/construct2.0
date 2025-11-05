@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run sync-data && vite",
     "build": "tsc && vite build && npm run postbuild",
     "postbuild": "mkdir -p dist/data && cp ../data/submission-access.json dist/data/ 2>/dev/null || true",
+    "sync-data": "mkdir -p public/data && cp ../data/submission-access.json public/data/ 2>/dev/null || true",
     "preview": "vite preview",
     "vercel-build": "npm install && npm run build"
   },

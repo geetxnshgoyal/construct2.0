@@ -70,16 +70,35 @@ const validateSubmissionAccess = async ({ leadEmail, accessCode, accessCodeHash 
     return { status: 400, error: 'Lead email is required.' };
   }
 
+  // Find the registration
   const registration = await findTeamRegistrationByLeadEmail(normalizedEmail);
   if (!registration) {
     return { status: 404, error: 'Lead email not found in registrations. Contact the organisers.' };
   }
 
-  const entry = await findAccessEntry(normalizedEmail);
-  if (!entry) {
-    return { status: 401, error: 'Submission code not assigned for this team. Reach out to the ops desk.' };
+  // Check if the registration has a submission access code hash
+  let expectedHash = registration.submissionAccessCodeHash;
+  
+  // If not in registration (legacy), fall back to separate access entry
+  if (!expectedHash) {
+    const entry = await findAccessEntry(normalizedEmail);
+    if (!entry) {
+      return { status: 401, error: 'Submission code not assigned for this team. Reach out to the ops desk.' };
+    }
+    expectedHash = ensureHash(entry);
   }
 
+  if (!expectedHash) {
+    return {
+      status: 503,
+      error: 'Submission access configuration missing hash. Contact the engineering team.',
+    };
+  }
+
+  // Normalize expected hash
+  expectedHash = String(expectedHash).trim().toLowerCase();
+
+  // Get provided hash
   const providedHash = accessCodeHash
     ? String(accessCodeHash).trim().toLowerCase()
     : accessCode
@@ -90,18 +109,12 @@ const validateSubmissionAccess = async ({ leadEmail, accessCode, accessCodeHash 
     return { status: 400, error: 'Submission code is required.' };
   }
 
-  const expectedHash = ensureHash(entry);
-  if (!expectedHash) {
-    return {
-      status: 503,
-      error: 'Submission access configuration missing hash. Contact the engineering team.',
-    };
-  }
-
+  // Validate the hash
   if (providedHash !== expectedHash) {
     return { status: 401, error: 'Submission code invalid for this team. Double-check the passcode email.' };
   }
 
+  // Return successful validation with registration data
   const enrichedRegistration = Object.assign({}, registration);
   if (enrichedRegistration.lead && typeof enrichedRegistration.lead === 'object') {
     enrichedRegistration.lead = Object.assign({}, enrichedRegistration.lead, {
@@ -109,9 +122,6 @@ const validateSubmissionAccess = async ({ leadEmail, accessCode, accessCodeHash 
         ? normalizeEmail(enrichedRegistration.lead.email)
         : null,
     });
-  }
-  if (entry.teamName && !enrichedRegistration.teamName) {
-    enrichedRegistration.teamName = entry.teamName;
   }
 
   return {
