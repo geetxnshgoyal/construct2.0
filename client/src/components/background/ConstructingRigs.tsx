@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { memo } from 'react';
 
 type RigProps = {
   delay: number;
@@ -28,16 +29,16 @@ const rigs: RigProps[] = [
   }
 ];
 
-export default function ConstructingRigs() {
+function ConstructingRigs() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
       {rigs.map((rig, index) => (
         <motion.div
-          key={index}
-          className="absolute"
+          key={`rig-${index}`}
+          className="absolute will-change-transform"
           style={{ top: rig.position.top, left: rig.position.left, transform: `scale(${rig.scale})`, opacity: rig.opacity }}
           animate={{ rotate: [0, 2, -2, 0] }}
-          transition={{ repeat: Infinity, duration: 12, ease: 'easeInOut', delay: rig.delay }}
+          transition={{ repeat: Infinity, duration: 12, ease: 'easeInOut', delay: rig.delay, repeatType: 'mirror' }}
         >
           <motion.svg
             width="380"
@@ -47,7 +48,10 @@ export default function ConstructingRigs() {
             xmlns="http://www.w3.org/2000/svg"
             className="text-neon/50"
           >
-            <motion.g animate={{ opacity: [0.4, 0.8, 0.4] }} transition={{ repeat: Infinity, duration: 6, delay: rig.delay }}>
+            <motion.g 
+              animate={{ opacity: [0.4, 0.8, 0.4] }} 
+              transition={{ repeat: Infinity, duration: 6, delay: rig.delay, repeatType: 'mirror' }}
+            >
               <path
                 d="M12 280L96 40L284 40L368 280L12 280Z"
                 stroke="url(#rigStroke)"
@@ -114,11 +118,11 @@ export default function ConstructingRigs() {
                 strokeWidth="2"
                 strokeDasharray="8 12"
                 animate={{ strokeDashoffset: [0, 90] }}
-                transition={{ repeat: Infinity, duration: 9, ease: 'linear', delay: rig.delay + 1.1 }}
+                transition={{ repeat: Infinity, duration: 9, ease: 'linear', delay: rig.delay + 1.1, repeatType: 'loop' }}
               />
             </motion.g>
             <defs>
-              <linearGradient id="rigStroke" x1="12" y1="280" x2="368" y2="40" gradientUnits="userSpaceOnUse">
+              <linearGradient id={`rigStroke-${index}`} x1="12" y1="280" x2="368" y2="40" gradientUnits="userSpaceOnUse">
                 <stop stopColor="rgba(0,245,255,0.1)" />
                 <stop offset="0.5" stopColor="rgba(255,0,127,0.35)" />
                 <stop offset="1" stopColor="rgba(0,245,255,0.1)" />
@@ -130,3 +134,5 @@ export default function ConstructingRigs() {
     </div>
   );
 }
+
+export default memo(ConstructingRigs);

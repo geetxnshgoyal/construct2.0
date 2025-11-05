@@ -9,7 +9,24 @@ const router = express.Router();
 
 const asyncHandler = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
+const registrationsClosed = () => {
+  const closedFlag = process.env.REGISTRATION_CLOSED;
+  if (typeof closedFlag === 'string' && closedFlag.toLowerCase() === 'true') {
+    return true;
+  }
+  const openFlag = process.env.REGISTRATION_OPEN;
+  if (typeof openFlag === 'string' && openFlag.toLowerCase() === 'false') {
+    return true;
+  }
+  return false;
+};
+
 const submitHandler = asyncHandler(async (req, res) => {
+  if (registrationsClosed()) {
+    res.status(403).json({ error: 'Registrations are closed.' });
+    return;
+  }
+
   const { status, error, data } = validateTeamPayload(req.body);
 
   if (error) {

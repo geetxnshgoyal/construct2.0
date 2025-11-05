@@ -200,6 +200,29 @@ const getWritableDataDir = () => {
   return tempDir;
 };
 
+const LOCAL_REGISTRATION_PATHS = [
+  path.join(process.cwd(), 'data', 'local-registrations.json'),
+  path.join(os.tmpdir(), 'construct-registrations', 'local-registrations.json'),
+];
+
+const loadLocalRegistrations = () => {
+  for (const candidate of LOCAL_REGISTRATION_PATHS) {
+    if (!fs.existsSync(candidate)) {
+      continue;
+    }
+    try {
+      const raw = fs.readFileSync(candidate, 'utf8') || '[]';
+      const list = JSON.parse(raw);
+      if (Array.isArray(list)) {
+        return list;
+      }
+    } catch (error) {
+      console.warn('Failed to parse local registrations from', candidate, error.message);
+    }
+  }
+  return [];
+};
+
 class DuplicateRegistrationError extends Error {
   constructor(email) {
     super(`A registration already exists for ${email}.`);
@@ -269,16 +292,8 @@ const saveTeamRegistration = async (teamPayload) => {
 
 const listTeamRegistrations = async ({ limit = 100 } = {}) => {
   if (!adminAvailable()) {
-    // Read from local fallback file if Firestore isn't configured.
-    const candidates = [
-      path.join(process.cwd(), 'data', 'local-registrations.json'),
-      path.join(os.tmpdir(), 'construct-registrations', 'local-registrations.json'),
-    ];
     try {
-      const filePath = candidates.find((candidate) => fs.existsSync(candidate));
-      if (!filePath) return [];
-      const raw = fs.readFileSync(filePath, 'utf8') || '[]';
-      const list = JSON.parse(raw);
+      const list = loadLocalRegistrations();
       return list
         .slice(0, Math.min(list.length, Number.parseInt(limit, 10) || 100))
         .map(({ emails, ...rest }) => rest);
@@ -313,8 +328,65 @@ const listTeamRegistrations = async ({ limit = 100 } = {}) => {
   });
 };
 
+const findTeamRegistrationByLeadEmail = async (leadEmail) => {
+  const normalized = normalizeEmail(leadEmail);
+  if (!normalized) {
+    return null;
+  }
+
+  if (adminAvailable()) {
+    const db = getDb();
+    const snapshot = await db
+      .collection('teamRegistrations')
+      .where('lead.email', '==', normalized)
+      .limit(1)
+      .get();
+
+    if (!snapshot.empty) {
+      const doc = snapshot.docs[0];
+      const data = doc.data();
+      const submittedAt =
+        data.submittedAt && typeof data.submittedAt.toDate === 'function'
+          ? data.submittedAt.toDate().toISOString()
+          : null;
+
+      return {
+        id: doc.id,
+        teamName: data.teamName,
+        teamSize: data.teamSize,
+        campus: data.campus ?? null,
+        batch: data.batch ?? null,
+        lead: data.lead,
+        members: Array.isArray(data.members) ? data.members : [],
+        submittedAt,
+      };
+    }
+  }
+
+  const list = loadLocalRegistrations();
+  const entry = list.find(
+    (item) => normalizeEmail(item?.lead?.email) === normalized
+  );
+
+  if (!entry) {
+    return null;
+  }
+
+  return {
+    id: entry.id || entry._id || null,
+    teamName: entry.teamName,
+    teamSize: entry.teamSize,
+    campus: entry.campus ?? null,
+    batch: entry.batch ?? null,
+    lead: entry.lead,
+    members: Array.isArray(entry.members) ? entry.members : [],
+    submittedAt: entry.submittedAt || entry._localSavedAt || null,
+  };
+};
+
 module.exports = {
   validateTeamPayload,
   saveTeamRegistration,
   listTeamRegistrations,
+  findTeamRegistrationByLeadEmail,
 };

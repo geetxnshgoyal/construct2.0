@@ -9,5 +9,9 @@ client/node_modules/
 construct-nst-firebase-adminsdk-*.json
 firebase-service-account*.json
 
+# Submission codes
+data/submission-codes-plain.json
+
+
 # OS cruft
-.DS_Store
+.DS_Store.

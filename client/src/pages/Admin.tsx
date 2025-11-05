@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../hooks/useTheme';
 
@@ -22,8 +22,42 @@ type RegistrationRecord = {
   submittedAt?: string | null;
 };
 
+type AccessCodeEntry = {
+  leadEmail: string;
+  accessCodeHash: string;
+  teamName?: string;
+  campus?: string;
+  batch?: string;
+  generatedAt?: string;
+};
+
+type TeamSubmission = {
+  id?: string;
+  projectName: string | null;
+  teamName: string | null;
+  leadEmail: string | null;
+  deckUrl: string | null;
+  demoUrl: string | null;
+  repoUrl: string | null;
+  documentationUrl: string | null;
+  notes: string | null;
+  submittedAt: string | null;
+  accessHash?: string | null;
+  registration?: {
+    teamName?: string | null;
+    campus?: string | null;
+    batch?: string | null;
+    teamSize?: number | null;
+    submittedAt?: string | null;
+    lead?: {
+      name?: string | null;
+      email?: string | null;
+    } | null;
+  } | null;
+};
+
 const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME ?? 'admin';
-const FETCH_LIMIT = 500;
+const FETCH_LIMIT = 200; // Reduced from 500 for faster loading
 const ADMIN_MEMES = [
   {
     command: 'admin@construct:~$ fortune hackathon',
@@ -63,17 +97,34 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [registrations, setRegistrations] = useState<RegistrationRecord[]>([]);
+  const [accessCodes, setAccessCodes] = useState<AccessCodeEntry[]>([]);
+  const [finalSubmissions, setFinalSubmissions] = useState<TeamSubmission[]>([]);
   const [lastUsedCode, setLastUsedCode] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(false);
   const theme = useTheme();
   const subtleText = theme === 'dark' ? 'text-white/40' : 'text-ink/40';
   const subtleTextStrong = theme === 'dark' ? 'text-white/60' : 'text-ink/60';
 
-  const fetchRegistrations = async (passcode: string) => {
+  // Memoize access code lookup map for performance
+  const accessCodeMap = useMemo(() => {
+    const map = new Map<string, AccessCodeEntry>();
+    accessCodes.forEach(entry => {
+      map.set(entry.leadEmail.toLowerCase().trim(), entry);
+    });
+    return map;
+  }, [accessCodes]);
+
+  // Helper to find access code for a team
+  const getAccessCodeForTeam = (leadEmail: string): AccessCodeEntry | undefined => {
+    return accessCodeMap.get(leadEmail.toLowerCase().trim());
+  };
+
+  const fetchAdminData = async (passcode: string) => {
     const trimmed = passcode.trim();
     if (!trimmed) {
       setError('Enter the current access code.');
       setRegistrations([]);
+      setFinalSubmissions([]);
       return false;
     }
 
@@ -81,25 +132,44 @@ export default function Admin() {
     setError('');
 
     try {
-      const response = await fetch(`/api/registrations?limit=${FETCH_LIMIT}`, {
-        headers: {
-          Authorization: `Basic ${btoa(`${ADMIN_USERNAME}:${trimmed}`)}`,
-        },
-      });
+      const authHeader = `Basic ${btoa(`${ADMIN_USERNAME}:${trimmed}`)}`;
+      const headers = { Authorization: authHeader };
 
-      if (!response.ok) {
-        const payload = await response.json().catch(() => ({ error: 'Unable to authenticate.' }));
+      // Fetch access codes from the JSON file (public endpoint)
+      const accessCodesPromise = fetch('/data/submission-access.json')
+        .then(res => res.ok ? res.json() : [])
+        .catch(() => []);
+
+      const [registrationsResponse, submissionsResponse, accessCodesData] = await Promise.all([
+        fetch(`/api/registrations?limit=${FETCH_LIMIT}`, { headers }),
+        fetch(`/api/final-submissions?limit=${FETCH_LIMIT}`, { headers }),
+        accessCodesPromise,
+      ]);
+
+      if (!registrationsResponse.ok) {
+        const payload = await registrationsResponse.json().catch(() => ({ error: 'Unable to authenticate.' }));
         throw new Error(payload.error || 'Unable to authenticate.');
       }
 
-      const data = await response.json();
-      setRegistrations(Array.isArray(data.items) ? data.items : []);
+      if (!submissionsResponse.ok) {
+        const payload = await submissionsResponse.json().catch(() => ({ error: 'Unable to load final submissions.' }));
+        throw new Error(payload.error || 'Unable to load final submissions.');
+      }
+
+      const registrationsPayload = await registrationsResponse.json();
+      const submissionsPayload = await submissionsResponse.json();
+
+      setRegistrations(Array.isArray(registrationsPayload.items) ? registrationsPayload.items : []);
+      setFinalSubmissions(Array.isArray(submissionsPayload.items) ? submissionsPayload.items : []);
+      setAccessCodes(Array.isArray(accessCodesData) ? accessCodesData : []);
       setLastUsedCode(trimmed);
       setIsAuthorized(true);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
       setRegistrations([]);
+      setFinalSubmissions([]);
+      setAccessCodes([]);
       setIsAuthorized(false);
       return false;
     } finally {
@@ -109,28 +179,30 @@ export default function Admin() {
 
   const handleFetch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    void fetchRegistrations(accessCode);
+    void fetchAdminData(accessCode);
   };
 
   const handleRefresh = () => {
     if (!lastUsedCode) {
-      setError('Fetch registrations first.');
+      setError('Fetch admin data first.');
       return;
     }
-    void fetchRegistrations(lastUsedCode);
+    void fetchAdminData(lastUsedCode);
   };
 
   const handleLogout = () => {
     setAccessCode('');
     setLastUsedCode('');
     setRegistrations([]);
+    setFinalSubmissions([]);
+    setAccessCodes([]);
     setError('');
     setIsAuthorized(false);
   };
 
-  const handleDownloadCsv = () => {
+  const handleDownloadRegistrationsCsv = () => {
     if (registrations.length === 0) {
-      setError('Nothing to export. Fetch registrations first.');
+      setError('Nothing to export. Fetch admin data first.');
       return;
     }
 
@@ -202,9 +274,9 @@ export default function Admin() {
       <div className="mx-auto max-w-5xl px-6">
         <motion.header initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
           <p className="text-xs uppercase tracking-[0.6em] text-ink/40">Admin Console</p>
-          <h1 className="mt-4 font-display text-4xl text-ink sm:text-5xl">Monitor registrations in real-time</h1>
+          <h1 className="mt-4 font-display text-4xl text-ink sm:text-5xl">Monitor registrations & final deliverables</h1>
           <p className="mt-4 max-w-2xl text-base text-ink/70">
-            Drop in the rotating access code to peek at the latest crew submissions, ordered by their arrival. We surface local fallback
+            Drop in the rotating access code to peek at the latest crew submissions and their final drop-off links. We surface local fallback
             data if Firebase isn&apos;t configured so testing never blocks your flow.
           </p>
         </motion.header>
@@ -222,7 +294,7 @@ export default function Admin() {
           >
             <h2 className="text-2xl font-semibold">Hello, Admin 👋</h2>
             <p className={`mt-2 text-sm ${theme === 'dark' ? 'text-white/70' : 'text-ink/70'}`}>
-              You&apos;re authenticated. Use the controls below to keep tabs on incoming registrations.
+              You&apos;re authenticated. Use the controls below to keep tabs on incoming registrations and final deliverables.
             </p>
             <div
               className={`mt-8 rounded-2xl border shadow-inner ${
@@ -333,7 +405,7 @@ export default function Admin() {
             </button>
             <button
               type="button"
-              onClick={handleDownloadCsv}
+              onClick={handleDownloadRegistrationsCsv}
               className={`rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.25em] transition ${
                 theme === 'dark'
                   ? 'border border-white/15 text-white/80 hover:text-white disabled:border-white/10 disabled:text-white/30'
@@ -341,7 +413,7 @@ export default function Admin() {
               }`}
               disabled={registrations.length === 0}
             >
-              Download CSV
+              Download registrations CSV
             </button>
             <button
               type="button"
@@ -376,7 +448,10 @@ export default function Admin() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="mt-12 space-y-8"
           >
-            {registrations.map((registration) => (
+            {registrations.map((registration) => {
+              const teamAccessCode = getAccessCodeForTeam(registration.lead.email);
+              
+              return (
               <article
                 key={registration.id || `${registration.teamName}-${registration.submittedAt}`}
                 className={`rounded-xl border p-6 backdrop-blur-xl ${
@@ -402,6 +477,54 @@ export default function Admin() {
                     {registration.submittedAt ? new Date(registration.submittedAt).toLocaleString() : 'Pending timestamp'}
                   </div>
                 </header>
+
+                {teamAccessCode && (
+                  <div className={`mt-4 rounded-lg border p-4 ${
+                    theme === 'dark'
+                      ? 'border-neon/30 bg-neon/10'
+                      : 'border-accent/30 bg-accent/5'
+                  }`}>
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className={`text-xs font-semibold uppercase tracking-[0.3em] ${
+                          theme === 'dark' ? 'text-neon/80' : 'text-accent/80'
+                        }`}>
+                          Submission Access Code
+                        </p>
+                        <p className={`mt-1 font-mono text-lg font-bold ${
+                          theme === 'dark' ? 'text-neon' : 'text-accent'
+                        }`}>
+                          {teamAccessCode.accessCodeHash.substring(0, 12).toUpperCase()}...
+                        </p>
+                        <p className={`mt-1 text-xs ${
+                          theme === 'dark' ? 'text-white/60' : 'text-ink/60'
+                        }`}>
+                          Hash: {teamAccessCode.accessCodeHash}
+                        </p>
+                      </div>
+                      <div className={`text-xs ${theme === 'dark' ? 'text-white/50' : 'text-ink/50'}`}>
+                        {teamAccessCode.generatedAt ? (
+                          <span>Generated: {new Date(teamAccessCode.generatedAt).toLocaleDateString()}</span>
+                        ) : (
+                          <span>Code assigned</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {!teamAccessCode && (
+                  <div className={`mt-4 rounded-lg border border-dashed p-3 text-center ${
+                    theme === 'dark'
+                      ? 'border-white/20 bg-white/5 text-white/50'
+                      : 'border-ink/20 bg-gray-50 text-ink/50'
+                  }`}>
+                    <p className="text-xs font-medium uppercase tracking-wide">
+                      ⚠️ No submission code assigned yet
+                    </p>
+                  </div>
+                )}
+
                 <div className="mt-6 grid gap-6 md:grid-cols-2">
                   <div className={`rounded-xl border p-4 ${
                     theme === 'dark'
@@ -463,8 +586,144 @@ export default function Admin() {
                   </div>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </motion.div>
+        ) : null}
+
+        {isAuthorized ? (
+          <motion.section
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="mt-16"
+          >
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className={`text-2xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-ink'} sm:text-3xl`}>
+                  Final submissions desk
+                </h2>
+                <p className={`mt-2 text-sm ${theme === 'dark' ? 'text-white/60' : 'text-ink/60'}`}>
+                  Review the shipped artefacts, verify access, and follow up with teams if anything locks behind a wall.
+                </p>
+              </div>
+              <div
+                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs uppercase tracking-[0.35em] ${
+                  theme === 'dark' ? 'border border-white/10 text-white/60' : 'border border-ink/10 text-ink/60'
+                }`}
+              >
+                <span className={theme === 'dark' ? 'text-neon' : 'text-accent'}>Captured</span>
+                <span>{finalSubmissions.length}</span>
+              </div>
+            </div>
+
+            {finalSubmissions.length === 0 ? (
+              <div
+                className={`mt-8 rounded-xl border border-dashed p-6 text-sm ${
+                  theme === 'dark'
+                    ? 'border-white/15 bg-white/5 text-white/60'
+                    : 'border-ink/10 bg-white text-ink/60'
+                }`}
+              >
+                No final deliverables yet. Once teams submit, their links and notes will appear here instantly.
+              </div>
+            ) : (
+              <div className="mt-10 space-y-8">
+                {finalSubmissions.map((submission) => {
+                  const submissionKey =
+                    submission.id ||
+                    `${submission.teamName || submission.projectName || 'submission'}-${submission.submittedAt || 'pending'}`;
+                  const timestamp = submission.submittedAt
+                    ? new Date(submission.submittedAt).toLocaleString()
+                    : 'Timestamp pending';
+                  const resources = [
+                    { label: 'Pitch deck', url: submission.deckUrl },
+                    { label: 'Git repo', url: submission.repoUrl },
+                    { label: 'Demo', url: submission.demoUrl },
+                    { label: 'Docs', url: submission.documentationUrl },
+                  ].filter((item) => item.url);
+                  const meta = [
+                    submission.leadEmail || submission.registration?.lead?.email
+                      ? `Lead: ${submission.leadEmail || submission.registration?.lead?.email}`
+                      : null,
+                    submission.registration?.campus ? `Campus: ${submission.registration.campus}` : null,
+                    submission.registration?.batch ? `Batch: ${submission.registration.batch}` : null,
+                    submission.registration?.teamSize ? `Registered size: ${submission.registration.teamSize}` : null,
+                    submission.accessHash ? `Access hash: ${submission.accessHash}` : null,
+                  ].filter(Boolean);
+
+                  return (
+                    <article
+                      key={submissionKey}
+                      className={`rounded-xl border p-6 backdrop-blur-xl ${
+                        theme === 'dark'
+                          ? 'border-white/10 bg-black/30 text-white'
+                          : 'border-ink/5 bg-white/90 text-ink shadow-md'
+                      }`}
+                    >
+                      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                          <h3 className="text-xl font-semibold">
+                            {submission.projectName || submission.teamName || 'Untitled project'}
+                          </h3>
+                          <p
+                            className={`text-xs font-medium uppercase tracking-wide ${
+                              theme === 'dark' ? 'text-white/50' : 'text-ink/50'
+                            }`}
+                          >
+                            {submission.teamName ? `Team ${submission.teamName}` : 'Team name unavailable'} • {timestamp}
+                          </p>
+                        </div>
+                        {meta.length > 0 ? (
+                          <ul className={`space-y-1 text-xs ${theme === 'dark' ? 'text-white/60' : 'text-ink/60'}`}>
+                            {meta.map((item) => (
+                              <li key={item}>{item}</li>
+                            ))}
+                          </ul>
+                        ) : null}
+                      </header>
+                      {resources.length > 0 ? (
+                        <div className="mt-6 flex flex-wrap gap-2">
+                          {resources.map((resource) => (
+                            <a
+                              key={`${submissionKey}-${resource.label}`}
+                              href={resource.url ?? undefined}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] transition ${
+                                theme === 'dark'
+                                  ? 'border border-white/15 text-white/80 hover:border-white/30 hover:text-white'
+                                  : 'border border-ink/15 text-ink/80 hover:border-ink/30 hover:text-ink'
+                              }`}
+                            >
+                              {resource.label}
+                              <span className="text-[0.7rem]">↗</span>
+                            </a>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className={`mt-6 text-sm ${theme === 'dark' ? 'text-white/60' : 'text-ink/60'}`}>
+                          No links attached. Follow up with the team for access details.
+                        </p>
+                      )}
+                      {submission.notes ? (
+                        <div
+                          className={`mt-6 rounded-lg border px-4 py-3 text-sm ${
+                            theme === 'dark'
+                              ? 'border-white/10 bg-white/5 text-white/70'
+                              : 'border-ink/10 bg-white text-ink/80'
+                          }`}
+                        >
+                          <p className="text-xs font-semibold uppercase tracking-[0.3em]">Notes for judges</p>
+                          <p className="mt-2 leading-relaxed">{submission.notes}</p>
+                        </div>
+                      ) : null}
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </motion.section>
         ) : null}
       </div>
     </section>

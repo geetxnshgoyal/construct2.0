@@ -44,3 +44,4 @@ const startServer = (portToUse, { attemptedFallback = false } = {}) => {
 };
 
 startServer(preferredPort);
+

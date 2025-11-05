@@ -561,8 +561,233 @@ const notifyTeamRegistration = (registration) => {
   });
 };
 
+const buildSubmissionCodeHtml = (data) => {
+  const {
+    teamName,
+    leadName,
+    accessCode,
+    submissionUrl,
+    supportEmail,
+    deadline,
+  } = data;
+
+  const sectionsHtml = [
+    renderSection(
+      '🔐 Your unique submission code',
+      `<div style="margin:20px 0;padding:24px;background:#f0f4ff;border-radius:12px;border:2px solid ${BRAND_ACCENT};">
+        <p style="margin:0 0 8px;font-size:13px;color:${BRAND_MUTED};text-transform:uppercase;letter-spacing:1.2px;">Access Code</p>
+        <p style="margin:0;font-size:32px;font-weight:700;color:${BRAND_TEXT};font-family:Monaco,Consolas,monospace;letter-spacing:2px;">${escapeHtml(
+          accessCode
+        )}</p>
+      </div>
+      <p style="margin:16px 0 0;font-size:14px;color:${BRAND_MUTED};">
+        <strong>⚠️ Keep this code safe!</strong> You'll need it to unlock the submission portal. One code per team — don't share it publicly.
+      </p>`
+    ),
+    renderSection(
+      '📤 How to submit',
+      `<ol style="margin:0;padding-left:20px;font-size:15px;color:${BRAND_MUTED};line-height:1.8;">
+        <li>Visit the submission portal: <a href="${escapeHtml(submissionUrl)}" style="color:${BRAND_ACCENT};text-decoration:none;font-weight:600;">${escapeHtml(
+          submissionUrl
+        )}</a></li>
+        <li>Enter your team lead email and the access code above</li>
+        <li>Fill in your project details:
+          <ul style="margin:8px 0;padding-left:20px;">
+            <li>Project name</li>
+            <li>Pitch deck (PDF, under 25MB)</li>
+            <li>Git repository (public or with judge access)</li>
+            <li>Optional: Live demo/video + documentation</li>
+          </ul>
+        </li>
+        <li>Hit submit and you're done! ✨</li>
+      </ol>`
+    ),
+    renderSection(
+      '📅 Submission deadline',
+      `<p style="margin:0;font-size:15px;color:${BRAND_MUTED};line-height:1.7;">
+        <strong>Deadline:</strong> ${escapeHtml(deadline)}<br/>
+        <em>One submission per team. Make sure everything is polished before you click submit!</em>
+      </p>`
+    ),
+    renderSection(
+      '✅ What to include',
+      `<ul style="margin:0;padding-left:20px;font-size:15px;color:${BRAND_MUTED};line-height:1.8;">
+        <li><strong>Pitch deck:</strong> Tell your story — problem, solution, demo screenshots, traction (if any)</li>
+        <li><strong>Git repo:</strong> Clean, documented code. Add a solid README</li>
+        <li><strong>Live demo:</strong> (Optional) Deployed app or video walkthrough</li>
+        <li><strong>Notes:</strong> Any extra context, credentials for judges, or special instructions</li>
+      </ul>`
+    ),
+  ].join('');
+
+  const body = `
+  <body style="margin:0;padding:36px 0;background:${BRAND_BG};font-family:'Inter',Arial,sans-serif;color:${BRAND_TEXT};">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="680" cellpadding="0" cellspacing="0" class="container card" style="width:100%;max-width:680px;background:${BRAND_CARD};border-radius:20px;overflow:hidden;box-shadow:0 28px 60px rgba(3, 17, 78, 0.32);">
+            <tr>
+              <td class="header-padding" style="padding:24px 36px;background:${HEADER_BG};">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td class="logo-cell" style="vertical-align:middle;" width="160">
+                      <img src="${escapeHtml(LOGO_IMAGE_SRC)}" alt="CoNSTruct NST" width="140" style="display:block;width:140px;max-width:100%;height:auto;"/>
+                    </td>
+                    <td style="text-align:right;vertical-align:middle;">
+                      <p style="margin:0;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#c6d4ff;">CoNSTruct Hackathon 2025</p>
+                      <p style="margin:4px 0 0;font-size:15px;color:#f1f5ff;">Final Submission Portal</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td class="section" style="padding:32px 40px 12px;">
+                <h1 style="margin:0 0 12px;font-size:26px;color:${BRAND_TEXT};">🎉 Time to Ship, ${escapeHtml(
+                  teamName
+                )}!</h1>
+                <p style="margin:0;font-size:16px;color:${BRAND_MUTED};line-height:1.7;">
+                  Hi ${escapeHtml(leadName || 'there')},
+                </p>
+                <p style="margin:12px 0 0;font-size:16px;color:${BRAND_MUTED};line-height:1.7;">
+                  Congratulations on making it this far! You've ideated, prototyped, and built something real. Now it's time to lock in your final submission and show the world what ${escapeHtml(
+                    teamName
+                  )} has created.
+                </p>
+              </td>
+            </tr>
+            ${sectionsHtml}
+            <tr>
+              <td class="section" style="padding:24px 40px;">
+                <div style="padding:20px;background:#fff9e6;border-left:4px solid #ffa726;border-radius:8px;">
+                  <p style="margin:0;font-size:14px;color:#8b5a00;line-height:1.6;">
+                    <strong>💡 Pro tip:</strong> Double-check that your repo is accessible and your deck tells a compelling story. Judges love a good narrative backed by working code!
+                  </p>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="section footer" style="padding:24px 40px;">
+                <p style="margin:0 0 12px;font-size:15px;color:${BRAND_MUTED};">
+                  Questions or need help? We're here for you.
+                </p>
+                <p style="margin:0;font-size:15px;color:${BRAND_MUTED};">
+                  Support: <a href="mailto:${escapeHtml(supportEmail)}" style="color:${BRAND_ACCENT};text-decoration:none;">${escapeHtml(
+                    supportEmail
+                  )}</a><br/>
+                  Submission portal: <a href="${escapeHtml(submissionUrl)}" style="color:${BRAND_ACCENT};text-decoration:none;">${escapeHtml(
+                    submissionUrl
+                  )}</a>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td class="footer" style="padding:24px 40px;background:#061045;color:#e3e9ff;font-size:13px;text-align:center;border-top:1px solid rgba(255,255,255,0.08);">
+                Good luck! We can't wait to see what you've built.<br/><br/>
+                Best regards,<br/>Team CoNSTruct
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>`;
+
+  return composeHtmlDocument(body, `🔐 Your CoNSTruct Submission Code — ${teamName}`);
+};
+
+const buildSubmissionCodeText = (data) => {
+  const { teamName, leadName, accessCode, submissionUrl, supportEmail, deadline } = data;
+
+  return `
+CoNSTruct Hackathon 2025 — Final Submission
+
+Hi ${leadName || 'there'},
+
+Congratulations on making it this far! You've ideated, prototyped, and built something real. Now it's time to lock in your final submission and show the world what ${teamName} has created.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔐 YOUR UNIQUE SUBMISSION CODE
+
+${accessCode}
+
+⚠️ Keep this code safe! You'll need it to unlock the submission portal.
+One code per team — don't share it publicly.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📤 HOW TO SUBMIT
+
+1. Visit the submission portal: ${submissionUrl}
+2. Enter your team lead email and the access code above
+3. Fill in your project details:
+   - Project name
+   - Pitch deck (PDF, under 25MB)
+   - Git repository (public or with judge access)
+   - Optional: Live demo/video + documentation
+4. Hit submit and you're done! ✨
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📅 SUBMISSION DEADLINE
+
+${deadline}
+
+One submission per team. Make sure everything is polished before you click submit!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ WHAT TO INCLUDE
+
+• Pitch deck: Tell your story — problem, solution, demo screenshots, traction (if any)
+• Git repo: Clean, documented code. Add a solid README
+• Live demo: (Optional) Deployed app or video walkthrough
+• Notes: Any extra context, credentials for judges, or special instructions
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 Pro tip: Double-check that your repo is accessible and your deck tells a compelling story. Judges love a good narrative backed by working code!
+
+Questions or need help? We're here for you.
+Support: ${supportEmail}
+Submission portal: ${submissionUrl}
+
+Good luck! We can't wait to see what you've built.
+
+Best regards,
+Team CoNSTruct
+`.trim();
+};
+
+const sendSubmissionAccessCode = async (data) => {
+  const transporter = getTransporterOrNull();
+  if (!transporter) {
+    console.warn('SMTP not configured. Skipping submission code email.');
+    return null;
+  }
+
+  const { leadEmail, teamName, memberEmails = [] } = data;
+
+  if (!leadEmail) {
+    throw new Error('Lead email is required to send submission access code');
+  }
+
+  const cc = Array.isArray(memberEmails) ? memberEmails.filter(e => e && e !== leadEmail) : [];
+
+  return sendMail({
+    to: leadEmail,
+    cc: cc.length ? cc : undefined,
+    replyTo: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || process.env.SMTP_USERNAME || undefined,
+    subject: `🔐 Your CoNSTruct Submission Code — ${teamName}`,
+    text: buildSubmissionCodeText(data),
+    html: buildSubmissionCodeHtml(data),
+  });
+};
+
 module.exports = {
   emailEnabled,
   notifyTeamRegistration,
   sendRegistrationConfirmation,
+  sendSubmissionAccessCode,
 };

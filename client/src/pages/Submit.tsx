@@ -265,23 +265,6 @@ export default function Submit() {
   return (
     <section className="relative pb-24 pt-16">
       <div className="mx-auto max-w-5xl px-6">
-        <motion.header
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <p className={`text-xs uppercase tracking-[0.6em] ${sectionTitleTone}`}>Submission Portal</p>
-          <h1
-            className={`mt-4 font-display text-4xl sm:text-5xl ${isDark ? 'text-white' : 'text-ink'}`}
-          >
-            Lock in your CoNSTruct demo
-          </h1>
-          <p className={`mt-4 max-w-2xl text-base ${isDark ? 'text-white/70' : 'text-ink/70'}`}>
-            Each finalist receives a unique passcode. Unlock with the code and the lead&apos;s email,
-            then ship your final artefacts—project name, deck, repo, optional demo, and supporting docs.
-          </p>
-        </motion.header>
-
         {!isUnlocked ? (
           <motion.form
             onSubmit={handleUnlock}
@@ -381,7 +364,13 @@ export default function Submit() {
             />
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-2xl font-semibold">You&apos;re cleared for launch 🚀</h2>
+                <h2 className="text-2xl font-semibold">
+                  {session?.teamName ? (
+                    <>Hey, {session.teamName}! You&apos;re cleared for launch 🚀</>
+                  ) : (
+                    <>You&apos;re cleared for launch 🚀</>
+                  )}
+                </h2>
                 <p className={`mt-2 text-sm ${isDark ? 'text-white/70' : 'text-ink/70'}`}>
                   Submit once per team. If you need to reship, use the switch button to load a new
                   passcode. Lead email is locked to your registration.

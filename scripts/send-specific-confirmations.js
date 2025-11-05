@@ -14,8 +14,7 @@ const args = process.argv.slice(2);
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 const targetLeads = [
-  '2102508785@svyasa-sas.edu.in',
-  '2102508716@svyasa-sas.edu.in'
+  '2102508724@svyasa-sas.edu.in',
 ];
 
 const { initAdmin, adminAvailable, getDb, serverTimestamp } = require('../server/firebaseAdmin');

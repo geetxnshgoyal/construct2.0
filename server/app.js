@@ -7,6 +7,7 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const registrationsRouter = require('./routes/registrations');
+const submissionsRouter = require('./routes/submissions');
 const { initAdmin } = require('./firebaseAdmin');
 
 const buildApp = () => {
@@ -74,6 +75,17 @@ const buildApp = () => {
   }
 
   app.use('/api', registrationsRouter);
+  app.use('/api', submissionsRouter);
+
+  // Serve submission access codes (hashed version only - safe for admin portal)
+  app.get('/data/submission-access.json', (req, res) => {
+    const accessFilePath = path.join(__dirname, '..', 'data', 'submission-access.json');
+    if (fs.existsSync(accessFilePath)) {
+      res.sendFile(accessFilePath);
+    } else {
+      res.status(404).json({ error: 'Access codes not generated yet' });
+    }
+  });
 
   app.post('/api/_analytics', (req, res) => {
     const payload = req.body && typeof req.body === 'object' ? req.body : {};

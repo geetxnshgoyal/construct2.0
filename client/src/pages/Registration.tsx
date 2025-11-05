@@ -1,6 +1,8 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../hooks/useTheme';
+import { isRegistrationClosed } from '../utils/registrationStatus';
+import RegistrationClosed from './RegistrationClosed';
 
 type BatchOption = 'Batch 2023' | 'Batch 2024' | 'Batch 2025';
 const CAMPUS_DOMAIN_SUFFIXES = {
@@ -56,6 +58,10 @@ type SubmissionState = 'idle' | 'submitting' | 'success' | 'error';
 
 export default function Registration() {
   const recaptchaSiteKey = (import.meta.env.VITE_RECAPTCHA_SITE_KEY as string) || '';
+  const registrationClosed = isRegistrationClosed();
+  if (registrationClosed) {
+    return <RegistrationClosed />;
+  }
   const [teamName, setTeamName] = useState('');
   const [teamSize, setTeamSize] = useState(1);
   const [lead, setLead] = useState<MemberField>({ name: '', email: '', gender: '' });
@@ -236,6 +242,13 @@ export default function Registration() {
     event.preventDefault();
     setShowSuccess(false);
 
+     if (registrationClosed) {
+       setSubmissionState('error');
+       setErrorMessage('Registrations are closed.');
+       window.scrollTo({ top: 0, behavior: 'smooth' });
+       return;
+     }
+
     const payload = buildPayload();
     const validationError = validateEmails(payload);
     if (validationError) {
@@ -346,6 +359,17 @@ export default function Registration() {
             isDark ? 'border border-white/10 bg-black/30 text-white' : 'border border-ink/5 bg-white/80 text-ink shadow-lg'
           }`}
         >
+          {registrationClosed ? (
+            <div
+              className={`mb-8 rounded-xl border p-4 text-sm ${
+                isDark
+                  ? 'border-magenta/40 bg-magenta/10 text-magenta'
+                  : 'border-red-200 bg-red-50 text-red-600'
+              }`}
+            >
+              Registrations are now closed. Thanks for your interest!
+            </div>
+          ) : null}
           <p className={`mb-6 text-xs font-medium uppercase tracking-[0.3em] ${isDark ? 'text-white/50' : 'text-ink/50'}`}>
             {campus && selectedDomain
               ? `Use your official ${campus} student email (e.g. name@${selectedDomain}).`
@@ -423,10 +447,10 @@ export default function Registration() {
                   : 'border-green-200 bg-green-50 text-green-600'
               }`}
             >
-              Team locked in! Onboarding resources unlock inside the Emergent workspace at kickoff.
+              Team locked in! Onboarding resources unlock at kickoff.
             </div>
           ) : null}
-          {submissionState === 'error' ? (
+            {submissionState === 'error' ? (
             <div className={`mb-8 rounded-xl border p-4 text-sm ${
               isDark
                 ? 'border-magenta/40 bg-magenta/10 text-magenta'
@@ -571,10 +595,14 @@ export default function Registration() {
           <div className="mt-12 flex flex-col items-center gap-3">
             <button
               type="submit"
-              disabled={submissionState === 'submitting' || (Boolean(recaptchaSiteKey) && !recaptchaReady)}
+              disabled={
+                registrationClosed ||
+                submissionState === 'submitting' ||
+                (Boolean(recaptchaSiteKey) && !recaptchaReady)
+              }
               className={`w-full rounded-xl px-6 py-4 text-sm font-semibold shadow-sm transition-all active:scale-[0.98] ${accentButton} disabled:cursor-not-allowed`}
             >
-              {submissionState === 'submitting' ? 'Submitting...' : 'Submit Registration'}
+              {registrationClosed ? 'Registrations Closed' : submissionState === 'submitting' ? 'Submitting...' : 'Submit Registration'}
             </button>
             <p className={`text-xs font-medium ${isDark ? 'text-white/40' : 'text-ink/50'}`}>
               Expect a confirmation email within 24 hours

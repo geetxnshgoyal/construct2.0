@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && npm run postbuild",
+    "postbuild": "mkdir -p dist/data && cp ../data/submission-access.json dist/data/ 2>/dev/null || true",
     "preview": "vite preview",
     "vercel-build": "npm install && npm run build"
   },
