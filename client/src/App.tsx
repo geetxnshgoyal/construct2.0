@@ -1,5 +1,5 @@
-import { lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import LoadingOverlay from './components/LoadingOverlay';
 import ScrollRestoration from './components/ScrollRestoration';
@@ -17,8 +17,23 @@ const SubmitClosedPage = lazy(() => import('./pages/SubmitClosed'));
 export default function App() {
   useCookieReset();
   useAnalytics();
+  const navigate = useNavigate();
+  const location = useLocation();
   const registrationClosed = isRegistrationClosed();
   const submissionClosed = isSubmissionClosed();
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const hostname = window.location.hostname.toLowerCase();
+    const submitDomain = 'submit.nstconstruct.xyz';
+
+    if (hostname === submitDomain && location.pathname !== '/submit') {
+      navigate('/submit', { replace: true });
+    }
+  }, [location.pathname, navigate]);
 
   return (
     <Layout>
