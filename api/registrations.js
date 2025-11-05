@@ -46,10 +46,27 @@ const checkBasicAuth = (req) => {
   return { ok: false, status: 401, message: 'Invalid credentials.' };
 };
 
+const registrationsClosed = () => {
+  const closedFlag = process.env.REGISTRATION_CLOSED;
+  if (typeof closedFlag === 'string' && closedFlag.toLowerCase() === 'true') {
+    return true;
+  }
+  const openFlag = process.env.REGISTRATION_OPEN;
+  if (typeof openFlag === 'string' && openFlag.toLowerCase() === 'false') {
+    return true;
+  }
+  return false;
+};
+
 module.exports = async (req, res) => {
   ensureAdmin();
 
   if (req.method === 'POST') {
+    if (registrationsClosed()) {
+      res.status(403).json({ error: 'Registrations are closed.' });
+      return;
+    }
+
     const { status, error, data } = validateTeamPayload(req.body);
 
     if (error) {

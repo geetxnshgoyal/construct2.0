@@ -1,7 +1,14 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { useTheme } from '../../hooks/useTheme';
 
 export default function CallToAction() {
+  const theme = useTheme();
+  const isDark = theme === 'dark';
+  const cardClasses = isDark
+    ? 'border-rose-500/40 bg-rose-500/10 text-rose-100'
+    : 'border-rose-200 bg-rose-50 text-rose-700';
+  const accentTone = isDark ? 'text-rose-300' : 'text-rose-600';
+
   return (
     <section className="relative pb-24">
       <div className="mx-auto max-w-5xl px-6">
@@ -10,27 +17,19 @@ export default function CallToAction() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: '-120px' }}
           transition={{ duration: 0.8, type: 'spring', stiffness: 80 }}
-          className="relative overflow-hidden rounded-[3rem] border border-ink/20 bg-white/85 p-12 text-center shadow-card"
+          className={`relative overflow-hidden rounded-[3rem] border p-12 text-center shadow-card ${cardClasses}`}
         >
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle,rgba(255,209,102,0.25),transparent_70%)]" />
-          <p className="text-xs uppercase tracking-[0.6em] text-ink/60">Limited pods available</p>
-          <h2 className="mt-4 font-display text-3xl text-ink sm:text-4xl">
-            Ready to build the craziest MVP your campus has seen?
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle,rgba(225,94,131,0.15),transparent_72%)]" />
+          <p className={`text-xs uppercase tracking-[0.6em] ${accentTone}`}>Registration update</p>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl">
+            Registrations are now closed.
           </h2>
-          <p className="mt-4 text-sm font-semibold uppercase tracking-[0.3em] text-rose-600">
-            Registration closes today
+          <p className="mt-4 text-base opacity-85">
+            We&apos;re locking pods and sending final kickoff instructions. Check your inbox (and spam) for launch-day timelines and venue details.
           </p>
-          <p className="mt-4 text-base text-ink/75">
-            Seats are moving fast. Grab your notebooks, power adapters, caffeine stash, and hit register before the board fills up. Make sure your crew signs up on the Emergent website and turns up for the launch session to lock your pod.
+          <p className={`mt-6 text-sm uppercase tracking-[0.3em] ${accentTone}`}>
+            Spectators, stay tuned for highlights dropping soon.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/register"
-              className="rounded-full border border-ink bg-accent px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-white shadow-card transition hover:-translate-y-1 hover:shadow-[6px_6px_0_rgba(0,0,0,0.2)]"
-            >
-              Register now
-            </Link>
-          </div>
         </motion.div>
       </div>
     </section>
