@@ -2,6 +2,7 @@ import { PropsWithChildren } from 'react';
 import Navbar from './navigation/Navbar';
 import Footer from './navigation/Footer';
 import { useTheme } from '../hooks/useTheme';
+import MasterclassPopup from './MasterclassPopup';
 
 export default function Layout({ children }: PropsWithChildren) {
   const theme = useTheme();
@@ -17,6 +18,7 @@ export default function Layout({ children }: PropsWithChildren) {
         </main>
         <Footer />
       </div>
+      <MasterclassPopup />
     </div>
   );
 }

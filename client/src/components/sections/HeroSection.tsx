@@ -5,7 +5,7 @@ import { isRegistrationClosed } from '../../utils/registrationStatus';
 import { useCountdown } from '../../hooks/useCountdown';
 import { useTheme } from '../../hooks/useTheme';
 
-const COUNTDOWN_TARGET = '2025-11-05T19:00:00+05:30';
+const COUNTDOWN_TARGET = '2025-11-15T21:00:00+05:30';
 
 export default function HeroSection() {
   const { remaining, isComplete } = useCountdown(COUNTDOWN_TARGET);
@@ -147,20 +147,30 @@ export default function HeroSection() {
             <div className="mt-6 rounded-2xl border border-dashed border-ink/40 bg-paper/60 p-4 text-sm text-ink/80">
               {isComplete ? (
                 <div className="space-y-2">
-                  <p className="font-medium text-ink">Launch session is live — head to your campus venue now.</p>
-                  <p className="text-rose-600 font-semibold">Attendance is mandatory.</p>
+                  <p className="font-medium text-ink">Masterclass is live — hop into the Zoom link shared in your inbox.</p>
+                  <p className="text-rose-600 font-semibold">Attendance is mandatory for all pods.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   <p className="font-medium text-ink">
-                    Hackathon Launch Session &amp; Masterclass • 5 Nov (Wednesday), 7:00 – 8:30 PM.
+                    Masterclass with Kevin William David • 15 Nov (Friday), 9:00 – 10:00 PM IST.
                   </p>
                   <ul className="space-y-2 text-sm text-ink/80">
-                    <li>📍 RU Venue: A314 (Mini Audi)</li>
-                    <li>📍 ADYPU Venue: Room 501</li>
-                    <li>📍 S-Vyasa Venue: Classroom 5</li>
+                    <li>
+                      Speaker:{' '}
+                      <a
+                        href="https://www.linkedin.com/in/kevinwilliamdavid/"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-semibold underline decoration-dotted underline-offset-4"
+                      >
+                        Kevin William David
+                      </a>
+                    </li>
+                    <li>Format: Playbook drop, teardown, and live Q&amp;A.</li>
+                    <li>Access: Zoom link + calendar invite shared with every squad lead.</li>
                   </ul>
-                  <p className="text-rose-600 font-semibold">Attendance is mandatory.</p>
+                  <p className="text-rose-600 font-semibold">Attendance is mandatory for all pods.</p>
                 </div>
               )}
             </div>
