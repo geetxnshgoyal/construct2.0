@@ -14,7 +14,7 @@ console.log(
   '  ██║      ██║   ██║██║╚██╗██║╚════██║   ██║   ██╔══██╗██║   ██║██║        ██║   \n' +
   '  ╚██████╗ ╚██████╔╝██║ ╚████║███████║   ██║   ██║  ██║╚██████╔╝╚██████╗   ██║   \n' +
   '   ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝  ╚═════╝   ╚═╝   \n' +
-  '                                  2 0 2 5                                         \n',
+  '                                  2 0 2 5                                        \n',
   'color: #22d3ee; font-weight: bold; font-family: monospace;'
 );
 
@@ -67,7 +67,6 @@ console.log(
   '%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n',
   'color: #374151;'
 );
-
 // Only load analytics in production (disabled to prevent MIME type errors)
 // const isDev = import.meta.env.DEV;
 

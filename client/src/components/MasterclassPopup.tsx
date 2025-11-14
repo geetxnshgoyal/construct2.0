@@ -1,12 +1,10 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
-import { useTheme } from '../hooks/useTheme';
 
 const STORAGE_KEY = 'construct-masterclass-popup-2024-11-15';
+const POSTER_ASSET_PATH = '/assets/masterclass-popup.jpeg';
 
 export default function MasterclassPopup() {
-  const theme = useTheme();
-  const isDark = theme === 'dark';
   const [shouldRender, setShouldRender] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -46,17 +44,6 @@ export default function MasterclassPopup() {
     return null;
   }
 
-  const badgeTone = isDark ? 'bg-white/15 text-white/70' : 'bg-ink/10 text-ink/70';
-  const panelTone = isDark
-    ? 'border-white/15 bg-gradient-to-br from-midnight/95 via-midnight/90 to-cosmos/95 text-white'
-    : 'border-ink/10 bg-gradient-to-br from-white via-white to-paper text-ink';
-  const primaryButtonTone = isDark
-    ? 'bg-white text-midnight hover:bg-white/90'
-    : 'bg-midnight text-white hover:bg-midnight/90';
-  const secondaryButtonTone = isDark
-    ? 'text-white/80 hover:text-white'
-    : 'text-ink/70 hover:text-ink';
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -71,51 +58,23 @@ export default function MasterclassPopup() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
-            className={`relative w-full max-w-lg rounded-3xl border px-8 py-10 shadow-2xl ${panelTone}`}
+            className="relative w-full max-w-2xl overflow-hidden rounded-[32px] shadow-2xl"
           >
             <button
               type="button"
               aria-label="Dismiss masterclass announcement"
               onClick={dismiss}
-              className="absolute right-4 top-4 rounded-full p-2 text-xl text-current opacity-60 transition hover:opacity-100"
+              className="absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-2xl text-white transition hover:bg-black/90"
             >
               &times;
             </button>
-            <p className={`inline-flex items-center rounded-full px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] ${badgeTone}`}>
-              Masterclass
-            </p>
-            <h2 className="mt-6 font-display text-3xl">November 15 - 9-10 PM</h2>
-            <p className="mt-3 text-base opacity-80">
-              Lock in for an intimate build session featuring{' '}
-              <a
-                href="https://www.linkedin.com/in/kevinwilliamdavid/"
-                target="_blank"
-                rel="noreferrer"
-                className="font-semibold underline decoration-dotted underline-offset-4"
-                onClick={dismiss}
-              >
-                Kevin William David
-              </a>
-              . Fresh playbooks, live Q&amp;A, and zero fluff.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="https://www.linkedin.com/in/kevinwilliamdavid/"
-                target="_blank"
-                rel="noreferrer"
-                onClick={dismiss}
-                className={`inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] transition ${primaryButtonTone}`}
-              >
-                Meet the speaker
-              </a>
-              <button
-                type="button"
-                onClick={dismiss}
-                className={`inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] transition ${secondaryButtonTone}`}
-              >
-                Not now
-              </button>
-            </div>
+            <img
+              src={POSTER_ASSET_PATH}
+              alt="Construct masterclass announcement for November 15, 9-10 PM"
+              className="block h-full w-full object-cover"
+              loading="eager"
+              decoding="async"
+            />
           </motion.div>
         </motion.div>
       )}
