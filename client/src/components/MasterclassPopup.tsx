@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 
 const STORAGE_KEY = 'construct-masterclass-popup-2024-11-15';
-const POSTER_ASSET_PATH = '/assets/masterclass-popup.jpeg';
+const POSTER_ASSET_PATH = '/assets/masterclass-popup.png';
 
 export default function MasterclassPopup() {
   const [shouldRender, setShouldRender] = useState(false);
@@ -51,14 +51,14 @@ export default function MasterclassPopup() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60 px-3 py-6 backdrop-blur-sm sm:px-6 sm:py-8"
         >
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
-            className="relative w-full max-w-2xl overflow-hidden rounded-[32px] shadow-2xl"
+            className="relative w-full max-w-sm overflow-hidden rounded-[28px] shadow-2xl sm:max-w-lg md:max-w-2xl"
           >
             <button
               type="button"
@@ -71,7 +71,7 @@ export default function MasterclassPopup() {
             <img
               src={POSTER_ASSET_PATH}
               alt="Construct masterclass announcement for November 15, 9-10 PM"
-              className="block h-full w-full object-cover"
+              className="block h-auto max-h-[80vh] w-full"
               loading="eager"
               decoding="async"
             />
