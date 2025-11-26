@@ -174,6 +174,43 @@ export const awards = [
   }
 ];
 
+export const demoDaySchedule = [
+  {
+    id: 'adypu',
+    campus: 'ADYPU',
+    date: 'Nov 30',
+    city: 'Pune campus',
+    panelists: [
+      { name: 'Gaurav Gehlot', url: 'https://www.linkedin.com/in/gaurav-gehlot' },
+      { name: 'Aditya Mohanty', url: 'https://www.linkedin.com/in/adityamohanty' },
+      { name: 'Revealing soon', url: undefined }
+    ]
+  },
+  {
+    id: 'blr',
+    campus: 'BLR',
+    date: 'Nov 30',
+    city: 'Bengaluru campus',
+    panelists: [
+      { name: 'Suhas', url: 'https://www.linkedin.com/in/suhas-m-b86b18173/' },
+      { name: 'Revealing soon', url: undefined },
+      { name: 'Revealing soon', url: undefined }
+    ]
+  },
+  {
+    id: 'ru',
+    campus: 'RU',
+    date: 'Dec 6 (tentative)',
+    city: 'RU campus',
+    panelists: [
+      { name: 'Revealing soon', url: undefined },
+      { name: 'Revealing soon', url: undefined },
+      { name: 'Revealing soon', url: undefined }
+    ],
+    tentative: true
+  }
+];
+
 export const partners = [
   {
     id: 'nst',

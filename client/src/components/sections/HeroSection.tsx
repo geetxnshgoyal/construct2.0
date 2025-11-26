@@ -1,13 +1,16 @@
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { eventMeta, highlights } from '../../data/hackathon';
 import { isRegistrationClosed } from '../../utils/registrationStatus';
 import { useCountdown } from '../../hooks/useCountdown';
 import { useTheme } from '../../hooks/useTheme';
+import PanelistModal from '../PanelistModal';
 
-const COUNTDOWN_TARGET = '2025-11-15T21:00:00+05:30';
+const COUNTDOWN_TARGET = '2025-11-30T00:00:00+05:30';
 
 export default function HeroSection() {
+  const [isPanelModalOpen, setIsPanelModalOpen] = useState(false);
   const { remaining, isComplete } = useCountdown(COUNTDOWN_TARGET);
   const registrationClosed = isRegistrationClosed();
   const theme = useTheme();
@@ -32,6 +35,12 @@ export default function HeroSection() {
   const statusCardSecondary = registrationClosed ? closedCardSecondary : openCardSecondary;
   const primaryCtaClass = `inline-flex items-center justify-center rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition ${
     isDark ? 'bg-accent text-white hover:bg-accent/80' : 'bg-accent text-white hover:bg-accent/90'
+  }`;
+  const panelCtaClass = `inline-flex items-center justify-center rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition ${
+    isDark ? 'bg-ink text-white hover:bg-ink/90' : 'bg-ink text-white hover:bg-ink/90'
+  }`;
+  const panelGhostClass = `inline-flex items-center justify-center rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition ${
+    isDark ? 'border border-ink/30 text-white hover:bg-white/10' : 'border border-ink/15 text-ink hover:bg-ink/5'
   }`;
   const secondaryCtaClass = `inline-flex items-center justify-center rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition ${
     isDark ? 'border border-white/30 text-white hover:bg-white/10' : 'border border-ink/15 text-ink hover:bg-ink/5'
@@ -118,6 +127,18 @@ export default function HeroSection() {
             </a>
           </div>
 
+          <div className="flex flex-wrap items-center gap-3">
+            <button onClick={() => setIsPanelModalOpen(true)} className={panelCtaClass}>
+              Meet your panelists
+              <span className="ml-2 text-lg" aria-hidden="true">
+                ⟶
+              </span>
+            </button>
+            <a href="#finale" className={panelGhostClass}>
+              Jump to lineup
+            </a>
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-3">
             {highlights.map((highlight) => (
               <div
@@ -147,30 +168,18 @@ export default function HeroSection() {
             <div className="mt-6 rounded-2xl border border-dashed border-ink/40 bg-paper/60 p-4 text-sm text-ink/80">
               {isComplete ? (
                 <div className="space-y-2">
-                  <p className="font-medium text-ink">Masterclass is live — hop into the Zoom link shared in your inbox.</p>
-                  <p className="text-rose-600 font-semibold">Attendance is mandatory for all pods.</p>
+                  <p className="font-medium text-ink">Demo Day is live. Check your room assignment and follow on-ground ops.</p>
+                  <p className="text-rose-600 font-semibold">Panel walk-ins run tight — be set up before your slot.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <p className="font-medium text-ink">
-                    Masterclass with Kevin William David • 15 Nov (Friday), 9:00 – 10:00 PM IST.
-                  </p>
+                  <p className="font-medium text-ink">Countdown to Demo Day · Nov 30 (ADYPU & BLR).</p>
                   <ul className="space-y-2 text-sm text-ink/80">
-                    <li>
-                      Speaker:{' '}
-                      <a
-                        href="https://www.linkedin.com/in/kevinwilliamdavid/"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-semibold underline decoration-dotted underline-offset-4"
-                      >
-                        Kevin William David
-                      </a>
-                    </li>
-                    <li>Format: Playbook drop, teardown, and live Q&amp;A.</li>
-                    <li>Access: Zoom link + calendar invite shared with every squad lead.</li>
+                    <li>ADYPU panel: Gaurav Gehlot, Aditya Mohanty, Revealing soon.</li>
+                    <li>BLR panel: Suhas + two revealing soon.</li>
+                    <li>RU campus on Dec 6 is tentative — lineup revealing soon.</li>
                   </ul>
-                  <p className="text-rose-600 font-semibold">Attendance is mandatory for all pods.</p>
+                  <p className="text-rose-600 font-semibold">Lock decks, QA demos, and be pitch-ready.</p>
                 </div>
               )}
             </div>
@@ -201,6 +210,7 @@ export default function HeroSection() {
           </div>
         </aside>
       </div>
+      <PanelistModal open={isPanelModalOpen} onClose={() => setIsPanelModalOpen(false)} />
     </section>
   );
 }
