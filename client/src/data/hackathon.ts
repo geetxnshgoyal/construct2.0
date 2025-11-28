@@ -200,14 +200,13 @@ export const demoDaySchedule = [
   {
     id: 'ru',
     campus: 'RU',
-    date: 'Dec 6 (tentative)',
+    date: 'Dec 6',
     city: 'RU campus',
     panelists: [
       { name: 'Uday Vansh Malik', url: 'https://www.linkedin.com/in/udayvanshmalik' },
       { name: 'Revealing soon', url: undefined },
       { name: 'Revealing soon', url: undefined }
     ],
-    tentative: true
   }
 ];
 

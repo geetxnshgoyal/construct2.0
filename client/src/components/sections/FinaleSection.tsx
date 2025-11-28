@@ -15,7 +15,7 @@ export default function FinaleSection() {
           <p className="text-xs uppercase tracking-[0.5em] text-ink/60">Final stretch</p>
           <h2 className="font-display text-3xl text-ink sm:text-4xl">Demo Day lands this month</h2>
           <p className="text-base text-ink/70">
-            We&apos;re in finale mode: ADYPU and BLR are live on Nov 30. RU campus follows on Dec 6 (tentative).
+            We&apos;re in finale mode: ADYPU and BLR are live on Nov 30. RU campus follows on Dec 6.
             Top teams take the stage only—lock your decks, polish demos, and meet the panelists below.
           </p>
         </motion.div>
@@ -38,7 +38,7 @@ export default function FinaleSection() {
           <div className="mt-3 grid gap-2 text-sm text-ink/80 md:grid-cols-3">
             <span className="inline-flex items-center gap-2 rounded-2xl bg-paper px-3 py-2 shadow-insetNote">Nov 30 · ADYPU</span>
             <span className="inline-flex items-center gap-2 rounded-2xl bg-paper px-3 py-2 shadow-insetNote">Nov 30 · BLR</span>
-            <span className="inline-flex items-center gap-2 rounded-2xl bg-paper px-3 py-2 shadow-insetNote">Dec 6 · RU (tentative)</span>
+            <span className="inline-flex items-center gap-2 rounded-2xl bg-paper px-3 py-2 shadow-insetNote">Dec 6 · RU</span>
           </div>
         </motion.div>
 
@@ -57,15 +57,9 @@ export default function FinaleSection() {
                 <span className="inline-flex items-center gap-2 rounded-full bg-ink/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-ink">
                   {slot.campus}
                 </span>
-                {slot.tentative ? (
-                  <span className="rounded-full bg-amber-100 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-amber-700">
-                    Tentative
-                  </span>
-                ) : (
                   <span className="rounded-full bg-accent/15 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-accent">
                     Live
                   </span>
-                )}
               </div>
               <div className="mt-4 space-y-1">
                 <p className="text-sm uppercase tracking-[0.3em] text-ink/60">{slot.date}</p>

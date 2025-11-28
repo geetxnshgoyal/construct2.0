@@ -37,7 +37,7 @@ export default function PanelistModal({ open, onClose }: PanelistModalProps) {
             <p className="text-xs uppercase tracking-[0.5em] text-ink/60">Demo lineup</p>
             <h3 className="mt-2 font-display text-2xl text-ink">Meet your panelists</h3>
             <p className="mt-1 text-sm text-ink/70">
-              Demo Day hits Nov 30 (ADYPU &amp; BLR). RU campus runs on Dec 6 (tentative). Only top teams go on stage panels are below, polish those demos.
+              Demo Day hits Nov 30 (ADYPU &amp; BLR). RU campus runs on Dec 6. Only top teams go on stage panels are below, polish those demos.
             </p>
           </div>
           <button
@@ -78,11 +78,6 @@ export default function PanelistModal({ open, onClose }: PanelistModalProps) {
                   </li>
                 ))}
               </ul>
-              {slot.tentative && (
-                <p className="mt-2 text-[0.7rem] uppercase tracking-[0.3em] text-amber-700">
-                  Tentative final timing to be confirmed
-                </p>
-              )}
             </div>
           ))}
         </div>

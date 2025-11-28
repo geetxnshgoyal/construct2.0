@@ -177,7 +177,7 @@ export default function HeroSection() {
                   <ul className="space-y-2 text-sm text-ink/80">
                     <li>ADYPU panel: Gaurav Gehlot, Aditya Mohanty, Revealing soon.</li>
                     <li>BLR panel: Suhas + two revealing soon.</li>
-                    <li>RU campus on Dec 6 is tentative — lineup revealing soon.</li>
+                    <li>RU campus on Dec 6 is lineup revealing soon.</li>
                   </ul>
                   <p className="text-rose-600 font-semibold">Lock decks, QA demos, and be pitch-ready.</p>
                 </div>
