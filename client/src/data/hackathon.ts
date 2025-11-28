@@ -183,7 +183,7 @@ export const demoDaySchedule = [
     panelists: [
       { name: 'Gaurav Gehlot', url: 'https://www.linkedin.com/in/gaurav-gehlot' },
       { name: 'Aditya Mohanty', url: 'https://www.linkedin.com/in/adityamohanty' },
-      { name: 'Revealing soon', url: undefined }
+      { name: 'Rahul Pawar', url: 'https://www.linkedin.com/in/rahul-pawar-75777b78' }
     ]
   },
   {
@@ -203,7 +203,7 @@ export const demoDaySchedule = [
     date: 'Dec 6 (tentative)',
     city: 'RU campus',
     panelists: [
-      { name: 'Revealing soon', url: undefined },
+      { name: 'Uday Vansh Malik', url: 'https://www.linkedin.com/in/udayvanshmalik' },
       { name: 'Revealing soon', url: undefined },
       { name: 'Revealing soon', url: undefined }
     ],
