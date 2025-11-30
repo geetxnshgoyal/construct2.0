@@ -26,7 +26,7 @@ export default function CallToAction() {
           </h2>
           <p className="mt-4 text-base opacity-85">
             ADYPU and BLR go live on Nov 30. RU campus runs on Dec 6. Demo Day slots are reserved for top teams
-            only—watch your inbox for room assignments, arrival windows, and AV checks.
+            only watch your inbox for room assignments, arrival windows, and AV checks.
           </p>
           <p className={`mt-6 text-sm uppercase tracking-[0.3em] ${accentTone}`}>
             Panel lineup is posted below tighten your pitches and polish those demos.

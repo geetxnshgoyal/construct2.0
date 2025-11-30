@@ -16,7 +16,7 @@ export default function FinaleSection() {
           <h2 className="font-display text-3xl text-ink sm:text-4xl">Demo Day lands this month</h2>
           <p className="text-base text-ink/70">
             We&apos;re in finale mode: ADYPU and BLR are live on Nov 30. RU campus follows on Dec 6.
-            Top teams take the stage only—lock your decks, polish demos, and meet the panelists below.
+            Top teams take the stage only lock your decks, polish demos, and meet the panelists below.
           </p>
         </motion.div>
 

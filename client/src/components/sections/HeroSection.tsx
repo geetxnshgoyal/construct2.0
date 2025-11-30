@@ -169,7 +169,7 @@ export default function HeroSection() {
               {isComplete ? (
                 <div className="space-y-2">
                   <p className="font-medium text-ink">Demo Day is live. Check your room assignment and follow on-ground ops.</p>
-                  <p className="text-rose-600 font-semibold">Panel walk-ins run tight — be set up before your slot.</p>
+                  <p className="text-rose-600 font-semibold">Panel walk-ins run tight be set up before your slot.</p>
                 </div>
               ) : (
                 <div className="space-y-3">

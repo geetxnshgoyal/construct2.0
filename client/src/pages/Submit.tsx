@@ -44,7 +44,7 @@ const REQUIRED_ITEMS = [
 
 const CHECKLIST_ITEMS = [
   'Project name can differ, but lead email must match registration',
-  'One submission per team — re-open only if ops resets your code',
+  'One submission per team re-open only if ops resets your code',
   'Drop extra context or credentials in the notes section',
 ];
 
