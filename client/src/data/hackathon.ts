@@ -180,9 +180,9 @@ export const demoDaySchedule = [
     campus: 'ADYPU',
     date: 'Nov 30',
     city: 'Pune campus',
-    panelists: [
-      { name: 'Gaurav Gehlot', url: 'https://www.linkedin.com/in/gaurav-gehlot' },
-      { name: 'Aditya Mohanty', url: 'https://www.linkedin.com/in/adityamohanty' },
+      panelists: [
+      { name: 'Gaurav Gehlot', url: 'https://www.linkedin.com/in/gaurav-gehlot', image: '/assets/people/gaurav-gehlot.jpg' },
+      { name: 'Aditya Mohanty', url: 'https://www.linkedin.com/in/adityamohanty', image: '/assets/people/aditya-mohanty.jpg' },
       { name: 'Rahul Pawar', url: 'https://www.linkedin.com/in/rahul-pawar-75777b78' }
     ]
   },
@@ -191,8 +191,8 @@ export const demoDaySchedule = [
     campus: 'BLR',
     date: 'Nov 30',
     city: 'Bengaluru campus',
-    panelists: [
-      { name: 'Suhas', url: 'https://www.linkedin.com/in/suhas-m-b86b18173/' },
+      panelists: [
+      { name: 'Suhas', url: 'https://www.linkedin.com/in/suhas-m-b86b18173/', image: '/assets/people/suhas-m.jpg' },
       { name: 'Revealing soon', url: undefined },
       { name: 'Revealing soon', url: undefined }
     ]
@@ -202,8 +202,8 @@ export const demoDaySchedule = [
     campus: 'RU',
     date: 'Dec 6',
     city: 'RU campus',
-    panelists: [
-      { name: 'Uday Vansh Malik', url: 'https://www.linkedin.com/in/udayvanshmalik' },
+      panelists: [
+      { name: 'Uday Vansh Malik', url: 'https://www.linkedin.com/in/udayvanshmalik', image: '/assets/people/uday-vansh-malik.jpg' },
       { name: 'Revealing soon', url: undefined },
       { name: 'Revealing soon', url: undefined }
     ],

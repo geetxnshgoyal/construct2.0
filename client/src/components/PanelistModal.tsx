@@ -61,20 +61,32 @@ export default function PanelistModal({ open, onClose }: PanelistModalProps) {
               <p className="mt-2 text-sm font-semibold text-ink">{slot.city}</p>
               <ul className="mt-3 space-y-2 text-sm text-ink/80">
                 {slot.panelists.map((panelist, idx) => (
-                  <li key={`${slot.id}-${idx}`} className="flex items-center gap-2">
+                  <li key={`${slot.id}-${idx}`} className="flex items-center gap-3">
                     <span className="h-1.5 w-1.5 rounded-full bg-ink" />
-                    {panelist.url ? (
-                      <a
-                        href={panelist.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-semibold underline decoration-dotted underline-offset-4"
-                      >
-                        {panelist.name}
-                      </a>
-                    ) : (
-                      <span>{panelist.name}</span>
-                    )}
+                    <div className="flex items-center gap-3">
+                      {panelist.image ? (
+                        <img
+                          src={panelist.image}
+                          alt={`${panelist.name} photo`}
+                          className="h-8 w-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <span className="inline-block h-8 w-8 rounded-full bg-ink/10" />
+                      )}
+
+                      {panelist.url ? (
+                        <a
+                          href={panelist.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-semibold underline decoration-dotted underline-offset-4"
+                        >
+                          {panelist.name}
+                        </a>
+                      ) : (
+                        <span>{panelist.name}</span>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>
