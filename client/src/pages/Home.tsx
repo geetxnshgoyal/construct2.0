@@ -3,12 +3,14 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import HeroSection from '../components/sections/HeroSection';
 import ExperienceTicker from '../components/sections/ExperienceTicker';
-import FinaleSection from '../components/sections/FinaleSection';
+// import FinaleSection from '../components/sections/FinaleSection'; // Commented out - hackathon completed
 import StructureSection from '../components/sections/StructureSection';
 import GuidelinesSection from '../components/sections/GuidelinesSection';
 import AwardsSection from '../components/sections/AwardsSection';
 import PartnersSection from '../components/sections/PartnersSection';
-import CallToAction from '../components/sections/CallToAction';
+// import CallToAction from '../components/sections/CallToAction'; // Commented out - hackathon completed
+import ResultsSection from '../components/sections/ResultsSection';
+
 
 const hashTargets = new Set(['about', 'structure', 'guidelines', 'awards', 'partners']);
 
@@ -32,9 +34,10 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <FinaleSection />
+      {/* <FinaleSection /> */}
+      <ResultsSection />
       <ExperienceTicker />
-      <section id="about" className="relative py-24">
+      <section id="about" className="relative py-12 sm:py-16 lg:py-24">
         <motion.div
           className="pointer-events-none absolute inset-0 -z-10"
           initial={{ opacity: 0, scaleY: 0.8 }}
@@ -107,7 +110,7 @@ export default function Home() {
       <GuidelinesSection />
       <AwardsSection />
       <PartnersSection />
-      <CallToAction />
+      {/* <CallToAction /> */}
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react';
 import Navbar from './navigation/Navbar';
 import Footer from './navigation/Footer';
+import ResultsPopup from './ResultsPopup';
 import { useTheme } from '../hooks/useTheme';
 
 export default function Layout({ children }: PropsWithChildren) {
@@ -17,6 +18,7 @@ export default function Layout({ children }: PropsWithChildren) {
         </main>
         <Footer />
       </div>
+      <ResultsPopup />
     </div>
   );
 }
