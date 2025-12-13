@@ -22,20 +22,20 @@ const WINNERS_DATA: {
     winners: [
         {
             awardName: 'Hackathon Champion',
-            teamName: 'Team Name Here',
-            collegeName: 'Campus Name',
+            teamName: 'Team A2K',
+            collegeName: 'NST-ADYPU',
             phLink: '#',
         },
         {
             awardName: "People's Choice",
-            teamName: 'Team Name Here',
-            collegeName: 'Campus Name',
+            teamName: 'Team Cognix',
+            collegeName: 'NST-ADYPU',
             phLink: '#',
         },
         {
             awardName: 'Best Freshers Team',
-            teamName: 'Team Name Here',
-            collegeName: 'Campus Name',
+            teamName: 'Team Vanquishers',
+            collegeName: 'NST-RU',
             phLink: '#',
         },
     ],
