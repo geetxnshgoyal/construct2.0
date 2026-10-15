@@ -59,13 +59,27 @@ export default function HeroSection() {
     <>
       <section id="top" className="bg-band text-white">
         <div className="mx-auto max-w-6xl px-6 pb-8 pt-12 sm:pt-16">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-            <img src="/assets/logos/construct-2-logo.png" alt="CoNSTruct 2.0" className="h-8 w-auto sm:h-10" />
-            <span className="text-sm text-white/60">powered by</span>
-            <img src="/assets/logos/replit-logo.svg" alt="Replit" className="h-6 w-auto sm:h-7" />
-          </div>
+          <ul className="flex flex-wrap items-center gap-x-2 gap-y-4 sm:gap-x-6" aria-label="Newton School of Technology, Replit and The Product Folks">
+            <li>
+              <img src="/assets/logos/nst-logo.png" alt="Newton School of Technology" className="h-6 w-auto sm:h-12" />
+            </li>
+            <li className="font-pixel text-sm text-white/50 sm:text-lg" aria-hidden="true">
+              x
+            </li>
+            <li>
+              <img src="/assets/logos/replit-logo.svg" alt="Replit" className="h-7 w-auto sm:h-12" />
+            </li>
+            <li className="font-pixel text-sm text-white/50 sm:text-lg" aria-hidden="true">
+              x
+            </li>
+            <li>
+              <img src="/assets/logos/tpf-logo.png" alt="The Product Folks" className="partner-logo h-8 w-auto sm:h-12" />
+            </li>
+          </ul>
 
-          <div className="mt-12 grid gap-12 lg:grid-cols-[1.25fr_1fr] lg:items-end">
+          <img src="/assets/logos/construct-2-logo.png" alt="CoNSTruct 2.0" className="mt-12 h-10 w-auto sm:h-14" />
+
+          <div className="mt-8 grid gap-12 lg:grid-cols-[1.25fr_1fr] lg:items-end">
             <h1 className="font-pixel text-[clamp(3.5rem,11vw,7.75rem)] leading-[0.92]">
               Pitch.
               <br />
