@@ -57,7 +57,7 @@ export default function HeroSection() {
 
   return (
     <>
-      <section id="top" className="bg-navy text-white">
+      <section id="top" className="bg-band text-white">
         <div className="mx-auto max-w-6xl px-6 pb-8 pt-12 sm:pt-16">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
             <img src="/assets/logos/construct-2-logo.png" alt="CoNSTruct 2.0" className="h-8 w-auto sm:h-10" />
@@ -123,12 +123,12 @@ export default function HeroSection() {
                   <li
                     key={day}
                     title={`${dayLabel(day)}${milestone ? `: ${milestone}` : ''}`}
-                    className={`pixel-in relative aspect-square ${isPast ? 'bg-navyRaised' : phaseColor[phaseForDay(day)]} ${
+                    className={`pixel-in relative aspect-square ${isPast ? 'bg-white/15' : phaseColor[phaseForDay(day)]} ${
                       isToday ? 'outline outline-2 outline-offset-2 outline-white' : ''
                     }`}
                     style={{ animationDelay: `${day * 22}ms` }}
                   >
-                    {milestone ? <span className="absolute inset-[30%] bg-navy" aria-hidden="true" /> : null}
+                    {milestone ? <span className="absolute inset-[30%] bg-band" aria-hidden="true" /> : null}
                     <span className="sr-only">
                       {dayLabel(day)}
                       {milestone ? `, ${milestone}` : ''}

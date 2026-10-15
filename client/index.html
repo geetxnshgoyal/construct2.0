@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,6 +17,19 @@
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#0E1525" />
+    <script>
+      // Set the theme before first paint: saved choice, else the system setting.
+      (function () {
+        var theme;
+        try {
+          theme = localStorage.getItem('construct2-theme');
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
   </head>
   <body class="antialiased bg-paper text-ink font-sans">
     <div id="root"></div>

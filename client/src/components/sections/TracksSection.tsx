@@ -6,7 +6,7 @@ const trackMuted = ['text-navy/80', 'text-white/80'];
 
 export default function TracksSection() {
   return (
-    <section id="tracks" className="border-t-2 border-navy py-20 sm:py-28">
+    <section id="tracks" className="border-t-2 border-ink py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <SectionHeading title="Two tracks">
           Start something new, or level up a product you already own. Either way, it gets built and deployed on Replit.

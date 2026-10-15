@@ -6,11 +6,15 @@ const config: Config = {
     extend: {
       colors: {
         charcoal: '#111315',
-        paper: '#F7F8FA',
-        ink: '#0E1525',
+        // Themed tokens (see :root in styles/index.css)
+        paper: 'rgb(var(--paper) / <alpha-value>)',
+        ink: 'rgb(var(--ink) / <alpha-value>)',
+        band: 'rgb(var(--band) / <alpha-value>)',
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        rule: 'rgb(var(--rule) / <alpha-value>)',
+        rustText: 'rgb(var(--rust-text) / <alpha-value>)',
+        // Fixed: text on Replit orange stays navy in both themes
         navy: '#0E1525',
-        navyRaised: '#1C2333',
-        rule: '#D5DAE3',
         replit: '#F26207',
         rust: '#C4501A',
         nst: '#0B79F7',

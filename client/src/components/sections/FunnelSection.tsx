@@ -22,7 +22,7 @@ export default function FunnelSection() {
             <li
               key={step.figure}
               className={`flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-baseline sm:gap-6 ${
-                index === steps.length - 1 ? 'bg-replit text-navy' : 'bg-navy text-white'
+                index === steps.length - 1 ? 'bg-replit text-navy' : 'bg-band text-white'
               }`}
               style={{ marginLeft: `min(${index * 7}%, ${index * 4}rem)` }}
             >

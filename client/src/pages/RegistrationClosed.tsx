@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function RegistrationClosed() {
   return (
-    <section className="bg-navy text-white">
+    <section className="bg-band text-white">
       <div className="mx-auto flex min-h-[70vh] max-w-3xl flex-col justify-center px-6 py-20">
         <p className="font-pixel text-lg text-replit">Pitches due Oct 22</p>
         <h1 className="mt-4 font-wide text-[clamp(2.25rem,6vw,3.5rem)] font-extrabold leading-[1.05] tracking-tight">

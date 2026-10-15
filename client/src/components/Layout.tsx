@@ -4,7 +4,7 @@ import Footer from './navigation/Footer';
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
-    <div className="flex min-h-screen flex-col bg-paper text-navy">
+    <div className="flex min-h-screen flex-col bg-paper text-ink">
       <Navbar />
       <main className="flex-1 pt-16">{children}</main>
       <Footer />
