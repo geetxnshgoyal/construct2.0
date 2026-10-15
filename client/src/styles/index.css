@@ -59,8 +59,14 @@ body {
   animation: pixel-in 180ms steps(3, end) both;
 }
 
-/* Dark mode: a tiled pixel starfield on the page and the bands. */
-:root[data-theme='dark'] .starfield {
+/* Pixel sky: building blocks by day on the page, stars by night everywhere. */
+:root:not([data-theme='dark']) .sky-page {
+  background-image: url('/assets/blocks.svg');
+  background-size: 360px 360px;
+}
+
+:root[data-theme='dark'] .sky-page,
+:root[data-theme='dark'] .sky-band {
   background-image: url('/assets/stars.svg');
   background-size: 320px 320px;
 }
@@ -71,6 +77,24 @@ body {
 
 :root[data-theme='dark'] .dark-only {
   display: block;
+}
+
+:root[data-theme='dark'] .light-only {
+  display: none;
+}
+
+/* Blocks drop in whole-cell steps, like Tetris gravity. */
+@keyframes block-fall {
+  from {
+    top: -12%;
+  }
+  to {
+    top: 104%;
+  }
+}
+
+.block-fall {
+  animation: block-fall var(--fall-duration, 18s) steps(28, end) infinite;
 }
 
 /* Stepped, not smooth, so stars blink like sprite frames. */
@@ -95,6 +119,9 @@ body {
   .twinkle {
     animation: none;
     opacity: 0.7;
+  }
+  .block-fall {
+    animation: none;
   }
   html {
     scroll-behavior: auto !important;

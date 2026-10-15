@@ -1,6 +1,7 @@
 import { calendarDays, calendarMilestones, calendarStart, eventMeta, phaseStartDay, timeline, type PhaseKey } from '../../data/hackathon';
 import { useCountdown } from '../../hooks/useCountdown';
 import PixelEdge from '../ui/PixelEdge';
+import FallingBlocks from '../ui/FallingBlocks';
 import PixelTwinkles from '../ui/PixelTwinkles';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -58,8 +59,9 @@ export default function HeroSection() {
 
   return (
     <>
-      <section id="top" className="starfield relative bg-band text-white">
+      <section id="top" className="sky-band relative bg-band text-white">
         <PixelTwinkles />
+        <FallingBlocks />
         <div className="relative mx-auto max-w-6xl px-6 pb-8 pt-12 sm:pt-16">
           <ul className="flex flex-wrap items-center gap-x-2 gap-y-4 sm:gap-x-6" aria-label="Newton School of Technology, Replit and The Product Folks">
             <li>
