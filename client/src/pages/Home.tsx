@@ -8,6 +8,7 @@ import JudgingSection from '../components/sections/JudgingSection';
 import RulesSection from '../components/sections/RulesSection';
 import PrizesSection from '../components/sections/PrizesSection';
 import PartnersSection from '../components/sections/PartnersSection';
+import PixelEdge from '../components/ui/PixelEdge';
 
 export default function Home() {
   const location = useLocation();
@@ -27,10 +28,15 @@ export default function Home() {
     <>
       <HeroSection />
       <FunnelSection />
+      <PixelEdge top="paper" bottom="alt" seed={1} />
       <TracksSection />
+      <PixelEdge top="alt" bottom="paper" seed={2} />
       <TimelineSection />
+      <PixelEdge top="paper" bottom="alt" seed={4} />
       <JudgingSection />
+      <PixelEdge top="alt" bottom="paper" seed={5} />
       <RulesSection />
+      <PixelEdge top="paper" bottom="alt" seed={6} />
       <PrizesSection />
       <PartnersSection />
     </>

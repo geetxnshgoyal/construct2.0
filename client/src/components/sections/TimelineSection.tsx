@@ -9,7 +9,7 @@ const phaseSwatch: Record<PhaseKey, string> = {
 
 export default function TimelineSection() {
   return (
-    <section id="timeline" className="border-t-2 border-ink py-20 sm:py-28">
+    <section id="timeline" className="py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <SectionHeading title="Three phases, five weeks">
           An ideathon open to everyone, a build sprint for the top 300, then shipping to real users and showing it off. All deadlines

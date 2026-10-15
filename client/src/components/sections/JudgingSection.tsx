@@ -21,7 +21,7 @@ function WeightCell({ weight }: { weight: string }) {
 
 export default function JudgingSection() {
   return (
-    <section id="judging" className="border-t-2 border-ink py-20 sm:py-28">
+    <section id="judging" className="sky-page bg-alt py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <div id="submit" />
         <SectionHeading title="What to submit">

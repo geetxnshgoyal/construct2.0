@@ -3,7 +3,7 @@ import SectionHeading from '../ui/SectionHeading';
 
 export default function RulesSection() {
   return (
-    <section id="rules" className="border-t-2 border-ink py-20 sm:py-28">
+    <section id="rules" className="py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <SectionHeading title="Rules of the build">
           Who can team up, how credits work, what you build with, and the one post every shortlisted team has to make.

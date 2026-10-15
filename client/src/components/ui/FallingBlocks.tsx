@@ -11,12 +11,19 @@ const shapes = {
 } as const;
 
 // Negative delays start each block partway down, so the gutters are never empty.
-const blocks: Array<{ shape: keyof typeof shapes; left: string; color: string; duration: string; delay: string; wideOnly?: boolean }> = [
+// `wide` blocks only show where the margins are wide enough: sm (640px+) or xl (1280px+).
+const blocks: Array<{ shape: keyof typeof shapes; left: string; color: string; duration: string; delay: string; wide?: 'sm' | 'xl' }> = [
   { shape: 'I', left: '1.2%', color: 'text-replit', duration: '19s', delay: '-4s' },
   { shape: 'T', left: '94.5%', color: 'text-nst', duration: '23s', delay: '-12s' },
-  { shape: 'O', left: '3.5%', color: 'text-white/60', duration: '29s', delay: '-21s', wideOnly: true },
-  { shape: 'L', left: '97%', color: 'text-replit', duration: '26s', delay: '-2s', wideOnly: true }
+  { shape: 'O', left: '3.5%', color: 'text-white/60', duration: '29s', delay: '-21s', wide: 'sm' },
+  { shape: 'L', left: '97%', color: 'text-replit', duration: '26s', delay: '-2s', wide: 'sm' },
+  { shape: 'T', left: '6%', color: 'text-nst', duration: '21s', delay: '-9s', wide: 'xl' },
+  { shape: 'I', left: '92%', color: 'text-white/60', duration: '25s', delay: '-17s', wide: 'xl' },
+  { shape: 'L', left: '8.5%', color: 'text-white/40', duration: '33s', delay: '-26s', wide: 'xl' },
+  { shape: 'O', left: '89.5%', color: 'text-replit', duration: '30s', delay: '-6s', wide: 'xl' }
 ];
+
+const wideClass = { sm: 'hidden sm:block', xl: 'hidden xl:block' };
 
 export default function FallingBlocks() {
   return (
@@ -32,7 +39,7 @@ export default function FallingBlocks() {
             width={width * CELL}
             height={height * CELL}
             shapeRendering="crispEdges"
-            className={`block-fall absolute ${block.color} ${block.wideOnly ? 'hidden sm:block' : ''}`}
+            className={`block-fall absolute ${block.color} ${block.wide ? wideClass[block.wide] : ''}`}
             style={{ left: block.left, animationDelay: block.delay, '--fall-duration': block.duration } as CSSProperties}
           >
             {cells.map(([x, y]) => (

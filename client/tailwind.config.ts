@@ -11,6 +11,7 @@ const config: Config = {
         ink: 'rgb(var(--ink) / <alpha-value>)',
         band: 'rgb(var(--band) / <alpha-value>)',
         surface: 'rgb(var(--surface) / <alpha-value>)',
+        alt: 'rgb(var(--alt) / <alpha-value>)',
         rule: 'rgb(var(--rule) / <alpha-value>)',
         rustText: 'rgb(var(--rust-text) / <alpha-value>)',
         // Fixed: text on Replit orange stays navy in both themes

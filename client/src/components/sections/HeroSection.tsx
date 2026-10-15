@@ -182,7 +182,7 @@ export default function HeroSection() {
           </div>
         </div>
       </section>
-      <PixelEdge direction="down" />
+      <PixelEdge top="band" bottom="paper" />
     </>
   );
 }

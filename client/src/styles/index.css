@@ -9,6 +9,7 @@
   --ink: 14 21 37;
   --band: 14 21 37;
   --surface: 255 255 255;
+  --alt: 233 237 243;
   --rule: 213 218 227;
   --rust-text: 196 80 26;
 }
@@ -19,6 +20,7 @@
   --ink: 236 239 244;
   --band: 28 35 51;
   --surface: 21 28 43;
+  --alt: 19 27 46;
   --rule: 48 56 76;
   --rust-text: 255 133 64;
 }
@@ -63,6 +65,11 @@ body {
 :root:not([data-theme='dark']) .sky-page {
   background-image: url('/assets/blocks.svg');
   background-size: 360px 360px;
+}
+
+:root:not([data-theme='dark']) .sky-band {
+  background-image: url('/assets/blocks-band.svg'), url('/assets/grid-dot.svg');
+  background-size: 400px 400px, 24px 24px;
 }
 
 :root[data-theme='dark'] .sky-page,

@@ -3,7 +3,7 @@ import SectionHeading from '../ui/SectionHeading';
 
 export default function PrizesSection() {
   return (
-    <section id="prizes" className="border-t-2 border-ink py-20 sm:py-28">
+    <section id="prizes" className="sky-page bg-alt py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <SectionHeading title="Prizes and what you take home" />
 
