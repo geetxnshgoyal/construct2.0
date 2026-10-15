@@ -1,152 +1,68 @@
-import { motion } from 'framer-motion';
-import { useEffect, useMemo, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import ThemeSwitch from '../ui/ThemeSwitch';
-import { useTheme } from '../../hooks/useTheme';
-import { isRegistrationClosed } from '../../utils/registrationStatus';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const navLinks = [
-  { label: 'About', href: '/#about' },
-  { label: 'Structure', href: '/#structure' },
-  { label: 'Guidelines', href: '/#guidelines' },
-  { label: 'Awards', href: '/#awards' },
-  { label: 'Partners', href: '/#partners' }
+  { label: 'Tracks', href: '/#tracks' },
+  { label: 'Timeline', href: '/#timeline' },
+  { label: 'Judging', href: '/#judging' },
+  { label: 'Rules', href: '/#rules' },
+  { label: 'Prizes', href: '/#prizes' }
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const theme = useTheme();
-  const registrationClosed = isRegistrationClosed();
 
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname, location.hash]);
 
-  const isDark = theme === 'dark';
-
-  const navLinkClass = useMemo(
-    () =>
-      `text-sm font-medium uppercase tracking-[0.3em] transition ${isDark ? 'text-white/60 hover:text-white' : 'text-ink/60 hover:text-ink'
-      }`,
-    [isDark]
-  );
-
-  const statusBadgeClass = useMemo(
-    () =>
-      `rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] ${isDark ? 'border border-white/20 text-white/70' : 'border border-ink/20 text-ink/60'
-      }`,
-    [isDark]
-  );
-
-  const registerCtaClass = useMemo(
-    () =>
-      `rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] transition ${isDark ? 'bg-accent text-white hover:bg-accent/80' : 'bg-accent text-white hover:bg-accent/90'
-      }`,
-    [isDark]
-  );
-
-  const mobileStatusBadgeClass = useMemo(
-    () =>
-      `mt-3 text-center rounded-xl px-4 py-3 text-base font-semibold uppercase tracking-[0.3em] ${isDark ? 'border border-white/20 text-white/70' : 'border border-ink/20 text-ink/70'
-      }`,
-    [isDark]
-  );
-
-  const mobileRegisterCtaClass = useMemo(
-    () =>
-      `mt-3 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-base font-semibold uppercase tracking-[0.3em] transition ${isDark ? 'bg-accent text-white hover:bg-accent/80' : 'bg-accent text-white hover:bg-accent/90'
-      }`,
-    [isDark]
-  );
-
   return (
-    <header
-      className={`fixed top-0 z-50 w-full border-b backdrop-blur-xl transition-colors duration-300 ${isDark ? 'border-white/10 bg-black/70' : 'border-ink/10 bg-white/90'
-        }`}
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
-        <motion.div whileHover={{ scale: 1.04 }}>
-          <Link
-            to="/"
-            className={`group relative flex items-center gap-5 text-lg font-bold tracking-wide transition-all ${isDark ? 'text-white hover:text-neon' : 'text-ink hover:text-accent'
-              }`}
-          >
-            <span className="flex items-center">
-              <img
-                src="/assets/logos/construct-logo.svg"
-                alt="CoNSTruct logo"
-                className="h-9 w-auto"
-              />
-            </span>
-          </Link>
-        </motion.div>
-        <nav className="hidden items-center gap-8 md:flex md:ml-8">
+    <header className="fixed top-0 z-50 w-full border-b-2 border-navy bg-paper">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-4 sm:px-6">
+        <Link to="/" className="shrink-0" aria-label="CoNSTruct 2.0 home">
+          <img src="/assets/logos/construct-2-logo.png" alt="CoNSTruct 2.0" className="h-6 w-auto sm:h-7" />
+        </Link>
+
+        <nav className="hidden items-center gap-7 md:flex" aria-label="Main">
           {navLinks.map((link) => (
-            <NavLink key={link.href} to={link.href} className={navLinkClass}>
+            <Link key={link.href} to={link.href} className="text-[0.95rem] font-semibold text-navy/70 transition-colors hover:text-navy">
               {link.label}
-            </NavLink>
+            </Link>
           ))}
-          {/* Registration button removed - hackathon completed */}
-          <ThemeSwitch />
+          <Link to="/#submit" className="bg-replit px-4 py-2 text-[0.95rem] font-bold text-navy transition-colors hover:bg-rust hover:text-white">
+            Pitch by Oct 22
+          </Link>
         </nav>
+
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          className={`relative flex h-12 w-12 items-center justify-center rounded-full border md:hidden transition ${isDark ? 'border-white/20 bg-white/10 text-white' : 'border-ink/15 bg-white text-ink'
-            }`}
-          aria-label="Toggle navigation"
+          className="flex h-10 w-10 items-center justify-center border-2 border-navy md:hidden"
+          aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}
+          aria-controls="mobile-menu"
         >
-          <div className="flex flex-col gap-1.5">
-            <span className="h-0.5 w-6 bg-current transition-all" />
-            <span className="h-0.5 w-4 bg-current transition-all" />
-            <span className="h-0.5 w-5 bg-current transition-all" />
-          </div>
+          <span className="flex flex-col gap-1">
+            <span className={`block h-0.5 w-5 bg-navy transition-transform ${isOpen ? 'translate-y-1.5 rotate-45' : ''}`} />
+            <span className={`block h-0.5 w-5 bg-navy ${isOpen ? 'opacity-0' : ''}`} />
+            <span className={`block h-0.5 w-5 bg-navy transition-transform ${isOpen ? '-translate-y-1.5 -rotate-45' : ''}`} />
+          </span>
         </button>
       </div>
+
       {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm md:hidden"
-          onClick={() => setIsOpen(false)}
-        />
+        <nav id="mobile-menu" className="border-t-2 border-navy bg-paper px-4 pb-4 md:hidden" aria-label="Main">
+          {navLinks.map((link) => (
+            <Link key={link.href} to={link.href} className="block border-b border-rule py-3 text-lg font-semibold text-navy">
+              {link.label}
+            </Link>
+          ))}
+          <Link to="/#submit" className="mt-4 block bg-replit px-4 py-3 text-center text-lg font-bold text-navy">
+            Pitch by Oct 22
+          </Link>
+        </nav>
       )}
-      <div
-        className={`fixed inset-x-0 top-[72px] z-50 transform transition-all duration-300 md:hidden ${isOpen ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0 pointer-events-none'
-          }`}
-      >
-        <div
-          className={`mx-4 rounded-xl border shadow-lg ${isDark
-              ? 'border-white/10 bg-black/90 backdrop-blur-xl'
-              : 'border-ink/10 bg-white/95 backdrop-blur-md'
-            }`}
-        >
-          <div className={`p-4 flex items-center justify-between border-b ${isDark ? 'border-white/10' : 'border-ink/10'
-            }`}>
-            <span className={`text-xs font-medium uppercase tracking-[0.3em] ${isDark ? 'text-white/60' : 'text-ink/60'
-              }`}>Menu</span>
-            <ThemeSwitch />
-          </div>
-          <nav className="p-4">
-            <div className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <NavLink
-                  key={link.href}
-                  to={link.href}
-                  className={`px-3 py-2.5 text-base font-medium rounded-lg transition-colors ${isDark
-                      ? 'text-white/80 hover:bg-white/10 hover:text-white'
-                      : 'text-ink/80 hover:bg-ink/5 hover:text-ink'
-                    }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </NavLink>
-              ))}
-              {/* Registration button removed - hackathon completed */}
-            </div>
-          </nav>
-        </div>
-      </div>
     </header>
   );
 }

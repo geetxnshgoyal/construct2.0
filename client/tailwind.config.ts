@@ -6,10 +6,17 @@ const config: Config = {
     extend: {
       colors: {
         charcoal: '#111315',
-        paper: '#f8f5ec',
-        ink: '#1d1a16',
-        accent: '#ff7043',
-        accentAlt: '#ffd166',
+        paper: '#F7F8FA',
+        ink: '#0E1525',
+        navy: '#0E1525',
+        navyRaised: '#1C2333',
+        rule: '#D5DAE3',
+        replit: '#F26207',
+        rust: '#C4501A',
+        nst: '#0B79F7',
+        nstDeep: '#0A5FCC',
+        accent: '#F26207',
+        accentAlt: '#CFE3FF',
         seafoam: '#5aa897',
         sky: '#6ea8fe',
         cosmos: '#050714',
@@ -21,10 +28,11 @@ const config: Config = {
         midnight: '#020412'
       },
       fontFamily: {
-        sans: ['"Work Sans"', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['"Permanent Marker"', '"Work Sans"', 'cursive'],
-        note: ['"Shadows Into Light"', 'cursive'],
-        serif: ['"Playfair Display"', 'Georgia', 'serif']
+        sans: ['Archivo', 'system-ui', 'sans-serif'],
+        pixel: ['Silkscreen', 'Archivo', 'monospace'],
+        display: ['Archivo', 'system-ui', 'sans-serif'],
+        note: ['Archivo', 'system-ui', 'sans-serif'],
+        serif: ['Archivo', 'system-ui', 'sans-serif']
       },
       animation: {
         marquee: 'marquee 24s linear infinite',

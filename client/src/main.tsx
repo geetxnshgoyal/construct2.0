@@ -14,7 +14,7 @@ console.log(
   '  ██║      ██║   ██║██║╚██╗██║╚════██║   ██║   ██╔══██╗██║   ██║██║        ██║   \n' +
   '  ╚██████╗ ╚██████╔╝██║ ╚████║███████║   ██║   ██║  ██║╚██████╔╝╚██████╗   ██║   \n' +
   '   ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝  ╚═════╝   ╚═╝   \n' +
-  '                                  2 0 2 5                                        \n',
+  '                                    2 . 0                                        \n',
   'color: #22d3ee; font-weight: bold; font-family: monospace;'
 );
 
@@ -24,7 +24,7 @@ console.log(
 );
 
 console.log(
-  '%c⚡ Co%cNST%cruct %c2025 ⚡',
+  '%c⚡ Co%cNST%cruct %c2.0 ⚡',
   'color: #22d3ee; font-size: 28px; font-weight: bold; text-shadow: 0 0 10px #22d3ee;',
   'color: #fbbf24; font-size: 28px; font-weight: bold; text-shadow: 0 0 10px #fbbf24;',
   'color: #22d3ee; font-size: 28px; font-weight: bold; text-shadow: 0 0 10px #22d3ee;',
@@ -39,7 +39,7 @@ console.log(
 console.log(
   '%c🏗️  Building the Future of Innovation\n\n' +
   '%c🚀 Status: %cLIVE & READY%c\n' +
-  '%c💡 Tech: %cReact + Vite + TypeScript + Firebase%c\n' +
+  '%c💡 Tech: %cReact + Vite + TypeScript, powered by Replit%c\n' +
   '%c🌐 Web: %chttps://nstconstruct.xyz%c\n' +
   '%c⚙️  Mode: %c' + (import.meta.env.DEV ? 'DEVELOPMENT 🔧' : 'PRODUCTION 🚀') + '%c',
   'color: #fbbf24; font-size: 18px; font-weight: bold;',
