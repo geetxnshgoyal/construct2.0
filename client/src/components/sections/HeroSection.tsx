@@ -1,6 +1,8 @@
 import { calendarDays, calendarMilestones, calendarStart, eventMeta, phaseStartDay, timeline, type PhaseKey } from '../../data/hackathon';
 import { useCountdown } from '../../hooks/useCountdown';
 import PixelEdge from '../ui/PixelEdge';
+import FallingBlocks from '../ui/FallingBlocks';
+import PixelTwinkles from '../ui/PixelTwinkles';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
@@ -57,15 +59,31 @@ export default function HeroSection() {
 
   return (
     <>
-      <section id="top" className="bg-navy text-white">
-        <div className="mx-auto max-w-6xl px-6 pb-8 pt-12 sm:pt-16">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-            <img src="/assets/logos/construct-2-logo.png" alt="CoNSTruct 2.0" className="h-8 w-auto sm:h-10" />
-            <span className="text-sm text-white/60">powered by</span>
-            <img src="/assets/logos/replit-logo.svg" alt="Replit" className="h-6 w-auto sm:h-7" />
-          </div>
+      <section id="top" className="sky-band relative bg-band text-white">
+        <PixelTwinkles />
+        <FallingBlocks />
+        <div className="relative mx-auto max-w-6xl px-6 pb-8 pt-12 sm:pt-16">
+          <ul className="flex flex-wrap items-center gap-x-2 gap-y-4 sm:gap-x-6" aria-label="Newton School of Technology, Replit and The Product Folks">
+            <li>
+              <img src="/assets/logos/nst-logo.png" alt="Newton School of Technology" className="h-6 w-auto sm:h-12" />
+            </li>
+            <li className="font-pixel text-sm text-white/50 sm:text-lg" aria-hidden="true">
+              x
+            </li>
+            <li>
+              <img src="/assets/logos/replit-logo.svg" alt="Replit" className="h-7 w-auto sm:h-12" />
+            </li>
+            <li className="font-pixel text-sm text-white/50 sm:text-lg" aria-hidden="true">
+              x
+            </li>
+            <li>
+              <img src="/assets/logos/tpf-logo.png" alt="The Product Folks" className="partner-logo h-8 w-auto sm:h-12" />
+            </li>
+          </ul>
 
-          <div className="mt-12 grid gap-12 lg:grid-cols-[1.25fr_1fr] lg:items-end">
+          <img src="/assets/logos/construct-2-logo.png" alt="CoNSTruct 2.0" className="mt-12 h-10 w-auto sm:h-14" />
+
+          <div className="mt-8 grid gap-12 lg:grid-cols-[1.25fr_1fr] lg:items-end">
             <h1 className="font-pixel text-[clamp(3.5rem,11vw,7.75rem)] leading-[0.92]">
               Pitch.
               <br />
@@ -123,12 +141,12 @@ export default function HeroSection() {
                   <li
                     key={day}
                     title={`${dayLabel(day)}${milestone ? `: ${milestone}` : ''}`}
-                    className={`pixel-in relative aspect-square ${isPast ? 'bg-navyRaised' : phaseColor[phaseForDay(day)]} ${
+                    className={`pixel-in relative aspect-square ${isPast ? 'bg-white/15' : phaseColor[phaseForDay(day)]} ${
                       isToday ? 'outline outline-2 outline-offset-2 outline-white' : ''
                     }`}
                     style={{ animationDelay: `${day * 22}ms` }}
                   >
-                    {milestone ? <span className="absolute inset-[30%] bg-navy" aria-hidden="true" /> : null}
+                    {milestone ? <span className="absolute inset-[30%] bg-band" aria-hidden="true" /> : null}
                     <span className="sr-only">
                       {dayLabel(day)}
                       {milestone ? `, ${milestone}` : ''}
@@ -164,7 +182,7 @@ export default function HeroSection() {
           </div>
         </div>
       </section>
-      <PixelEdge direction="down" />
+      <PixelEdge top="band" bottom="paper" />
     </>
   );
 }

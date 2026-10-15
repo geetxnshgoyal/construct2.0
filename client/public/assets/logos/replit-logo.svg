@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 32" role="img" aria-label="Replit">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 126 32" role="img" aria-label="Replit">
   <g fill="#F26207">
     <path d="M3 1.5C3 .67 3.67 0 4.5 0h9c.83 0 1.5.67 1.5 1.5V11H4.5C3.67 11 3 10.33 3 9.5z"/>
     <path d="M15 11h10.5c.83 0 1.5.67 1.5 1.5v7c0 .83-.67 1.5-1.5 1.5H15z"/>
     <path d="M3 22.5c0-.83.67-1.5 1.5-1.5H15v9.5c0 .83-.67 1.5-1.5 1.5h-9C3.67 32 3 31.33 3 30.5z"/>
   </g>
-  <text x="36" y="25" font-family="'Work Sans', Inter, system-ui, sans-serif" font-size="25" font-weight="700" fill="#F26207">Replit</text>
+  <text x="36" y="25" textLength="88" lengthAdjust="spacingAndGlyphs" font-family="'Work Sans', Inter, Arial, system-ui, sans-serif" font-size="25" font-weight="700" fill="#F26207">Replit</text>
 </svg>

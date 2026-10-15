@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 
 export type Theme = 'dark' | 'light';
 
+// Read by the inline script in index.html before first paint.
+export const THEME_STORAGE_KEY = 'construct2-theme';
+
 const readTheme = (): Theme => {
-  if (typeof document === 'undefined') return 'dark';
-  return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+  if (typeof document === 'undefined') return 'light';
+  return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
 };
 
 export const useTheme = () => {
